@@ -1,0 +1,12 @@
+{% if result is defined %}
+    {% for key,  menu in result %} 
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ key }}<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                {%for item in menu %}
+                    <li><a href="{{ path(item.route~'_listar') }}">{{item.label}}</a></li>
+                {% endfor %}
+            </ul>
+        </li> 
+    {% endfor %}
+{% endif %}

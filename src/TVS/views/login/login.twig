@@ -1,0 +1,39 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %} TVS Suporte {% endblock %}</title>
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/css/theme.css" rel="stylesheet">
+        <script src="/js/ie-emulation-modes-warning.js"></script> <!-- ou pode-se usar assim ==> app.request.basepath!-->
+        <script src="/js/selectbox.js"></script>
+    </head>
+
+    <body role="document" style="background-color: #eee">
+        <div class="container">
+            {% if result is defined %}
+                <div class="alert alert-danger" role="alert">
+                    <ul>{{ result|raw }}</ul>
+                </div>
+            {% endif%}
+            <div class="col-md-4"></div>
+            <form class="form-signin col-md-4 text-center" method="POST" action="{{ path('user_autenticar') }}" >
+                <h2 class="form-signin-heading">Acesso restrito</h2>
+                <label for="user" class="sr-only">Usu&aacute;rio</label>
+                <input type="text" name="user" id="user" value="{% if user is defined %}{{user}}{% endif%}" class="form-control" placeholder="Usu&aacute;rio" {% if user is not defined %}required autofocus{% endif%} >
+                <label for="password" class="sr-only">Senha</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Senha" required>
+                <div class="checkbox">
+
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+            </form>
+            <div class="col-md-4"></div>
+        </div>
+        <div style="position: absolute; bottom: 0;width: 100%;text-align: center">Copyright (c) 2013 - {{ "now"|date("Y") }} Infosay. Todos os direitos reservados.</div>
+    </body>
+</html>
+
+

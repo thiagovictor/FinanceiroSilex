@@ -1,0 +1,5 @@
+.idea/
+nbproject/
+bin/
+vendor/
+composer.lock

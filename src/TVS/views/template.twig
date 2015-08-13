@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+{% set class_table = 'table table-condensed' %}
+{% set class_btn = 'btn btn-default btn-sm' %}
+{% set class_btn_new = 'glyphicon glyphicon-plus' %}
+{% set class_btn_edit = 'glyphicon glyphicon-pencil' %}
+{% set class_btn_delete = 'glyphicon glyphicon-remove' %}
+{% set class_btn_privilege = 'glyphicon glyphicon-lock' %}
+{% set class_btn_search = 'glyphicon glyphicon-search' %}
+{% set class_btn_form_submit = 'btn btn-success' %}
+{% set class_btn_form_return = 'btn btn-danger' %} 
+{% set class_panel = 'panel panel-default' %}
+
+
+<html lang="pt">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %} Financeiro Pessoal {% endblock %}</title>
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/css/theme.css" rel="stylesheet">
+        <script src="/js/ie-emulation-modes-warning.js"></script> <!-- ou pode-se usar assim ==> app.request.basepath!-->
+        <script src="/js/selectbox.js"></script>
+    </head>
+
+    <body role="document" style="background-color: #eee">
+        {% block menu %}
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand">Financeiro</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            {{ render(url('DinamicMenu')) }} 
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            {{ render(url('PreferenceMenu')) }} 
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+        {% endblock %}                   
+        <div class="container" >
+            <div class="{{class_panel}}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                    {% block tituloPainel %}{% endblock %}
+                </h3>
+            </div>
+            <div class="panel-body">
+            {% block superior %}{% endblock %}
+            <br><br>
+        {% block conteudo %}{% endblock %}
+    </div>
+</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<div class="panel-footer" style="position: fixed; bottom: 0;width: 100%;text-align: center;z-index: 1030;">Copyright (c) 2013 - {{ "now"|date("Y") }} Infosay. Todos os direitos reservados.</div>
+</body>
+</html>
+

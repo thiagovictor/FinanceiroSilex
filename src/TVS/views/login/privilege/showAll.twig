@@ -1,0 +1,48 @@
+{% extends "template.twig" %}
+
+{% block tituloPainel %}{{ titulo | raw }}{% endblock %}
+{% block superior %}
+    {% if Message is defined %}
+        {% for mens in Message %}
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <ul>{{ mens | raw }}</ul>
+            </div>
+        {% endfor%}
+    {% endif %}
+{% endblock %}
+
+{% block conteudo %}
+    <form name="formPrivilege" action="{{ path('updateAllPrivilege') }}" method="POST">
+        <table class="{{class_table}}">
+            <thead>
+                <tr>
+                    <th>Modulo</th>
+                    <th>Visualizacao</th>
+                    <th>Adicionar</th>
+                    <th>Alterar</th>
+                    <th>Remover</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key ,privilege in result %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        {% for key, action in privilege %}
+                            {% if not loop.first %}
+                                <td><input type="checkbox" name="{{ privilege|first~'_'~key }}" {% if action %} checked {%endif%}></td>
+                                {% endif %}
+                            {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type="hidden" name="id" value="{{ id }}">
+        <div class="form-group">
+            <button type="submit" class="{{class_btn_form_submit}}">Salvar</button>
+            <a type="button" href="{{path('user_listar')}}" class="{{class_btn_form_return}}" role="button">Voltar</a>
+        </div>
+    </form>
+
+
+{% endblock %}

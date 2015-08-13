@@ -1,0 +1,10 @@
+
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }}<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="{{ path('profile_edit') }}">Prefer&ecirc;ncias</a></li>
+                <li><a href="{{ path('logout') }}">Sair</a></li>
+            </ul>
+        </li> 
+        <li><img  src="{{path('PreferenceImage', {id: user.id}) }}" style="width: 40px; height: 40px;margin-top: 5px;" class="img-circle" alt=""></li>
+

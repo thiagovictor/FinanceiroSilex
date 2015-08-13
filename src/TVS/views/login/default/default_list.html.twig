@@ -1,0 +1,106 @@
+{% extends "template.twig" %}
+{% block tituloPainel %}{{ titulo | raw }}{% endblock %}
+{% block superior %}
+    {% if Message is defined %}
+        {% for mens in Message %}
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <ul>{{ mens | raw }}</ul>
+            </div>
+        {% endfor%}
+    {% endif %}
+    <table width="100%">
+        <thead>
+            <tr>
+                <th width="70%">
+                    {% if isAllowed.new %}
+                        <a type="button" href="{{path(bind_path~'_new')}}" class="{{class_btn}}" role="button">
+                            <span class="{{class_btn_new}}" aria-hidden="true"></span> Novo
+                        </a>
+                    {% endif %}
+                </th>
+                <th align="left">
+        <form action="{{path(bind_path~'_search')}}" method="POST">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Procurar por...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit"><span class="{{ class_btn_search }}" aria-hidden="true"></span></button>
+                </span>
+            </div>
+        </form>
+    </th>
+</tr>
+</thead>
+</table>
+
+{% endblock %}
+
+{% block conteudo %}
+    <table class="{{class_table}}">
+        <thead>
+            <tr>
+                {% for field in fields_table %}
+                    <th>{{ field }}</th>
+                    {% endfor %}
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in result %}
+                <tr>
+                    {% for array in object_key_table %}
+                        {% set flag = false %}
+                        {% set attr = '' %}
+                        {% set bool = false %}
+                        {% for properties in array %}
+                            {% if flag %}
+                                {% set attr = attribute(attr, properties) %}
+                            {% else %}
+                                {%if loop.first %}
+                                    {%if properties == 'bool'%}
+                                        {% set bool = true %}
+                                    {%else%}
+                                        {% set attr = attribute(object, properties) %}
+                                        {%if attr is not null %}
+                                            {% set flag = true %}
+                                        {%endif%}
+                                    {%endif%}
+                                {%else%}
+                                    {%if bool %}
+                                        {%if attribute(object, properties) == 1 %}
+                                            {% set attr = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' %}
+                                        {%endif%} 
+                                    {%endif%}
+                                {%endif%}
+
+
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{ attr }}</td> 
+                    {% endfor %}
+                    <td>
+                        {% if isAllowed.edit %}
+                            <a href="{{path( bind_path~'_edit',{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
+                                <span class="{{class_btn_edit}}" aria-hidden="true"></span>
+                            </a>
+                        {% endif %}
+                        {% if isAllowed.delete %}
+                            <a href="{{path( bind_path~'_delete',{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
+                                <span class="{{class_btn_delete}}" aria-hidden="true"></span>
+                            </a>
+                        {% endif %}
+                        {% for key, class in path_table_aditional %}
+                            <a href="{{path(key,{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
+                                <span class="{{ class }}" aria-hidden="true"></span>
+                            </a>
+                        {% endfor %}
+
+                    </td>
+                </tr>   
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ pagination|raw}}
+
+
+{% endblock %}

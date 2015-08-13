@@ -1,0 +1,25 @@
+{% extends "template.twig" %}
+{% block tituloPainel %}{{ titulo | raw }}{% endblock %}
+{% block conteudo %}
+
+    {% for mens in Message %}
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <ul>{{ mens | raw }}</ul>
+        </div>
+    {% endfor%}
+
+    {#{% form_theme form 'bootstrap_3_layout.html.twig' %} #}
+    {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+    {#{ form(form) }#}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_widget(form) }}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="{{class_btn_form_submit}}">Salvar</button>
+            <a type="button" href="/{{ route.controller }}" class="{{class_btn_form_return}}" role="button">Voltar</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
