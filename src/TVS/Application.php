@@ -8,6 +8,7 @@ use TVS\Login\Controller\RouteController;
 use TVS\Login\Controller\PrivilegeController;
 use TVS\Login\Controller\ProfileController;
 use TVS\Login\Controller\ConfigController;
+use TVS\Financeiro\Controller\TipoController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -54,11 +55,11 @@ class Application extends ApplicationSilex {
         $app['PrivilegeForm'] = function () use($app) {
             return $app['form.factory']->createBuilder(new Login\Form\PrivilegeType($app))->getForm();
         };
-        
+
         $app['ProfileForm'] = function () use($app) {
             return $app['form.factory']->createBuilder(new Login\Form\ProfileType())->getForm();
         };
-        
+
         $app['ConfigService'] = function () use($app) {
             return new Login\Service\ConfigService($app['EntityManager'], new Login\Entity\Config(), $app);
         };
@@ -66,8 +67,16 @@ class Application extends ApplicationSilex {
         $app['ConfigForm'] = function () use($app) {
             return $app['form.factory']->createBuilder(new Login\Form\ConfigType())->getForm();
         };
-        
-        $app['LDAP'] = function () use($app){
+
+        $app['TipoService'] = function () use($app) {
+            return new Financeiro\Service\TipoService($app['EntityManager'], new Financeiro\Entity\Tipo(), $app);
+        };
+
+        $app['TipoForm'] = function () use($app) {
+            return $app['form.factory']->createBuilder(new Financeiro\Form\TipoType())->getForm();
+        };
+
+        $app['LDAP'] = function () use($app) {
             return new \TVS\Base\Lib\ConnectionLDAP($app);
         };
 
@@ -110,6 +119,7 @@ class Application extends ApplicationSilex {
         $app->mount("/privilege", new PrivilegeController());
         $app->mount("/profile", new ProfileController());
         $app->mount("/config", new ConfigController());
+        $app->mount("/tipo", new TipoController());
     }
 
 }
