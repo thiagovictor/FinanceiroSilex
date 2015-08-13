@@ -9,6 +9,7 @@ use TVS\Login\Controller\PrivilegeController;
 use TVS\Login\Controller\ProfileController;
 use TVS\Login\Controller\ConfigController;
 use TVS\Financeiro\Controller\TipoController;
+use TVS\Financeiro\Controller\PeriodoController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -76,6 +77,14 @@ class Application extends ApplicationSilex {
             return $app['form.factory']->createBuilder(new Financeiro\Form\TipoType())->getForm();
         };
 
+        $app['PeriodoService'] = function () use($app) {
+            return new Financeiro\Service\PeriodoService($app['EntityManager'], new Financeiro\Entity\Periodo(), $app);
+        };
+
+        $app['PeriodoForm'] = function () use($app) {
+            return $app['form.factory']->createBuilder(new Financeiro\Form\PeriodoType())->getForm();
+        };
+
         $app['LDAP'] = function () use($app) {
             return new \TVS\Base\Lib\ConnectionLDAP($app);
         };
@@ -120,6 +129,7 @@ class Application extends ApplicationSilex {
         $app->mount("/profile", new ProfileController());
         $app->mount("/config", new ConfigController());
         $app->mount("/tipo", new TipoController());
+        $app->mount("/periodo", new PeriodoController());
     }
 
 }

@@ -4,17 +4,16 @@ namespace TVS\Financeiro\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
-class TipoRepository extends EntityRepository {
-
+class PeriodoRepository extends EntityRepository {
+    
     use \TVS\Base\Traits\Repository;
-
+    
     public function fatchPairs() {
-        $tipos = $this->findAll();
+        $periodos = $this->findAll();
         $array = array();
-        foreach ($tipos as $tipo) {
-            $array[$tipo->getId()] = $tipo->getDescricao();
+        foreach ($periodos as $periodo ){
+            $array[$periodo->getId()] = $periodo->getDescricao();
         }
         return $array;
     }
-
 }
