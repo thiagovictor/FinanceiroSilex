@@ -18,13 +18,12 @@ class FavorecidoController extends AbstractController {
         $this->titulo = "Favorecidos";
         $this->field_search = "descricao";
         $this->fields_table = [
-            'ID',
             'DESCRI&Ccedil;&Atilde;O'
         ];
         $this->object_key_table = [
-            ['id'],
             ['descricao']
         ];
+        $this->is_owner = true;
     }
 
     public function connect_extra() {

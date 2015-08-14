@@ -21,14 +21,6 @@ class ConfigRepository extends EntityRepository {
                         ->getSingleScalarResult();
     }
 
-    public function findById($id) {
-        $config = $this->findOneById($id);
-        if ($config) {
-            return $config;
-        }
-        return false;
-    }
-
     public function fatchPairs() {
         $entities = $this->findAll();
         $array = array();

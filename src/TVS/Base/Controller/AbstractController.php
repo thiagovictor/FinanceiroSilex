@@ -4,6 +4,7 @@ namespace TVS\Base\Controller;
 
 use Silex\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class AbstractController implements ControllerProviderInterface {
 
@@ -23,9 +24,17 @@ class AbstractController implements ControllerProviderInterface {
     protected $path_table_aditional = [];
     protected $fields_table = [];
     protected $object_key_table = [];
+    protected $is_owner = false;
 
     protected function connect_extra() {
         
+    }
+    
+    protected function checkOwner() {
+        if($this->is_owner){
+            return (new Session())->get('user');
+        }
+        return false;
     }
 
     public function connect(Application $app) {
@@ -36,7 +45,7 @@ class AbstractController implements ControllerProviderInterface {
 
         //####LISTAGEM INICIAL#######
         $this->controller->get('/', function () use ($app) {
-            $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina);
+            $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina,  $this->checkOwner());
             return $app['twig']->render($this->view_list, [
                         $this->param_view => $result,
                         'isAllowed' => $app[$this->service]->isAllowed(true),
@@ -46,13 +55,13 @@ class AbstractController implements ControllerProviderInterface {
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => 1,
                         'titulo' => $this->titulo,
-                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina)
+                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina,false,false,$this->checkOwner())
             ]);
         })->bind($this->bind . '_listar');
 
         //####LISTAGEM BUSCA#######
         $this->controller->post('/display/search', function () use ($app) {
-            $result = $app[$this->service]->findSearch(0, $this->registros_por_pagina, $app['request']->get('search'), $this->field_search);
+            $result = $app[$this->service]->findSearch(0, $this->registros_por_pagina, $app['request']->get('search'), $this->field_search,$this->checkOwner());
             return $app['twig']->render($this->view_list, [
                         $this->param_view => $result,
                         'isAllowed' => $app[$this->service]->isAllowed(true),
@@ -63,16 +72,16 @@ class AbstractController implements ControllerProviderInterface {
                         'page_atual' => 1,
                         'titulo' => $this->titulo,
                         'search' => $app['request']->get('search'),
-                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, $app['request']->get('search'), $this->field_search)
+                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, $app['request']->get('search'), $this->field_search,$this->checkOwner())
             ]);
         })->bind($this->bind . '_search');
 
         //####LISTAGEM BUSCA#######
         $this->controller->get('/display/search/{page}/{search}', function ($page, $search) use ($app) {
-            if ($page < 1 or $page > ceil($app[$this->service]->getRows($search, $this->field_search) / $this->registros_por_pagina)) {
+            if ($page < 1 or $page > ceil($app[$this->service]->getRows($search, $this->field_search,$this->checkOwner()) / $this->registros_por_pagina)) {
                 $page = 1;
             }
-            $result = $app[$this->service]->findSearch((($page - 1) * $this->registros_por_pagina), $this->registros_por_pagina, $search, $this->field_search);
+            $result = $app[$this->service]->findSearch((($page - 1) * $this->registros_por_pagina), $this->registros_por_pagina, $search, $this->field_search, $this->checkOwner());
             return $app['twig']->render($this->view_list, [
                         $this->param_view => $result,
                         'isAllowed' => $app[$this->service]->isAllowed(true),
@@ -83,17 +92,17 @@ class AbstractController implements ControllerProviderInterface {
                         'page_atual' => 1,
                         'titulo' => $this->titulo,
                         'search' => $search,
-                        'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina, $search, $this->field_search)
+                        'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina, $search, $this->field_search,$this->checkOwner())
             ]);
         })->bind($this->bind . '_listar_pagination_search');
 
 
         //####LISTAGEM PAGINADA#######
         $this->controller->get('/page/{page}', function ($page) use ($app) {
-            if ($page < 1 or $page > ceil($app[$this->service]->getRows() / $this->registros_por_pagina)) {
+            if ($page < 1 or $page > ceil($app[$this->service]->getRows(false,false,$this->checkOwner()) / $this->registros_por_pagina)) {
                 $page = 1;
             }
-            $result = $app[$this->service]->findPagination((($page - 1) * $this->registros_por_pagina), $this->registros_por_pagina);
+            $result = $app[$this->service]->findPagination((($page - 1) * $this->registros_por_pagina), $this->registros_por_pagina,$this->checkOwner());
             return $app['twig']->render($this->view_list, [
                         $this->param_view => $result,
                         'isAllowed' => $app[$this->service]->isAllowed(true),
@@ -103,7 +112,7 @@ class AbstractController implements ControllerProviderInterface {
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => $page,
                         'titulo' => $this->titulo,
-                        'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina)
+                        'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina,false,false,$this->checkOwner())
             ]);
         })->bind($this->bind . '_listar_pagination');
 
@@ -144,9 +153,9 @@ class AbstractController implements ControllerProviderInterface {
             if ($form->isValid()) {
                 $data = $form->getData();
                 $data["id"] = $id;
-                $serviceManager->update($data);
+                $serviceManager->update($data,$this->checkOwner());
                 //return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
-                $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina);
+                $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina,$this->checkOwner());
                 return $app['twig']->render($this->view_list, [
                             $this->param_view => $result,
                             'isAllowed' => $app[$this->service]->isAllowed(true),
@@ -157,10 +166,13 @@ class AbstractController implements ControllerProviderInterface {
                             'page_atual' => 1,
                             'Message' => $serviceManager->getMessage(),
                             'titulo' => $this->titulo,
-                            'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina)
+                            'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina,false,false,$this->checkOwner())
                 ]);
             }
-            $result = $serviceManager->find($id);
+            $result = $serviceManager->find($id,$this->checkOwner());
+            if(!$result){
+                return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
+            }
             $form->setData($result->toArray());
             return $app['twig']->render($this->view_edit, [
                         "form" => $form->createView(),
@@ -173,9 +185,9 @@ class AbstractController implements ControllerProviderInterface {
         //####REMOVE REGISTRO#######
         $this->controller->get('/delete/{id}', function ($id) use ($app) {
             $serviceManager = $app[$this->service];
-            $serviceManager->delete($id);
+            $serviceManager->delete($id,$this->checkOwner());
             //return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
-            $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina);
+            $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina,$this->checkOwner());
             return $app['twig']->render($this->view_list, [
                         $this->param_view => $result,
                         'isAllowed' => $app[$this->service]->isAllowed(true),
@@ -186,7 +198,7 @@ class AbstractController implements ControllerProviderInterface {
                         'page_atual' => 1,
                         'Message' => $serviceManager->getMessage(),
                         'titulo' => $this->titulo,
-                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina)
+                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina,false,false,$this->checkOwner())
             ]);
         })->bind($this->bind . '_delete');
 

@@ -6,8 +6,9 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class FavorecidoRepository extends EntityRepository{
-    use \TVS\Base\Traits\RepositoryById;
+    use \TVS\Base\Traits\Repository;
     
+
     public function fatchPairs() {
         $user = (new Session())->get('user');
         $favorecidos = $this->findBy(array('user'=>$user->getId()),array());

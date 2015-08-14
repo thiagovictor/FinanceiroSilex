@@ -46,7 +46,7 @@ abstract class AbstractService {
         return false;
     }
 
-    public function update(array $data = array()) {
+    public function update(array $data = array(), $user) {
         if (!isset($data["id"])) {
             $this->setMessage("Par&acirc;metro :id nao encontrado");
             return false;
@@ -55,18 +55,41 @@ abstract class AbstractService {
         if (!$this->popular($data)) {
             return false;
         }
+        if (!$this->checkOwner($user)) {
+            return false;
+        }
         $this->em->persist($this->object);
         $this->em->flush();
-         $this->setMessage("Registro atualizado com sucesso!");
+        $this->setMessage("Registro atualizado com sucesso!");
         return true;
     }
 
-    public function delete($id) {
+    public function checkOwner($user) {
+        if(!$this->object){
+            return false;
+        }
+        if ($user) {
+            if ($user->getId() != $this->object->getUser()->getId()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function delete($id, $user) {
+        $repo = $this->em->getRepository($this->entity);
+        if (!$repo->find($id)){
+            return false;
+        }
         $this->object = $this->em->getReference($this->entity, $id);
+
+        if (!$this->checkOwner($user)) {
+            return false;
+        }
         $this->em->remove($this->object);
         try {
             $this->em->flush();
-             $this->setMessage("Registro removido com sucesso!");
+            $this->setMessage("Registro removido com sucesso!");
             return true;
         } catch (ForeignKeyConstraintViolationException $ex) {
             $this->setMessage($ex->getMessage());
@@ -128,29 +151,33 @@ abstract class AbstractService {
         return $this->toArray([0 => $object]);
     }
 
-    public function findPagination($firstResult, $maxResults) {
+    public function findPagination($firstResult, $maxResults, $user) {
         $repo = $this->em->getRepository($this->entity);
-        return $repo->findPagination($firstResult, $maxResults);
-    }
-    
-    public function findSearch($firstResult, $maxResults,$search,$field) {
-        $repo = $this->em->getRepository($this->entity);
-        return $repo->findSearch($firstResult, $maxResults,$search,$field);
+        return $repo->findPagination($firstResult, $maxResults, $user);
     }
 
-    public function getRows($search = false, $field = false) {
+    public function findSearch($firstResult, $maxResults, $search, $field, $user) {
         $repo = $this->em->getRepository($this->entity);
-        if($search and $field){
-            return $repo->getRowsSearch($search, $field);
+        return $repo->findSearch($firstResult, $maxResults, $search, $field, $user);
+    }
+
+    public function getRows($search = false, $field = false, $user) {
+        $repo = $this->em->getRepository($this->entity);
+        if ($search and $field) {
+            return $repo->getRowsSearch($search, $field, $user);
         }
-        return $repo->getRows();
+        return $repo->getRows($user);
     }
 
-    public function find($id) {
+    public function find($id, $user=false) {
         $repo = $this->em->getRepository($this->entity);
-        return $repo->find($id);
+        $this->object = $repo->find($id);
+        if (!$this->checkOwner($user)) {
+            return false;
+        }
+        return $this->object;
     }
-    
+
     public function findOneBy(array $param) {
         $repo = $this->em->getRepository($this->entity);
         $object = $repo->findOneBy($param);
@@ -159,7 +186,7 @@ abstract class AbstractService {
         }
         return false;
     }
-    
+
     public function findBy(array $param) {
         $repo = $this->em->getRepository($this->entity);
         $object = $repo->findBy($param);
@@ -168,7 +195,7 @@ abstract class AbstractService {
         }
         return false;
     }
-    
+
     function getMessage() {
         return $this->message;
     }
@@ -204,15 +231,15 @@ abstract class AbstractService {
         $PrivilegeRepositoty = $this->em->getRepository('TVS\Login\Entity\Privilege');
         $objectPrivilege = $PrivilegeRepositoty->findOneBy(array('user' => $user, 'route' => $objectRoute));
         if ($objectToArray) {
-            if($objectPrivilege){
+            if ($objectPrivilege) {
                 return $objectPrivilege->toArray();
             }
             $objectRouteGeneric = $routeRepository->findOneByRoute('*');
             $objectPrivilegeGeneric = $PrivilegeRepositoty->findOneBy(array('user' => $user, 'route' => $objectRouteGeneric));
-            if($objectPrivilegeGeneric){
+            if ($objectPrivilegeGeneric) {
                 return $objectPrivilegeGeneric->toArray();
             }
-            return ['new'=>false,'edit'=>false,'delete'=>false];
+            return ['new' => false, 'edit' => false, 'delete' => false];
         }
         $getAction = 'get' . ucfirst($route['action']);
         if ($objectPrivilege) {
@@ -225,30 +252,29 @@ abstract class AbstractService {
         }
         return false;
     }
-    
+
     public function ObjectValidPrivilege(\TVS\Login\Entity\Privilege $privilege) {
-        $acoes = ['display','new','edit','delete'];
+        $acoes = ['display', 'new', 'edit', 'delete'];
         $return = false;
         foreach ($acoes as $acao) {
-            $action = 'get'.ucfirst($acao);
-            if($privilege->$action()){
+            $action = 'get' . ucfirst($acao);
+            if ($privilege->$action()) {
                 $return = true;
             }
         }
         return $return;
     }
-    
-    
+
     public function isAllowedRoute($route, $action = null) {
         $routeRepository = $this->em->getRepository('TVS\Login\Entity\Route');
         $objectRoute = $routeRepository->findOneByRoute($route);
         $PrivilegeRepositoty = $this->em->getRepository('TVS\Login\Entity\Privilege');
         $objectPrivilege = $PrivilegeRepositoty->findOneBy(array('user' => $this->app['session']->get('user'), 'route' => $objectRoute));
         if ($objectPrivilege) {
-            if(!$this->ObjectValidPrivilege($objectPrivilege)){
+            if (!$this->ObjectValidPrivilege($objectPrivilege)) {
                 return false;
             }
-            if(!$action){
+            if (!$action) {
                 return true;
             }
             $getAction = 'get' . ucfirst($action);
@@ -257,16 +283,16 @@ abstract class AbstractService {
         return false;
     }
 
-    public function pagination($page_atual, $registros_por_pagina, $search = false, $field = false ) {
-        $numero_paginas = ceil($this->getRows() / $registros_por_pagina);
+    public function pagination($page_atual, $registros_por_pagina, $search = false, $field = false, $user) {
+        $numero_paginas = ceil($this->getRows(false, false, $user) / $registros_por_pagina);
         $rota = "page";
         $busca = '';
-        if($search and $field){
-            $numero_paginas = ceil($this->getRows($search,$field) / $registros_por_pagina);
+        if ($search and $field) {
+            $numero_paginas = ceil($this->getRows($search, $field, $user) / $registros_por_pagina);
             $rota = 'display/search';
             $busca = "/$search";
         }
-        
+
         $route = $this->mountArrayRoute();
         $disabled_prev = '';
         if ($page_atual == 1) {

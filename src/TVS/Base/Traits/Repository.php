@@ -4,46 +4,60 @@ namespace TVS\Base\Traits;
 
 trait Repository {
 
-    public function findPagination($firstResult, $maxResults) {
-        return parent::createQueryBuilder('c')
-                        ->setFirstResult($firstResult)
+    public function findPagination($firstResult, $maxResults, $user = false) {
+        $query = parent::createQueryBuilder('c');
+        if ($user) {
+            $query->where("c.user = :user")
+                    ->setParameter('user', $user);
+        }
+        return $query->setFirstResult($firstResult)
                         ->setMaxResults($maxResults)
                         ->getQuery()
                         ->getResult();
     }
 
-    public function getRows() {
-        return parent::createQueryBuilder('c')
-                        ->select('Count(c)')
-                        ->getQuery()
+    public function getRows($user = false) {
+        $query = parent::createQueryBuilder('c')
+                ->select('Count(c)');
+        if ($user) {
+            $query->where("c.user = :user")
+                    ->setParameter('user', $user);
+        }
+        return $query->getQuery()
                         ->getSingleScalarResult();
     }
 
-    public function findById($id) {
-        $config = parent::findOneById($id);
-        if ($config) {
-            return $config;
+    public function findSearch($firstResult, $maxResults, $search, $field, $user = false) {
+        $query = parent::createQueryBuilder('c');
+        if ($user) {
+            $query->where("c.{$field} like :search and c.user = :user")
+                    ->setParameter('search', "%{$search}%")
+                    ->setParameter('user', $user);
+        } else {
+            $query->where("c.{$field} like :search")
+                    ->setParameter('search', "%{$search}%");
         }
-        return false;
+        return $query->setFirstResult($firstResult)
+                        ->setMaxResults($maxResults)
+                        ->getQuery()
+                        ->getResult();
     }
 
-    public function findSearch($firstResult, $maxResults, $search, $field) {
+    public function getRowsSearch($search, $field, $user = false) {
         $query = parent::createQueryBuilder('c')
-                ->where("c.{$field} like :search")
-                ->setParameter('search', "%{$search}%")
-                ->setFirstResult($firstResult)
-                ->setMaxResults($maxResults)
-                ->getQuery();
-        return $query->getResult();
-    }
-
-    public function getRowsSearch($search, $field) {
-        $query = parent::createQueryBuilder('c')
-                ->select('Count(c)')
-                ->where("c.{$field} like :search")
-                ->setParameter('search', "%{$search}%")
-                ->getQuery();
-        return $query->getSingleScalarResult();
+                ->select('Count(c)');
+        if ($user) {
+            $query->where("c.{$field} like :search and c.user = :user")
+                    ->setParameter('search', "%{$search}%")
+                    ->setParameter('user', $user);
+        } else {
+            $query->where("c.{$field} like :search")
+                    ->setParameter('search', "%{$search}%");
+        }
+        return $query->setFirstResult($firstResult)
+                        ->setMaxResults($maxResults)
+                        ->getQuery()
+                        ->getSingleScalarResult();
     }
 
 }
