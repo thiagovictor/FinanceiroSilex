@@ -12,6 +12,7 @@ use TVS\Financeiro\Controller\TipoController;
 use TVS\Financeiro\Controller\PeriodoController;
 use TVS\Financeiro\Controller\FavorecidoController;
 use TVS\Financeiro\Controller\CentrocustoController;
+use TVS\Financeiro\Controller\CategoriaController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -103,6 +104,14 @@ class Application extends ApplicationSilex {
             return $app['form.factory']->createBuilder(new Financeiro\Form\CentrocustoType())->getForm();
         };
 
+        $app['CategoriaService'] = function () use($app) {
+            return new Financeiro\Service\CategoriaService($app['EntityManager'], new Financeiro\Entity\Categoria(), $app); 
+        };
+
+        $app['CategoriaForm'] = function () use($app) {
+            return $app['form.factory']->createBuilder(new Financeiro\Form\CategoriaType($app))->getForm();
+        };
+
         $app['LDAP'] = function () use($app) {
             return new \TVS\Base\Lib\ConnectionLDAP($app);
         };
@@ -150,6 +159,8 @@ class Application extends ApplicationSilex {
         $app->mount("/periodo", new PeriodoController());
         $app->mount("/favorecido", new FavorecidoController());
         $app->mount("/centrocusto", new CentrocustoController());
+        $app->mount("/categoria", new CategoriaController());
+        
     }
 
 }

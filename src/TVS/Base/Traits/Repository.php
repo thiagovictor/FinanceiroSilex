@@ -54,10 +54,8 @@ trait Repository {
             $query->where("c.{$field} like :search")
                     ->setParameter('search', "%{$search}%");
         }
-        return $query->setFirstResult($firstResult)
-                        ->setMaxResults($maxResults)
-                        ->getQuery()
-                        ->getSingleScalarResult();
+        return $query->getQuery()
+                     ->getSingleScalarResult();
     }
 
 }
