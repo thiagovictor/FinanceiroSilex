@@ -23,107 +23,42 @@ class Application extends ApplicationSilex {
         parent::__construct($values);
         $app = $this;
 
-        $app['LoginService'] = function () use($app) {
-            return new Login\Service\LoginService($app['EntityManager'], new Login\Entity\User(), $app);
-        };
+        $services = [
+            ['name' => 'LoginService', 'service' => 'TVS\Login\Service\LoginService', 'entity' => 'TVS\Login\Entity\User'],
+            ['name' => 'RouteService', 'service' => 'TVS\Login\Service\RouteService', 'entity' => 'TVS\Login\Entity\Route'],
+            ['name' => 'MenuService', 'service' => 'TVS\Login\Service\MenuService', 'entity' => 'TVS\Login\Entity\Menu'],
+            ['name' => 'PrivilegeService', 'service' => 'TVS\Login\Service\PrivilegeService', 'entity' => 'TVS\Login\Entity\Privilege'],
+            ['name' => 'ConfigService', 'service' => 'TVS\Login\Service\ConfigService', 'entity' => 'TVS\Login\Entity\Config'],
+            ['name' => 'TipoService', 'service' => 'TVS\Financeiro\Service\TipoService', 'entity' => 'TVS\Financeiro\Entity\Tipo'],
+            ['name' => 'PeriodoService', 'service' => 'TVS\Financeiro\Service\PeriodoService', 'entity' => 'TVS\Financeiro\Entity\Periodo'],
+            ['name' => 'FavorecidoService', 'service' => 'TVS\Financeiro\Service\FavorecidoService', 'entity' => 'TVS\Financeiro\Entity\Favorecido'],
+            ['name' => 'CentrocustoService', 'service' => 'TVS\Financeiro\Service\CentrocustoService', 'entity' => 'TVS\Financeiro\Entity\Centrocusto'],
+            ['name' => 'CategoriaService', 'service' => 'TVS\Financeiro\Service\CategoriaService', 'entity' => 'TVS\Financeiro\Entity\Categoria'],
+            ['name' => 'CartaoService', 'service' => 'TVS\Financeiro\Service\LoginService', 'entity' => 'TVS\Financeiro\Entity\Cartao'],
+            ['name' => 'LDAP', 'service' => 'TVS\Base\Lib\ConnectionLDAP'],
+        ];
 
-        $app['UserForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\UserType())->getForm();
-        };
+        $forms = [
+            ['name' => 'UserForm', 'type' => 'TVS\Login\Form\UserType'],
+            ['name' => 'UserFormEdit', 'type' => 'TVS\Login\Form\UserEditType'],
+            ['name' => 'MenuForm', 'type' => 'TVS\Login\Form\MenuType'],
+            ['name' => 'PrivilegeForm', 'type' => 'TVS\Login\Form\PrivilegeType', 'injection' => true],
+            ['name' => 'ProfileForm', 'type' => 'TVS\Login\Form\ProfileType'],
+            ['name' => 'ConfigForm', 'type' => 'TVS\Login\Form\ConfigType'],
+            ['name' => 'TipoForm', 'type' => 'TVS\Financeiro\Form\TipoType'],
+            ['name' => 'PeriodoForm', 'type' => 'TVS\Financeiro\Form\PeriodoType'],
+            ['name' => 'FavorecidoForm', 'type' => 'TVS\Financeiro\Form\FavorecidoType'],
+            ['name' => 'CentrocustoForm', 'type' => 'TVS\Financeiro\Form\CentrocustoType'],
+            ['name' => 'CategoriaForm', 'type' => 'TVS\Financeiro\Form\CategoriaType', 'injection' => true],
+            ['name' => 'CartaoForm', 'type' => 'TVS\Financeiro\Form\CartaoType'],
+        ];
 
-        $app['UserFormEdit'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\UserEditType())->getForm();
-        };
-
-        $app['RouteService'] = function () use($app) {
-            return new Login\Service\RouteService($app['EntityManager'], new Login\Entity\Route(), $app);
-            ;
-        };
-
-        $app['RouteForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\RouteType($app))->getForm();
-        };
-
-        $app['MenuService'] = function () use($app) {
-            return new Login\Service\MenuService($app['EntityManager'], new Login\Entity\Menu(), $app);
-        };
-
-        $app['MenuForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\MenuType())->getForm();
-        };
-
-        $app['PrivilegeService'] = function () use($app) {
-            $privileService = new Login\Service\PrivilegeService($app['EntityManager'], new Login\Entity\Privilege(), $app);
-            return $privileService;
-        };
-
-        $app['PrivilegeForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\PrivilegeType($app))->getForm();
-        };
-
-        $app['ProfileForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\ProfileType())->getForm();
-        };
-
-        $app['ConfigService'] = function () use($app) {
-            return new Login\Service\ConfigService($app['EntityManager'], new Login\Entity\Config(), $app);
-        };
-
-        $app['ConfigForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Login\Form\ConfigType())->getForm();
-        };
-
-        $app['TipoService'] = function () use($app) {
-            return new Financeiro\Service\TipoService($app['EntityManager'], new Financeiro\Entity\Tipo(), $app);
-        };
-
-        $app['TipoForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Financeiro\Form\TipoType())->getForm();
-        };
-
-        $app['PeriodoService'] = function () use($app) {
-            return new Financeiro\Service\PeriodoService($app['EntityManager'], new Financeiro\Entity\Periodo(), $app);
-        };
-
-        $app['PeriodoForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Financeiro\Form\PeriodoType())->getForm();
-        };
-
-        $app['FavorecidoService'] = function () use($app) {
-            return new Financeiro\Service\FavorecidoService($app['EntityManager'], new Financeiro\Entity\Favorecido(), $app);
-        };
-
-        $app['FavorecidoForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Financeiro\Form\FavorecidoType())->getForm();
-        };
-
-        $app['CentrocustoService'] = function () use($app) {
-            return new Financeiro\Service\CentrocustoService($app['EntityManager'], new Financeiro\Entity\Centrocusto(), $app);
-        };
-
-        $app['CentrocustoForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Financeiro\Form\CentrocustoType())->getForm();
-        };
-
-        $app['CategoriaService'] = function () use($app) {
-            return new Financeiro\Service\CategoriaService($app['EntityManager'], new Financeiro\Entity\Categoria(), $app);
-        };
-
-        $app['CategoriaForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Financeiro\Form\CategoriaType($app))->getForm();
-        };
-
-        $app['CartaoService'] = function () use($app) {
-            return new Financeiro\Service\CartaoService($app['EntityManager'], new Financeiro\Entity\Cartao(), $app);
-        };
-
-        $app['CartaoForm'] = function () use($app) {
-            return $app['form.factory']->createBuilder(new Financeiro\Form\cartaoType())->getForm();
-        };
-
-        $app['LDAP'] = function () use($app) {
-            return new \TVS\Base\Lib\ConnectionLDAP($app);
-        };
+        foreach ($services as $service) {
+            $this->registerServices($service);
+        }
+        foreach ($forms as $form) {
+            $this->registerForms($form);
+        }
 
         $app->before(function(Request $request) use ($app) {
             if (!$request->get('non_require_authentication')) {
@@ -170,6 +105,26 @@ class Application extends ApplicationSilex {
         $app->mount("/centrocusto", new CentrocustoController());
         $app->mount("/categoria", new CategoriaController());
         $app->mount("/cartao", new CartaoController());
+    }
+
+    public function registerServices($options) {
+        $app = $this;
+        $app[$options['name']] = function () use($app, $options) {
+            if (isset($options['entity'])) {
+                return new $options['service']($app['EntityManager'], new $options['entity'], $app);
+            }
+            return new $options['service']($app);
+        };
+    }
+
+    public function registerForms($options) {
+        $app = $this;
+        $app[$options['name']] = function () use($app, $options) {
+            if (isset($options['injection'])) {
+                return $app['form.factory']->createBuilder(new $options['type']($app))->getForm();
+            }
+            return $app['form.factory']->createBuilder(new $options['type']())->getForm();
+        };
     }
 
 }
