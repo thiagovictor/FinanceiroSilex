@@ -55,7 +55,7 @@ $em = EntityManager::create(
 $app = new TVS\Application([
     "EntityManager" => $em
 ]);
-
+$app['locale'] = 'pt-BR';
 $app['debug'] = true;
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__ . '/src/TVS/views',
@@ -71,5 +71,6 @@ $app->register(new \Silex\Provider\FormServiceProvider());
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 $app->register(new Silex\Provider\TranslationServiceProvider(), array(
     'translator.domains' => array(),
+    'locale_fallbacks' => array('pt-br'),
 ));
 $app->register(new Silex\Provider\HttpFragmentServiceProvider());
