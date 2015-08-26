@@ -18,7 +18,7 @@ class ContaType extends AbstractType
                                 )
                         )->add('saldo', "money", array(
                             'currency'=> 'BRL',
-                            //'grouping'=> 'true',
+                            'grouping'=> '1', //NAO SETAR TRUE CONFORME DOCUMENTAÇÃO SYMFONY
                             'constraints' => array(new NotBlank()),
                             'label' => 'Saldo',
                                 )
