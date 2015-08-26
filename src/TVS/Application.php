@@ -43,6 +43,7 @@ class Application extends ApplicationSilex {
         $forms = [
             ['name' => 'UserForm', 'type' => 'TVS\Login\Form\UserType'],
             ['name' => 'UserFormEdit', 'type' => 'TVS\Login\Form\UserEditType'],
+            ['name' => 'RouteForm', 'type' => 'TVS\Login\Form\RouteType', 'injection' => true],
             ['name' => 'MenuForm', 'type' => 'TVS\Login\Form\MenuType'],
             ['name' => 'PrivilegeForm', 'type' => 'TVS\Login\Form\PrivilegeType', 'injection' => true],
             ['name' => 'ProfileForm', 'type' => 'TVS\Login\Form\ProfileType'],
