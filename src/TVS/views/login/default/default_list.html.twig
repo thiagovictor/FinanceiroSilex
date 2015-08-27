@@ -14,9 +14,11 @@
             <tr>
                 <th width="70%">
                     {% if isAllowed.new %}
-                        <a type="button" href="{{path(bind_path~'_new')}}" class="{{class_btn}}" role="button">
-                            <span class="{{class_btn_new}}" aria-hidden="true"></span> Novo
-                        </a>
+                        {% block button_new %}
+                            <a type="button" href="{{path(bind_path~'_new')}}" class="{{class_btn}}" role="button">
+                                <span class="{{class_btn_new}}" aria-hidden="true"></span> Novo
+                            </a>
+                        {% endblock %}
                     {% endif %}
                 </th>
                 <th align="left">
