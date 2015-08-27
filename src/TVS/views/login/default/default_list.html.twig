@@ -52,6 +52,7 @@
                         {% set flag = false %}
                         {% set attr = '' %}
                         {% set bool = false %}
+                        {% set money = false %}
                         {% for properties in array %}
                             {% if flag %}
                                 {% set attr = attribute(attr, properties) %}
@@ -60,9 +61,13 @@
                                     {%if properties == 'bool'%}
                                         {% set bool = true %}
                                     {%else%}
-                                        {% set attr = attribute(object, properties) %}
-                                        {%if attr is not null %}
-                                            {% set flag = true %}
+                                        {%if properties == 'money'%}
+                                            {% set money = true %}
+                                        {%else%}
+                                            {% set attr = attribute(object, properties) %}
+                                            {%if attr is not null %}
+                                                {% set flag = true %}
+                                            {%endif%}
                                         {%endif%}
                                     {%endif%}
                                 {%else%}
@@ -70,6 +75,9 @@
                                         {%if attribute(object, properties) == 1 %}
                                             {% set attr = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' %}
                                         {%endif%} 
+                                    {%endif%}
+                                    {%if money %}
+                                        {% set attr = 'R$ '~attribute(object, properties)| number_format %}
                                     {%endif%}
                                 {%endif%}
 

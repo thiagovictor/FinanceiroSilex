@@ -23,7 +23,7 @@ class ContaController extends AbstractController {
         ];
         $this->object_key_table = [
             ['descricao'],
-            ['saldo']
+            ['money','saldo']
         ];
         $this->is_owner = true;
     }

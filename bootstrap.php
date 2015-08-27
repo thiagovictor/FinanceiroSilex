@@ -62,6 +62,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
     $twig->addExtension(new Twig_Extension_Escaper(false));
+    $twig->getExtension('core')->setNumberFormat(2, ',', '.');
     return $twig;
 }));
 
