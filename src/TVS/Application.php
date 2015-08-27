@@ -15,6 +15,7 @@ use TVS\Financeiro\Controller\CentrocustoController;
 use TVS\Financeiro\Controller\CategoriaController;
 use TVS\Financeiro\Controller\CartaoController;
 use TVS\Financeiro\Controller\ContaController;
+use TVS\Financeiro\Controller\LancamentoController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,8 +36,9 @@ class Application extends ApplicationSilex {
             ['name' => 'FavorecidoService', 'service' => 'TVS\Financeiro\Service\FavorecidoService', 'entity' => 'TVS\Financeiro\Entity\Favorecido'],
             ['name' => 'CentrocustoService', 'service' => 'TVS\Financeiro\Service\CentrocustoService', 'entity' => 'TVS\Financeiro\Entity\Centrocusto'],
             ['name' => 'CategoriaService', 'service' => 'TVS\Financeiro\Service\CategoriaService', 'entity' => 'TVS\Financeiro\Entity\Categoria'],
-            ['name' => 'CartaoService', 'service' => 'TVS\Financeiro\Service\LoginService', 'entity' => 'TVS\Financeiro\Entity\Cartao'],
+            ['name' => 'CartaoService', 'service' => 'TVS\Financeiro\Service\CartaoService', 'entity' => 'TVS\Financeiro\Entity\Cartao'],
             ['name' => 'ContaService', 'service' => 'TVS\Financeiro\Service\ContaService', 'entity' => 'TVS\Financeiro\Entity\Conta'],
+            ['name' => 'LancamentoService', 'service' => 'TVS\Financeiro\Service\LancamentoService', 'entity' => 'TVS\Financeiro\Entity\Lancamento'],
             ['name' => 'LDAP', 'service' => 'TVS\Base\Lib\ConnectionLDAP'],
         ];
 
@@ -55,6 +57,7 @@ class Application extends ApplicationSilex {
             ['name' => 'CategoriaForm', 'type' => 'TVS\Financeiro\Form\CategoriaType', 'injection' => true],
             ['name' => 'CartaoForm', 'type' => 'TVS\Financeiro\Form\CartaoType'],
             ['name' => 'ContaForm', 'type' => 'TVS\Financeiro\Form\ContaType'],
+            ['name' => 'LancamentoForm', 'type' => 'TVS\Financeiro\Form\LancamentoType', 'injection' => true],
         ];
 
         foreach ($services as $service) {
@@ -110,6 +113,7 @@ class Application extends ApplicationSilex {
         $app->mount("/categoria", new CategoriaController());
         $app->mount("/cartao", new CartaoController());
         $app->mount("/conta", new ContaController());
+        $app->mount("/lancamento", new LancamentoController());
     }
 
     public function registerServices($options) {

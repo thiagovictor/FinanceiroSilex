@@ -41,7 +41,8 @@ class LoginController extends AbstractController {
         $this->controller->post('/autenticar', function (Request $request) use ($app) {
             $user = $app[$this->service]->findByUsernameAndPassword($request->get('user'), $request->get('password'));
             if($user){
-                $app['session']->set('user', $user);
+                $app['session']->set('user',$user);
+                $app['session']->set('baseDate',date("Y-m"));
                 return $app->redirect('/index');
             }
             return $app['twig']->render('login/login.twig', [$this->param_view  => "Usu&aacute;rio e/ou Senha Incorretos", "user"=>$request->get('user')]);

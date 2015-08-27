@@ -25,6 +25,7 @@ class AbstractController implements ControllerProviderInterface {
     protected $fields_table = [];
     protected $object_key_table = [];
     protected $is_owner = false;
+    protected $multiple_forms = [];
 
     protected function connect_extra() {
         
@@ -115,7 +116,6 @@ class AbstractController implements ControllerProviderInterface {
                         'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina, false, false, $this->checkOwner())
             ]);
         })->bind($this->bind . '_listar_pagination');
-
         //####NOVO REGISTRO#######
         $this->controller->match('/new', function () use ($app) {
             $form = $app[$this->form];
@@ -139,6 +139,36 @@ class AbstractController implements ControllerProviderInterface {
                         "route" => $serviceManager->mountArrayRoute()
             ]);
         })->bind($this->bind . '_new');
+        
+        //####NOVO REGISTRO PASSANDO PARAMETROS#######
+        $this->controller->match('/new/{options}', function ($options) use ($app) {
+            if(!isset($this->multiple_forms[$options])){
+                $this->multiple_forms[$options] = $this->form;
+            }
+            if(!isset($app[$this->multiple_forms[$options]])){
+                $this->multiple_forms[$options] = $this->form;
+            }
+            $form = $app[$this->multiple_forms[$options]];
+            $form->handleRequest($app['request']);
+            $serviceManager = $app[$this->service];
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $result = $serviceManager->insert($data);
+                return $app['twig']->render($this->view_new, [
+                            "success" => $result,
+                            "Message" => $serviceManager->getMessage(),
+                            'titulo' => $this->titulo,
+                            "form" => $form->createView(),
+                            "route" => $serviceManager->mountArrayRoute()
+                ]);
+            }
+            return $app['twig']->render($this->view_new, [
+                        "Message" => array(),
+                        "form" => $form->createView(),
+                        'titulo' => $this->titulo,
+                        "route" => $serviceManager->mountArrayRoute()
+            ]);
+        })->bind($this->bind . '_new_options');
 
         //####EDITANDO REGISTRO#######
         $this->controller->match('/edit/{id}', function ($id) use ($app) {
