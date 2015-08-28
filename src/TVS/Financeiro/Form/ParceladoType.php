@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use TVS\Application;
 
-class LancamentoType extends AbstractType {
+class ParceladoType extends AbstractType {
 
     protected $centrocusto;
     protected $favorecido;
@@ -33,19 +33,19 @@ class LancamentoType extends AbstractType {
                     'currency' => 'BRL',
                     'grouping' => '1', //NAO SETAR TRUE CONFORME DOCUMENTAÇÃO SYMFONY
                     'constraints' => array(new NotBlank()),
-                    'label' => 'Valor',
+                    'label' => 'Valor da parcela',
                         )
                 )->add('descricao', "text", array(
                     'constraints' => array(new NotBlank(), new Length(array('max' => 100))),
                     'label' => 'Descri&ccedil;&atilde;o',
                         )
-                )->add('documento', "text", array(
-                    'required' => false,
-                    'label' => 'Documento',
+                )->add('parcelas', "text", array(
+                    'required' => true,
+                    'label' => 'Qtd. de parcelas',
                         )
                 )->add('vencimento', "text", array(
                     'constraints' => array(new NotBlank(), new Length(array('max' => 10))),
-                    'label' => 'Vencimento',
+                    'label' => 'Vencimento da 1&ordf; parcela',
                         )
                 )->add('tipo', 'choice', array(
                     'choices' => array('DESPESA' => 'DESPESA', 'RECEITA' => 'RECEITA'),
@@ -72,44 +72,11 @@ class LancamentoType extends AbstractType {
                     'required' => false,
                     'label' => 'Lan&ccedil;ar no Cart&atilde;o de credito?'
                         )
-                )->add('competencia', "text", array(
-                    'constraints' => array(new NotBlank(), new Length(array('max' => 7))),
-                    'label' => 'M&ecirc;s Compet&ecirc;ncia',
-                        )
-                )->add('status', 'checkbox', array(
-                    'label' => 'Registro pago?',
-                    'required' => false,
-                        )
-        );
+                );
     }
 
     public function getName() {
-        return 'LancamentoForm';
+        return 'ParceladoForm';
     }
 
 }
-
-/*
-            'id' => $this->getId(),
-            'valor'=>$this->getValor(),
-            'vencimento'=>$this->getVencimento(),
-            'arquivoBoleto'=>$this->getArquivoBoleto(),
-            'arquivoComprovante'=>$this->getArquivoComprovante(),
-            'competencia'=>$this->getCompetencia(),
-            'descricao'=>$this->getDescricao(),
-            'documento'=>$this->getDocumento(),
-            'idparcela'=>$this->getIdparcela(),
-            'idrecorrente'=>$this->getIdrecorrente(),
-            'pagamento'=>$this->getPagamento(),
-            'parcelas'=>$this->getParcelas(),
-            'transf'=>$this->getTransf(),
-            'status'=>$this->getStatus(),
-            'conta'=>$this->getConta()->getId(),
-            'periodo'=>$this->getPeriodo()->getId(),
-            'favorecido'=>$this->getFavorecido()->getId(),
-            'cartao'=>$this->getCartao()->getId(),
-            'categoria'=>$this->getCategoria()->getId(),
-            'centrocusto'=>$this->getCentrocusto()->getId(),
-            'tipo'=>$this->getTipo()->getId(),
-            'user'=>$this->getUser()->getId(),
- *  */

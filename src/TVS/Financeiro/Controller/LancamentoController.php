@@ -21,10 +21,8 @@ class LancamentoController extends AbstractController {
             'VENCIMENTO',
             'PAGAMENTO',
             'DESCRI&Ccedil;&Atilde;O',
-            //'DOC',
             'VALOR',
             'C.CUSTO',
-            //'CATEGORIA',
             'CONTA',
             'FAV./PAG.'
             
@@ -33,17 +31,15 @@ class LancamentoController extends AbstractController {
             ['datetime','vencimento'],
             ['datetime','pagamento'],
             ['descricao'],
-            //['documento'],
             ['money','valor'],
             ['centrocusto','descricao'],
-            //['categoria','descricao'],
             ['conta','descricao'],
             ['favorecido','descricao']
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',
             'recorrente' => 'Lancamento_recorrenteForm',
-            'parcelada' => 'Lancamento_parceladoForm',
+            'parcelada' => 'ParceladoForm',
             'transferencia' => 'Lancamento_transferenciaForm',
         ];
         $this->is_owner = true;
