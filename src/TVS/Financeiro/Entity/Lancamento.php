@@ -166,6 +166,8 @@ class Lancamento
      * @ORM\Column(name="competencia", type="date", nullable=true)
      */
     private $competencia;
+    
+    private $tipo;
         
     public function getId() {
         return $this->id;
@@ -254,6 +256,7 @@ class Lancamento
 
     public function setValor($valor) {
         $this->valor = $valor;
+        $this->setTipo($this->getTipo());
         return $this;
     }
 
@@ -317,12 +320,12 @@ class Lancamento
         return $this;
     }
 
-    public function setPeriodo(Periodo $periodo) {
+    public function setPeriodo($periodo) {
         $this->periodo = $periodo;
         return $this;
     }
 
-    public function setCategoria(Categoria $categoria) {
+    public function setCategoria($categoria) {
         $this->categoria = $categoria;
         return $this;
     }
@@ -342,7 +345,7 @@ class Lancamento
         return $this;
     }
 
-    public function setCartao(Cartao $cartao) {
+    public function setCartao($cartao) {
         $this->cartao = $cartao;
         return $this;
     }
@@ -355,30 +358,51 @@ class Lancamento
         $this->competencia = $competencia;
         return $this;
     }
+    public function returnId($object) {
+        if(is_object($object)){
+            return $object->getId();
+        }
+        return null;
+    }
+    
+    public function setTipo($tipo) {
+        $this->tipo = $tipo;
+    }
+    
+    public function getTipo() {
+        $this->setTipo(($this->getValor() <= 0)? 'DESPESA' : "RECEITA");
+        return $this->tipo;
+    }
+    
+    public function concatCentroCustoCategoria() {
+        return ($this->returnId($this->getCategoria()))? $this->returnId($this->getCentrocusto())."_".$this->returnId($this->getCategoria()) : $this->returnId($this->getCentrocusto());
+    }
     
     public function toArray() {
+        
         return [
             'id' => $this->getId(),
-            'valor'=>$this->getValor(),
-            'vencimento'=>$this->getVencimento(),
+            'valor'=> str_replace("-", "", $this->getValor()),
+            'vencimento'=>$this->getVencimento()->format('d/m/Y'),
             'arquivoBoleto'=>$this->getArquivoBoleto(),
             'arquivoComprovante'=>$this->getArquivoComprovante(),
-            'competencia'=>$this->getCompetencia(),
+            'competencia'=>$this->getCompetencia()->format('m/Y'),
             'descricao'=>$this->getDescricao(),
             'documento'=>$this->getDocumento(),
             'idparcela'=>$this->getIdparcela(),
             'idrecorrente'=>$this->getIdrecorrente(),
-            'pagamento'=>$this->getPagamento(),
+            'pagamento'=>$this->getPagamento()->format('d/m/Y'),
             'parcelas'=>$this->getParcelas(),
             'transf'=>$this->getTransf(),
             'status'=>$this->getStatus(),
-            'conta'=>$this->getConta()->getId(),
-            'periodo'=>$this->getPeriodo()->getId(),
-            'favorecido'=>$this->getFavorecido()->getId(),
-            'cartao'=>$this->getCartao()->getId(),
-            'categoria'=>$this->getCategoria()->getId(),
-            'centrocusto'=>$this->getCentrocusto()->getId(),
-            'user'=>$this->getUser()->getId(),
+            'tipo'=>  $this->getTipo(),
+            'conta'=>$this->returnId($this->getConta()),
+            'periodo'=>  $this->returnId($this->getPeriodo()),
+            'favorecido'=>$this->returnId($this->getFavorecido()),
+            'cartao'=>$this->returnId($this->getCartao()),
+            'categoria'=>$this->returnId($this->getCategoria()),
+            'centrocusto'=>$this->concatCentroCustoCategoria(),
+            'user'=>$this->returnId($this->getUser()),
         ];
     }
 

@@ -21,9 +21,10 @@ class LancamentoController extends AbstractController {
             'VENCIMENTO',
             'PAGAMENTO',
             'DESCRI&Ccedil;&Atilde;O',
-            'DOC',
+            //'DOC',
             'VALOR',
-            'C.CUSTO/CATEGORIA',
+            'C.CUSTO',
+            //'CATEGORIA',
             'CONTA',
             'FAV./PAG.'
             
@@ -32,9 +33,10 @@ class LancamentoController extends AbstractController {
             ['datetime','vencimento'],
             ['datetime','pagamento'],
             ['descricao'],
-            ['documento'],
+            //['documento'],
             ['money','valor'],
             ['centrocusto','descricao'],
+            //['categoria','descricao'],
             ['conta','descricao'],
             ['favorecido','descricao']
         ];

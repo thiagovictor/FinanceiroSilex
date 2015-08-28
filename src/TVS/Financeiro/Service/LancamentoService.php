@@ -42,6 +42,7 @@ class LancamentoService extends AbstractService {
         $data['conta'] = $this->em->getReference('TVS\Financeiro\Entity\Conta', $data["conta"]);
         $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);
         $result = explode('_',$data['centrocusto']);
+        $data['categoria'] = null;
         if(isset($result[1])){
             $data['categoria'] = $this->em->getReference('TVS\Financeiro\Entity\Categoria', $result[1]);
         }
@@ -49,11 +50,11 @@ class LancamentoService extends AbstractService {
         
         unset($data['option']);
         unset($data['tipo']);
-        foreach ($data as $key => $value) {
-            if(!$value){
-                unset($data[$key]);
-            }
-        }
+//        foreach ($data as $key => $value) {
+//            if(!$value){
+//                unset($data[$key]);
+//            }
+//        }
         
         
 //        var_dump($data);
