@@ -29,14 +29,14 @@ class LancamentoController extends AbstractController {
             
         ];
         $this->object_key_table = [
-            ['vencimento'],
-            ['pagamento'],
+            ['datetime','vencimento'],
+            ['datetime','pagamento'],
             ['descricao'],
             ['documento'],
             ['money','valor'],
-            ['centrocusto'],
-            ['conta'],
-            ['favorecido']
+            ['centrocusto','descricao'],
+            ['conta','descricao'],
+            ['favorecido','descricao']
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',

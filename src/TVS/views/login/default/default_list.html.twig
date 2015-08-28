@@ -55,6 +55,7 @@
                         {% set attr = '' %}
                         {% set bool = false %}
                         {% set money = false %}
+                        {% set datetime = false %}
                         {% for properties in array %}
                             {% if flag %}
                                 {% set attr = attribute(attr, properties) %}
@@ -66,9 +67,13 @@
                                         {%if properties == 'money'%}
                                             {% set money = true %}
                                         {%else%}
-                                            {% set attr = attribute(object, properties) %}
-                                            {%if attr is not null %}
-                                                {% set flag = true %}
+                                            {%if properties == 'datetime'%}
+                                                {% set datetime = true %}
+                                            {%else%}
+                                                {% set attr = attribute(object, properties) %}
+                                                {%if attr is not null %}
+                                                    {% set flag = true %}
+                                                {%endif%}
                                             {%endif%}
                                         {%endif%}
                                     {%endif%}
@@ -80,6 +85,9 @@
                                     {%endif%}
                                     {%if money %}
                                         {% set attr = 'R$ '~attribute(object, properties)| number_format %}
+                                    {%endif%}
+                                    {%if datetime %}
+                                        {% set attr =  attribute(object, properties)| date("m/d/Y") %}
                                     {%endif%}
                                 {%endif%}
 

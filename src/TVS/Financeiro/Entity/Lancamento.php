@@ -107,14 +107,6 @@ class Lancamento
     private $documento;
 
     /**
-     * @var Tipo
-     *
-     * @ORM\ManyToOne(targetEntity="TVS\Financeiro\Entity\Tipo")
-     * @ORM\JoinColumn(name="tipo_id", referencedColumnName="id")
-     */
-    private $tipo;
-
-    /**
      * @ORM\ManyToOne(targetEntity="TVS\Login\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -132,7 +124,7 @@ class Lancamento
      * @var Categoria
      *
      * @ORM\ManyToOne(targetEntity="TVS\Financeiro\Entity\Categoria")
-     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=true)
      */
     private $categoria;
 
@@ -225,10 +217,6 @@ class Lancamento
 
     public function getDocumento() {
         return $this->documento;
-    }
-
-    public function getTipo() {
-        return $this->tipo;
     }
 
     public function getUser() {
@@ -324,11 +312,6 @@ class Lancamento
         return $this;
     }
 
-    public function setTipo(Tipo $tipo) {
-        $this->tipo = $tipo;
-        return $this;
-    }
-
     public function setUser(User $user) {
         $this->user = $user;
         return $this;
@@ -395,7 +378,6 @@ class Lancamento
             'cartao'=>$this->getCartao()->getId(),
             'categoria'=>$this->getCategoria()->getId(),
             'centrocusto'=>$this->getCentrocusto()->getId(),
-            'tipo'=>$this->getTipo()->getId(),
             'user'=>$this->getUser()->getId(),
         ];
     }

@@ -21,12 +21,15 @@ class LancamentoType extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $this->centrocusto = $this->app['CentrocustoService']->fatchPairs();
+        $this->centrocusto = $this->app['CentrocustoService']->selecao();
         $this->favorecido = $this->app['FavorecidoService']->fatchPairs();
         $this->conta = $this->app['ContaService']->fatchPairs();
         $this->conta = $this->app['CartaoService']->fatchPairs();
 
-        return $builder->add('valor', "money", array(
+        return $builder->add('option', 'hidden', array(
+                    'data' => 'normal',
+                        )
+                )->add('valor', "money", array(
                     'currency' => 'BRL',
                     'grouping' => '1', //NAO SETAR TRUE CONFORME DOCUMENTAÇÃO SYMFONY
                     'constraints' => array(new NotBlank()),
@@ -37,6 +40,7 @@ class LancamentoType extends AbstractType {
                     'label' => 'Descri&ccedil;&atilde;o',
                         )
                 )->add('documento', "text", array(
+                    'required' => false,
                     'label' => 'Documento',
                         )
                 )->add('vencimento', "text", array(
