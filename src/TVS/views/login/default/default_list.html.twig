@@ -87,7 +87,7 @@
                                         {% set attr = 'R$ '~attribute(object, properties)| number_format %}
                                     {%endif%}
                                     {%if datetime %}
-                                        {% set attr =  attribute(object, properties) is empty ? "" : attribute(object, properties) | date("m/d/Y") %}
+                                        {% set attr =  attribute(object, properties) is empty ? "" : attribute(object, properties) | date("d/m/Y") %}
                                     {%endif%}
                                 {%endif%}
 

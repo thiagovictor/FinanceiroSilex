@@ -35,6 +35,20 @@ abstract class AbstractService {
         }
         return $this->object;
     }
+    
+    protected function hidrate($object, array $data = array()) {
+        if(!is_object($object)){
+            return false;
+        }
+        foreach ($data as $metodo => $valor) {
+            $metodo = 'set' . ucfirst($metodo);
+            if (!method_exists($object, $metodo)) {
+                return false;
+            }
+            $object->$metodo($valor);
+        }
+        return $object;
+    }
 
     public function insert(array $data = array()) {
         if ($this->popular($data)) {

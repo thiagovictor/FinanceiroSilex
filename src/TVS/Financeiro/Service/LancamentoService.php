@@ -55,18 +55,36 @@ class LancamentoService extends AbstractService {
         unset($data['option']);
         unset($data['tipo']);
 
-//        var_dump($data);
-//        exit();
-
-        //status competencia pagamento
-//        foreach ($data as $key => $value) {
-//            if(!$value){
-//                unset($data[$key]);
-//            }
-//        }
-
-
+        if(isset($data["parcelas"])){
+            $data["idparcela"] = time();
+            $this->createParcels($data);
+            $data["descricao"] = $data["descricao"]."[1/{$data["parcelas"]}]";
+        }
+       
         return $data;
+    }
+    
+    public function createParcels(array $array) {
+        $parcelas = $array["parcelas"];
+        if($parcelas <= 1){
+            return true;
+        }
+        $descricao = $array["descricao"];
+        for ($i = 2; $i <= $parcelas; $i++ ){
+            $parcelamento = " [{$i}/{$parcelas}]<br>";
+            $array["descricao"] = $descricao."{$parcelamento}";
+            $array["vencimento"] = (new \DateTime($array["vencimento"]->format("Y-m-d")))->add(new \DateInterval("P1M"));
+            $array["competencia"] = (new \DateTime($array["vencimento"]->format("Y-m-d")))->add(new \DateInterval("P1M"));
+            $registro = $this->hidrate(new Lancamento(),$array);
+            if($registro){
+               $this->em->persist($registro); 
+            }else{
+                var_dump($array);
+                exit();
+            }
+        }
+        $this->em->flush();
+        $this->setMessage("Parcelamento gerado para demais meses!");
     }
 
 }
