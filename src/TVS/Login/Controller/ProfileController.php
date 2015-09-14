@@ -6,6 +6,7 @@ use Silex\ControllerProviderInterface;
 use Silex\Application;
 use TVS\Base\Lib\RepositoryFile;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class ProfileController implements ControllerProviderInterface {
 
@@ -21,7 +22,16 @@ class ProfileController implements ControllerProviderInterface {
     protected $controller;
     protected $titulo;
     protected $app;
-
+    protected $is_owner = false;
+    
+    
+    protected function checkOwner() {
+        if ($this->is_owner) {
+            return (new Session())->get('user');
+        }
+        return false;
+    }
+    
     public function __construct() {
         $this->registros_por_pagina = 5;
         $this->service = 'LoginService';
@@ -51,7 +61,7 @@ class ProfileController implements ControllerProviderInterface {
             if ($form->isValid()) {
                 $data = $form->getData();
                 $data["id"] = $app['session']->get('user')->getId();
-                $serviceManager->update($data);
+                $serviceManager->update($data,$this->checkOwner());
                 return $app->redirect($app["url_generator"]->generate('inicio'));
             }
             $result = $serviceManager->find($app['session']->get('user')->getId());

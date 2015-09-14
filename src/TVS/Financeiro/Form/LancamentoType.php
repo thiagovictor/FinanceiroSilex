@@ -76,11 +76,21 @@ class LancamentoType extends AbstractType {
                     'constraints' => array(new NotBlank(), new Length(array('max' => 7))),
                     'label' => 'M&ecirc;s Compet&ecirc;ncia',
                         )
+                )->add('arquivoBoleto', 'file', [
+                    'label' => 'Boleto',
+                    'required' => false,
+                    //'constraints' => [new Image(['mimeTypes' => ['image/jpeg', 'image/jpg']])],
+                        ]
+                )->add('arquivoComprovante', 'file', [
+                    'label' => 'Comprovante',
+                    'required' => false,
+                    //'constraints' => [new Image(['mimeTypes' => ['image/jpeg', 'image/jpg']])],
+                        ]
                 )->add('status', 'checkbox', array(
                     'label' => 'Registro pago?',
                     'required' => false,
                         )
-        );
+                );
     }
 
     public function getName() {

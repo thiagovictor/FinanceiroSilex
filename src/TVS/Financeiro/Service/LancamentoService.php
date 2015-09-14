@@ -23,10 +23,10 @@ class LancamentoService extends AbstractService {
         return $s[1] . "-" . $s[0] . "-01";
     }
 
-    public function ajustarDate($date,$remove = false) {
+    public function ajustarDate($date, $remove = false) {
         $s = explode('/', $date);
-        if($remove){
-           return $s[2] . "-" . $s[1] . "-01"; 
+        if ($remove) {
+            return $s[2] . "-" . $s[1] . "-01";
         }
         return $s[2] . "-" . $s[1] . "-" . $s[0];
     }
@@ -36,9 +36,9 @@ class LancamentoService extends AbstractService {
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
         $data['status'] = (isset($data['status'])) ? $data['status'] : false;
         if ($data['status']) {
-                $data['pagamento'] = new \DateTime("now");
+            $data['pagamento'] = new \DateTime("now");
         }
-        $data["competencia"] = (isset($data['competencia'])) ? new \DateTime($this->ajustarMes($data["competencia"])): new \DateTime($this->ajustarDate($data["vencimento"],true));
+        $data["competencia"] = (isset($data['competencia'])) ? new \DateTime($this->ajustarMes($data["competencia"])) : new \DateTime($this->ajustarDate($data["vencimento"], true));
         $data["vencimento"] = new \DateTime($this->ajustarDate($data["vencimento"]));
         if ("DESPESA" == $data["tipo"]) {
             $data["valor"] = "-" . $data["valor"];
@@ -55,33 +55,81 @@ class LancamentoService extends AbstractService {
         unset($data['option']);
         unset($data['tipo']);
 
-        if(isset($data["parcelas"])){
+        if (isset($data["parcelas"])) {
             $data["idparcela"] = time();
             $this->createParcels($data);
-            $data["descricao"] = $data["descricao"]."[1/{$data["parcelas"]}]";
+            $data["descricao"] = $data["descricao"] . "[1/{$data["parcelas"]}]";
         }
-       
+        unset($data['arquivoComprovante']);
+        unset($data['arquivoBoleto']);
         return $data;
     }
-    
+
     public function createParcels(array $array) {
         $parcelas = $array["parcelas"];
-        if($parcelas <= 1){
+        if ($parcelas <= 1) {
             return true;
         }
         $descricao = $array["descricao"];
-        for ($i = 2; $i <= $parcelas; $i++ ){
+        for ($i = 2; $i <= $parcelas; $i++) {
             $parcelamento = " [{$i}/{$parcelas}]";
-            $array["descricao"] = $descricao."{$parcelamento}";
+            $array["descricao"] = $descricao . "{$parcelamento}";
             $array["vencimento"] = (new \DateTime($array["vencimento"]->format("Y-m-d")))->add(new \DateInterval("P1M"));
             $array["competencia"] = (new \DateTime($array["vencimento"]->format("Y-m-d")))->add(new \DateInterval("P1M"));
-            $registro = $this->hidrate(new Lancamento(),$array);
-            if($registro){
-               $this->em->persist($registro); 
+            $registro = $this->hidrate(new Lancamento(), $array);
+            if ($registro) {
+                $this->em->persist($registro);
             }
         }
         $this->em->flush();
         $this->setMessage("Parcelamento gerado para demais meses!");
+    }
+
+    public static function checkDir($username) {
+        $completePath = __DIR__ . "/../../../../data";
+
+        if (!is_dir("{$completePath}/profile")) {
+            mkdir("{$completePath}/profile");
+        }
+
+        if (!is_dir("{$completePath}/profile/{$username}")) {
+            mkdir("{$completePath}/profile/{$username}");
+        }
+
+        if (!is_dir("{$completePath}/profile/{$username}/docs")) {
+            mkdir("{$completePath}/profile/{$username}/docs");
+        }
+        return $completePath;
+    }
+
+    public static function uploadDocs($username, array $files = array()) {
+        $completePath = LancamentoService::checkDir($username);
+        if ('' != $files['tmp_name']['arquivoBoleto']) {
+            $boletoPath = "/profile/{$username}/docs/boleto_" . time() . "." . substr($files['name']['arquivoBoleto'], -3);
+            if (move_uploaded_file($files["tmp_name"]["arquivoBoleto"], $completePath . $boletoPath)) {
+                $data["boleto"] = $boletoPath;
+            }
+        }
+        if ('' != $files['tmp_name']['arquivoComprovante']) {
+            $comprovantePath = "/profile/{$username}/docs/comprovante" . time() . "." . substr($files['name']['arquivoComprovante'], -3);
+            if (move_uploaded_file($files["tmp_name"]["arquivoComprovante"], $completePath . $comprovantePath)) {
+                $data["comprovante"] = $comprovantePath;
+            }
+        }
+        
+        if(isset($data)){
+            return $data;
+        }
+        
+        return false;
+    }
+
+    publiC static function removeDocs($path) {
+        $completePath = __DIR__ . "/../../../../data";
+        if (unlink($completePath . $path)) {
+            return true;
+        }
+        return false;
     }
 
 }

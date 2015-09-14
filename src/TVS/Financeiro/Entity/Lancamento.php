@@ -4,12 +4,13 @@ namespace TVS\Financeiro\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use TVS\Login\Entity\User;
+use TVS\Financeiro\Service\LancamentoService;
 
 /**
  * Lancamento
- *
- * @ORM\Table(name="lancamento")
  * @ORM\Entity(repositoryClass="TVS\Financeiro\Entity\LancamentoRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="lancamento")
  */
 class Lancamento {
 
@@ -383,6 +384,52 @@ class Lancamento {
 
     public function concatCentroCustoCategoria() {
         return ($this->returnId($this->getCategoria())) ? $this->returnId($this->getCentrocusto()) . "_" . $this->returnId($this->getCategoria()) : $this->returnId($this->getCentrocusto());
+    }
+    
+    /**
+     * @ORM\PrePersist
+     * @ORM\preUpdate
+     */
+    public function uploadDocs() {
+//        $completePath = LancamentoService::checkDir($this->user->getUsername());
+//        $this->arquivoBoleto->move($completePath."/profile/{$this->user->getUsername()}/docs/", "boleto_" . time() . "." . $this->arquivoBoleto->getClientOriginalExtension());
+//        $this->arquivoComprovante->move($completePath."/profile/{$this->user->getUsername()}/docs/", "comprovante" . time() . "." . $this->arquivoComprovante->getClientOriginalExtension());
+//       var_dump($this->arquivoBoleto);
+////        var_dump($comprov_temp);
+//        exit();
+            
+        $boleto_temp = $this->arquivoBoleto;
+        $comprov_temp = $this->arquivoComprovante;   
+        $forms = ["LancamentoForm"];
+        $file = null;
+        foreach ($forms as $value) {
+            if (!isset($_FILES[$value])) {
+                continue;
+            }
+            $file = $_FILES[$value];
+        }
+        
+        if(!$file){
+            return false;
+        }
+        $result = LancamentoService::uploadDocs($this->user->getUsername(),$file);
+
+        if ($result) {
+            if(isset($result["boleto"])){
+                $this->arquivoBoleto = $result["boleto"];
+            }
+            if(isset($result["comprovante"])){
+                $this->arquivoComprovante = $result["comprovante"];
+            }
+            
+            
+            if (!empty($boleto_temp)) {
+                LancamentoService::removeDocs($boleto_temp);
+            }
+            if (!empty($comprov_temp)) {
+                LancamentoService::removeDocs($comprov_temp);
+            }
+        }
     }
 
     public function toArray() {
