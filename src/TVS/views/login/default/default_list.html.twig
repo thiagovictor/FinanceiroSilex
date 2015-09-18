@@ -96,7 +96,15 @@
                         {% endfor %}
                         <td>{{ attr }}</td> 
                     {% endfor %}
-                    <td>
+                    <td align='right'>
+                        {% block button_arquivos %}
+                           
+                        {% endblock %}
+                        {% for key, class in path_table_aditional %}
+                            <a href="{{path(key,{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
+                                <span class="{{ class }}" aria-hidden="true"></span>
+                            </a>
+                        {% endfor %}
                         {% if isAllowed.edit %}
                             <a href="{{path( bind_path~'_edit',{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
                                 <span class="{{class_btn_edit}}" aria-hidden="true"></span>
@@ -107,11 +115,8 @@
                                 <span class="{{class_btn_delete}}" aria-hidden="true"></span>
                             </a>
                         {% endif %}
-                        {% for key, class in path_table_aditional %}
-                            <a href="{{path(key,{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
-                                <span class="{{ class }}" aria-hidden="true"></span>
-                            </a>
-                        {% endfor %}
+                        
+                        
 
                     </td>
                 </tr>   

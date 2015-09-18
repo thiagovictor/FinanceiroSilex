@@ -3,6 +3,8 @@
 namespace TVS\Financeiro\Controller;
 
 use TVS\Base\Controller\AbstractController;
+use TVS\Base\Lib\RepositoryFile;
+use Symfony\Component\HttpFoundation\Response;
 
 class LancamentoController extends AbstractController {
 
@@ -34,7 +36,10 @@ class LancamentoController extends AbstractController {
             ['money','valor'],
             ['centrocusto','descricao'],
             ['conta','descricao'],
-            ['favorecido','descricao']
+            ['favorecido','descricao'],
+            //['arquivo','arquivoComprovante'],
+            //['arquivo','arquivoBoleto'],
+            
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',
@@ -46,7 +51,34 @@ class LancamentoController extends AbstractController {
     }
 
     public function connect_extra() {
+        $app = $this->app;
+        $this->controller->get('/display/getBoleto/{id}', function ($id) use ($app) {
+            $lancamento = $app['LancamentoService']->find($id);
+            $boleto  = $lancamento->getArquivoBoleto();
+            if(!$boleto){
+                return false;
+            }
+            return new Response(
+                    (new RepositoryFile("../data".$boleto))->getArquivo(), 200, array(
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'filename="boleto.pdf"'
+                    )
+            );   
+        })->bind('getBoleto');
         
+        $this->controller->get('/display/getComprovante/{id}', function ($id) use ($app) {
+            $lancamento = $app['LancamentoService']->find($id);
+            $comprovante  = $lancamento->getArquivoComprovante();
+            if(!$comprovante){
+                return false;
+            }
+            return new Response(
+                    (new RepositoryFile("../data".$comprovante))->getArquivo(), 200, array(
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'filename="comprovante.pdf"'
+                    )
+            );   
+        })->bind('getComprovante');
     }
 
 }
