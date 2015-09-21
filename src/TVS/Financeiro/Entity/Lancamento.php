@@ -385,7 +385,7 @@ class Lancamento {
     public function concatCentroCustoCategoria() {
         return ($this->returnId($this->getCategoria())) ? $this->returnId($this->getCentrocusto()) . "_" . $this->returnId($this->getCategoria()) : $this->returnId($this->getCentrocusto());
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\preUpdate
@@ -397,9 +397,9 @@ class Lancamento {
 //       var_dump($this->arquivoBoleto);
 ////        var_dump($comprov_temp);
 //        exit();
-            
+
         $boleto_temp = $this->arquivoBoleto;
-        $comprov_temp = $this->arquivoComprovante;   
+        $comprov_temp = $this->arquivoComprovante;
         $forms = ["LancamentoForm"];
         $file = null;
         foreach ($forms as $value) {
@@ -408,21 +408,21 @@ class Lancamento {
             }
             $file = $_FILES[$value];
         }
-        
-        if(!$file){
+
+        if (!$file) {
             return false;
         }
-        $result = LancamentoService::uploadDocs($this->user->getUsername(),$file);
+        $result = LancamentoService::uploadDocs($this->user->getUsername(), $file);
 
         if ($result) {
-            if(isset($result["boleto"])){
+            if (isset($result["boleto"])) {
                 $this->arquivoBoleto = $result["boleto"];
             }
-            if(isset($result["comprovante"])){
+            if (isset($result["comprovante"])) {
                 $this->arquivoComprovante = $result["comprovante"];
             }
-            
-            
+
+
             if (!empty($boleto_temp)) {
                 LancamentoService::removeDocs($boleto_temp);
             }
@@ -432,14 +432,26 @@ class Lancamento {
         }
     }
 
+    /**
+     * @ORM\PreRemove
+     */
+    public function removeArquivos() {
+        if (!empty($this->arquivoBoleto)) {
+            LancamentoService::removeDocs($this->arquivoBoleto);
+        }
+        if (!empty($this->arquivoComprovante)) {
+            LancamentoService::removeDocs($this->arquivoComprovante);
+        }
+    }
+
     public function toArray() {
 
         return [
             'id' => $this->getId(),
             'valor' => str_replace("-", "", $this->getValor()),
             'vencimento' => $this->getVencimento()->format('d/m/Y'),
-            'arquivoBoleto' => $this->getArquivoBoleto(),
-            'arquivoComprovante' => $this->getArquivoComprovante(),
+            //'arquivoBoleto' => new \Symfony\Component\HttpFoundation\File\File("../data".$this->getArquivoBoleto()),
+            //'arquivoComprovante' => new \Symfony\Component\HttpFoundation\File\File("../data".$this->getArquivoComprovante()),
             'competencia' => $this->getCompetencia()->format('m/Y'),
             'descricao' => $this->getDescricao(),
             'documento' => $this->getDocumento(),
