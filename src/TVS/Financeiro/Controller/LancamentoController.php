@@ -53,7 +53,11 @@ class LancamentoController extends AbstractController {
     public function connect_extra() {
         $app = $this->app;
         $this->controller->get('/display/getBoleto/{id}', function ($id) use ($app) {
-            $lancamento = $app['LancamentoService']->find($id);
+            $user = $app['session']->get('user');
+            $lancamento = $app['LancamentoService']->find($id, $user);
+            if(!$lancamento){
+                return false;
+            }
             $boleto  = $lancamento->getArquivoBoleto();
             if(!$boleto){
                 return false;
@@ -67,7 +71,11 @@ class LancamentoController extends AbstractController {
         })->bind('getBoleto');
         
         $this->controller->get('/display/getComprovante/{id}', function ($id) use ($app) {
-            $lancamento = $app['LancamentoService']->find($id);
+            $user = $app['session']->get('user');
+            $lancamento = $app['LancamentoService']->find($id, $user);
+            if(!$lancamento){
+                return false;
+            }
             $comprovante  = $lancamento->getArquivoComprovante();
             if(!$comprovante){
                 return false;
