@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use TVS\Base\Validator\Constraint\InvalidDate;
+use TVS\Base\Validator\Constraint\InvalidCompetencia;
 use TVS\Application;
 
 class LancamentoType extends AbstractType {
@@ -44,7 +46,7 @@ class LancamentoType extends AbstractType {
                     'label' => 'Documento',
                         )
                 )->add('vencimento', "text", array(
-                    'constraints' => array(new NotBlank(), new Length(array('max' => 10))),
+                    'constraints' => array(new InvalidDate()),
                     'label' => 'Vencimento',
                         )
                 )->add('tipo', 'choice', array(
@@ -73,7 +75,7 @@ class LancamentoType extends AbstractType {
                     'label' => 'Lan&ccedil;ar no Cart&atilde;o de credito?'
                         )
                 )->add('competencia', "text", array(
-                    'constraints' => array(new NotBlank(), new Length(array('max' => 7))),
+                    'constraints' => array(new InvalidCompetencia()),
                     'label' => 'M&ecirc;s Compet&ecirc;ncia',
                         )
                 )->add('arquivoBoleto', 'file', [
