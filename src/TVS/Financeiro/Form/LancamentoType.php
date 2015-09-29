@@ -46,7 +46,7 @@ class LancamentoType extends AbstractType {
                     'label' => 'Documento',
                         )
                 )->add('vencimento', "text", array(
-                    'constraints' => array(new InvalidDate()),
+                    'constraints' => array(new NotBlank(),new InvalidDate()),
                     'label' => 'Vencimento',
                         )
                 )->add('tipo', 'choice', array(

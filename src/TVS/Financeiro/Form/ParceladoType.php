@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use TVS\Base\Validator\Constraint\InvalidDate;
 use TVS\Application;
 
 class ParceladoType extends AbstractType {
@@ -44,7 +45,7 @@ class ParceladoType extends AbstractType {
                     'label' => 'Qtd. de parcelas',
                         )
                 )->add('vencimento', "text", array(
-                    'constraints' => array(new NotBlank(), new Length(array('max' => 10))),
+                    'constraints' => array(new NotBlank(),new InvalidDate()),
                     'label' => 'Vencimento da 1&ordf; parcela',
                         )
                 )->add('tipo', 'choice', array(
