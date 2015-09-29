@@ -35,8 +35,13 @@ class LancamentoService extends AbstractService {
         $user = $this->app['session']->get('user');
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
         $data['status'] = (isset($data['status'])) ? $data['status'] : false;
+        if(isset($data["pagamento"])){
+            $data["pagamento"] = new \DateTime($this->ajustarDate($data["pagamento"]));
+        }
         if ($data['status']) {
             $data['pagamento'] = new \DateTime("now");
+        }else{
+            $data['pagamento'] = null;
         }
         $data["competencia"] = (isset($data['competencia'])) ? new \DateTime($this->ajustarMes($data["competencia"])) : new \DateTime($this->ajustarDate($data["vencimento"], true));
         $data["vencimento"] = new \DateTime($this->ajustarDate($data["vencimento"]));

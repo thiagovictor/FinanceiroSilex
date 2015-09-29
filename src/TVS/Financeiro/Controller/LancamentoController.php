@@ -87,6 +87,19 @@ class LancamentoController extends AbstractController {
                     )
             );   
         })->bind('getComprovante');
+        
+        $this->controller->get('/edit/status/{id}', function ($id) use ($app) {
+            $user = $app['session']->get('user');
+            $serviceManager = $app['LancamentoService'];
+            $lancamento = $serviceManager->find($id, $user);
+            if(!$lancamento){
+                return false;
+            }
+            $lancamento->setPagamento(new \DateTime("now"));
+            $lancamento->setStatus(1);
+            $serviceManager->update($lancamento->toArray(), $this->checkOwner());
+            return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
+        })->bind('editStatus');
     }
 
 }

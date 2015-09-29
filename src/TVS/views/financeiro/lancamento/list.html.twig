@@ -14,16 +14,26 @@
 {% endblock %}
 
 {% block button_arquivos %}
+
     {%if attribute(object, 'arquivoBoleto') is not empty %}
-          <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" class="{{class_btn}}" aria-label="Left Align">
+        <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" title="Visualizar Boleto" class="{{class_btn}}" aria-label="Left Align">
             <span class="{{class_boleto}}" aria-hidden="true"></span>
         </a>                               
     {%endif%}
     {%if attribute(object, 'arquivoComprovante') is not empty %}
-          <a href="{{path("getComprovante",{"id":object.id})}}" target="_blank" class="{{class_btn}}" aria-label="Left Align">
+        <a href="{{path("getComprovante",{"id":object.id})}}" target="_blank" title="Visualizar Comprovante"class="{{class_btn}}" aria-label="Left Align">
             <span class="{{class_comprovante}}" aria-hidden="true"></span>
         </a>                               
-    {%endif%}                   
+    {%endif%} 
+    {%if not attribute(object, 'status')%}
+        {% set title = 'Pagar Agora' %}
+        {%if attribute(object, 'valor') > 0 %}
+            {% set title = 'Receber Agora' %}               
+        {%endif%} 
+        <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
+            <img src="/img/glyphicons-money.png" width="20" height="14" >
+        </a>                               
+    {%endif%}   
 {% endblock %}
 
 
