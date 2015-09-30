@@ -56,12 +56,14 @@ class LancamentoType extends AbstractType {
                         )
                 )->add('centrocusto', 'choice', array(
                     'choices' => $this->centrocusto,
-                    'required' => true,
+                    'required' => false,
+                    //'placeholder' => 'Choose an option',
                     'label' => 'C.custo'
                         )
                 )->add('favorecido', 'choice', array(
                     'choices' => $this->favorecido,
-                    'required' => true,
+                    //'placeholder' => 'Choose an option',
+                    'required' => false,
                     'label' => 'Favorecido/Pagador'
                         )
                 )->add('conta', 'choice', array(

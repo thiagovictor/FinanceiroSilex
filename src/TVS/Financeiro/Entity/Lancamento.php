@@ -335,12 +335,12 @@ class Lancamento {
         return $this;
     }
 
-    public function setFavorecido(Favorecido $favorecido) {
+    public function setFavorecido($favorecido) {
         $this->favorecido = $favorecido;
         return $this;
     }
 
-    public function setCentrocusto(Centrocusto $centrocusto) {
+    public function setCentrocusto($centrocusto) {
         $this->centrocusto = $centrocusto;
         return $this;
     }

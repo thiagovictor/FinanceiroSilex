@@ -35,30 +35,45 @@ class LancamentoService extends AbstractService {
         $user = $this->app['session']->get('user');
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
         $data['status'] = (isset($data['status'])) ? $data['status'] : false;
-        if(isset($data["pagamento"])){
+        if ($data["option"] == 'transferencia') {
+            $data["status"] = true;
+            $data["transf"] = time();
+        }
+        if (isset($data["pagamento"])) {
             $data["pagamento"] = new \DateTime($this->ajustarDate($data["pagamento"]));
         }
         if ($data['status']) {
             $data['pagamento'] = new \DateTime("now");
-        }else{
+        } else {
             $data['pagamento'] = null;
         }
         $data["competencia"] = (isset($data['competencia'])) ? new \DateTime($this->ajustarMes($data["competencia"])) : new \DateTime($this->ajustarDate($data["vencimento"], true));
         $data["vencimento"] = new \DateTime($this->ajustarDate($data["vencimento"]));
-        if ("DESPESA" == $data["tipo"]) {
-            $data["valor"] = "-" . $data["valor"];
+
+        if (isset($data["tipo"])) {
+            if ("DESPESA" == $data["tipo"]) {
+                $data["valor"] = "-" . $data["valor"];
+            }
         }
         $data['conta'] = $this->em->getReference('TVS\Financeiro\Entity\Conta', $data["conta"]);
-        $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);
-        $result = explode('_', $data['centrocusto']);
-        $data['categoria'] = null;
-        if (isset($result[1])) {
-            $data['categoria'] = $this->em->getReference('TVS\Financeiro\Entity\Categoria', $result[1]);
+        if (isset($data["conta2"])) {
+            $data['conta2'] = $this->em->getReference('TVS\Financeiro\Entity\Conta', $data["conta2"]);
         }
-        $data['centrocusto'] = $this->em->getReference('TVS\Financeiro\Entity\Centrocusto', $result[0]);
 
+        if (isset($data['favorecido'])) {
+            $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);
+        }
+        if (isset($data["centrocusto"])) {
+            $result = explode('_', $data['centrocusto']);
+            $data['categoria'] = null;
+            if (isset($result[1])) {
+                $data['categoria'] = $this->em->getReference('TVS\Financeiro\Entity\Categoria', $result[1]);
+            }
+            $data['centrocusto'] = $this->em->getReference('TVS\Financeiro\Entity\Centrocusto', $result[0]);
+        }
         unset($data['option']);
         unset($data['tipo']);
+
 
         if (isset($data["parcelas"])) {
             $data["idparcela"] = time();
@@ -67,7 +82,26 @@ class LancamentoService extends AbstractService {
         }
         unset($data['arquivoComprovante']);
         unset($data['arquivoBoleto']);
+        
+        if (isset($data["conta2"])) {
+            $data2 = $data;
+            $data2["conta"] = $data2["conta2"];
+            $data2["valor"] = "-" . $data2["valor"];
+            unset($data2['conta2']);
+            unset($data['conta2']);
+            $this->createTransf($data2);
+        }
+
         return $data;
+    }
+
+    public function createTransf(array $array) {
+        $registro = $this->hidrate(new Lancamento(), $array);
+        if ($registro) {
+            $this->em->persist($registro);
+        }
+        $this->em->flush();
+        $this->setMessage("Transfer&ecirc;ncia realizada!");
     }
 
     public function createParcels(array $array) {
@@ -121,11 +155,11 @@ class LancamentoService extends AbstractService {
                 $data["comprovante"] = $comprovantePath;
             }
         }
-        
-        if(isset($data)){
+
+        if (isset($data)) {
             return $data;
         }
-        
+
         return false;
     }
 

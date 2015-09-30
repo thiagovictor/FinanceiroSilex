@@ -45,7 +45,7 @@ class LancamentoController extends AbstractController {
             'normal' => 'LancamentoForm',
             'recorrente' => 'Lancamento_recorrenteForm',
             'parcelada' => 'ParceladoForm',
-            'transferencia' => 'Lancamento_transferenciaForm',
+            'transferencia' => 'TransferenciaForm',
         ];
         $this->is_owner = true;
     }
