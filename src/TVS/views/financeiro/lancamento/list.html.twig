@@ -38,7 +38,8 @@
             {% set title = 'Receber Agora' %}               
         {%endif%} 
         <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
-            <img src="/img/glyphicons-money.png" width="13" height="9" >
+            <!-- <img src="/img/glyphicons-money.png" width="13" height="9" > !-->
+            <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
         </a>                               
     {%endif%}   
 {% endblock %}
