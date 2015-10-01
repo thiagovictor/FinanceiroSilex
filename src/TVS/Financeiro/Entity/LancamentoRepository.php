@@ -65,6 +65,7 @@ class LancamentoRepository extends EntityRepository{
        
         return $query->setFirstResult($firstResult)
                         ->setMaxResults($maxResults)
+                        ->orderBy('c.pagamento,c.vencimento', 'ASC')
                         ->getQuery()
                         ->getResult();
     }
