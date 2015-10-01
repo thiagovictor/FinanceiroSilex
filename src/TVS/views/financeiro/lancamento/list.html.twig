@@ -16,7 +16,12 @@
 {% endblock %}
 
 {% block button_arquivos %}
-
+    {%if attribute(object, 'transf') is not empty %}
+        <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
+            <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+        </a> 
+                                          
+    {%endif%}
     {%if attribute(object, 'arquivoBoleto') is not empty %}
         <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" title="Visualizar Boleto" class="{{class_btn}}" aria-label="Left Align">
             <span class="{{class_boleto}}" aria-hidden="true"></span>
@@ -33,7 +38,7 @@
             {% set title = 'Receber Agora' %}               
         {%endif%} 
         <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
-            <img src="/img/glyphicons-money.png" width="20" height="14" >
+            <img src="/img/glyphicons-money.png" width="13" height="9" >
         </a>                               
     {%endif%}   
 {% endblock %}
