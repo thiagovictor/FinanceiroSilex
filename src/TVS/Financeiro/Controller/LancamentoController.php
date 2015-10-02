@@ -37,13 +37,10 @@ class LancamentoController extends AbstractController {
             ['centrocusto','descricao'],
             ['conta','descricao'],
             ['favorecido','descricao'],
-            //['arquivo','arquivoComprovante'],
-            //['arquivo','arquivoBoleto'],
             
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',
-            'recorrente' => 'Lancamento_recorrenteForm',
             'parcelada' => 'ParceladoForm',
             'transferencia' => 'TransferenciaForm',
         ];

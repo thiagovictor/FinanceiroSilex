@@ -16,6 +16,7 @@ use TVS\Financeiro\Controller\CategoriaController;
 use TVS\Financeiro\Controller\CartaoController;
 use TVS\Financeiro\Controller\ContaController;
 use TVS\Financeiro\Controller\LancamentoController;
+use TVS\Financeiro\Controller\RecorrenteController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -39,6 +40,7 @@ class Application extends ApplicationSilex {
             ['name' => 'CartaoService', 'service' => 'TVS\Financeiro\Service\CartaoService', 'entity' => 'TVS\Financeiro\Entity\Cartao'],
             ['name' => 'ContaService', 'service' => 'TVS\Financeiro\Service\ContaService', 'entity' => 'TVS\Financeiro\Entity\Conta'],
             ['name' => 'LancamentoService', 'service' => 'TVS\Financeiro\Service\LancamentoService', 'entity' => 'TVS\Financeiro\Entity\Lancamento'],
+            ['name' => 'RecorrenteService', 'service' => 'TVS\Financeiro\Service\RecorrenteService', 'entity' => 'TVS\Financeiro\Entity\Recorrente'],
             ['name' => 'LDAP', 'service' => 'TVS\Base\Lib\ConnectionLDAP'],
         ];
 
@@ -117,6 +119,7 @@ class Application extends ApplicationSilex {
         $app->mount("/cartao", new CartaoController());
         $app->mount("/conta", new ContaController());
         $app->mount("/lancamento", new LancamentoController());
+        $app->mount("/recorrente", new RecorrenteController());
     }
 
     public function registerServices($options) {
