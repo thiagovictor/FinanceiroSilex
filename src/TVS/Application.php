@@ -60,6 +60,7 @@ class Application extends ApplicationSilex {
             ['name' => 'LancamentoForm', 'type' => 'TVS\Financeiro\Form\LancamentoType', 'injection' => true],
             ['name' => 'ParceladoForm', 'type' => 'TVS\Financeiro\Form\ParceladoType', 'injection' => true],
             ['name' => 'TransferenciaForm', 'type' => 'TVS\Financeiro\Form\TransferenciaType', 'injection' => true],
+            ['name' => 'RecorrenteForm', 'type' => 'TVS\Financeiro\Form\RecorrenteType', 'injection' => true],
         ];
 
         foreach ($services as $service) {
