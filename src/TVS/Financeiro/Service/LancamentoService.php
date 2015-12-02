@@ -170,5 +170,10 @@ class LancamentoService extends AbstractService {
         }
         return false;
     }
+    
+    public function infoAdditional($user) {
+        $repo = $this->em->getRepository($this->entity);
+        return $repo->infoAdditional($user);
+    }
 
 }

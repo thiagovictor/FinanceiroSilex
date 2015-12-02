@@ -352,5 +352,8 @@ abstract class AbstractService {
 
         return $return;
     }
-
+    
+    public function infoAdditional($user) {
+        return [];
+    }
 }

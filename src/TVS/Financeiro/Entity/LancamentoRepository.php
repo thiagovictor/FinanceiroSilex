@@ -86,8 +86,46 @@ class LancamentoRepository extends EntityRepository{
         return $query->getQuery()
                      ->getSingleScalarResult();
     }
-
-    
+    public function receitas($user) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor)');
+        if ($user) {
+            $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor > 0 and c.transf is null")
+                    ->setParameters(array(
+                    'date_start'=>$base_date."-01",
+                    'date_end'=>$base_date."-31",
+                    'user' => $user
+                ));
+        }
+        $valor = $query->getQuery()
+                     ->getSingleScalarResult();
+        return ($valor)? $valor : '0';
+    }
+    public function despesas($user) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor)');
+        if ($user) {
+            $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null")
+                    ->setParameters(array(
+                    'date_start'=>$base_date."-01",
+                    'date_end'=>$base_date."-31",
+                    'user' => $user
+                ));
+        }
+        $valor = $query->getQuery()
+                     ->getSingleScalarResult();
+        return ($valor)? $valor : '0';
+    }
+    public function infoAdditional($user = false) {
+        return [
+                    'despesa' => $this->despesas($user),
+                    'receita' => $this->receitas($user)
+                ];
+    }
 //    public function lancamentosGeralMes() {
 //        $session = new Session();
 //        $user = $session->get('user');

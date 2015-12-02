@@ -55,6 +55,7 @@ class AbstractController implements ControllerProviderInterface {
                         'fields_table' => $this->fields_table,
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => 1,
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
                         'titulo' => $this->titulo,
                         'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
             ]);
@@ -71,6 +72,7 @@ class AbstractController implements ControllerProviderInterface {
                         'fields_table' => $this->fields_table,
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => 1,
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
                         'titulo' => $this->titulo,
                         'search' => $app['request']->get('search'),
                         'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, $app['request']->get('search'), $this->field_search, $this->checkOwner())
@@ -91,6 +93,7 @@ class AbstractController implements ControllerProviderInterface {
                         'fields_table' => $this->fields_table,
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => 1,
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
                         'titulo' => $this->titulo,
                         'search' => $search,
                         'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina, $search, $this->field_search, $this->checkOwner())
@@ -112,6 +115,7 @@ class AbstractController implements ControllerProviderInterface {
                         'fields_table' => $this->fields_table,
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => $page,
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
                         'titulo' => $this->titulo,
                         'pagination' => $app[$this->service]->pagination($page, $this->registros_por_pagina, false, false, $this->checkOwner())
             ]);
@@ -194,6 +198,7 @@ class AbstractController implements ControllerProviderInterface {
                             'fields_table' => $this->fields_table,
                             'object_key_table' => $this->object_key_table,
                             'page_atual' => 1,
+                            'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
                             'Message' => $serviceManager->getMessage(),
                             'titulo' => $this->titulo,
                             'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
@@ -236,6 +241,7 @@ class AbstractController implements ControllerProviderInterface {
                         'fields_table' => $this->fields_table,
                         'object_key_table' => $this->object_key_table,
                         'page_atual' => 1,
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
                         'Message' => $serviceManager->getMessage(),
                         'titulo' => $this->titulo,
                         'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
