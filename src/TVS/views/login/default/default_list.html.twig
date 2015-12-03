@@ -100,21 +100,23 @@
                         {% block button_arquivos %}
                            
                         {% endblock %}
-                        {% for key, class in path_table_aditional %}
-                            <a href="{{path(key,{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
-                                <span class="{{ class }}" aria-hidden="true"></span>
-                            </a>
-                        {% endfor %}
-                        {% if isAllowed.edit %}
-                            <a href="{{path( bind_path~'_edit',{'id':object.id})}}" class="{{class_btn}}" title="Editar Lan&ccedil;amento" aria-label="Left Align">
-                                <span class="{{class_btn_edit}}" aria-hidden="true"></span>
-                            </a>
-                        {% endif %}
-                        {% if isAllowed.delete %}
-                            <a href="{{path( bind_path~'_delete',{'id':object.id})}}" class="{{class_btn}}" title="Remover Lan&ccedil;amento"aria-label="Left Align">
-                                <span class="{{class_btn_delete}}" aria-hidden="true"></span>
-                            </a>
-                        {% endif %}
+                        {% block button_default %}
+                            {% for key, class in path_table_aditional %}
+                                <a href="{{path(key,{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
+                                    <span class="{{ class }}" aria-hidden="true"></span>
+                                </a>
+                            {% endfor %}
+                            {% if isAllowed.edit %}
+                                <a href="{{path( bind_path~'_edit',{'id':object.id})}}" class="{{class_btn}}" title="Editar Lan&ccedil;amento" aria-label="Left Align">
+                                    <span class="{{class_btn_edit}}" aria-hidden="true"></span>
+                                </a>
+                            {% endif %}
+                            {% if isAllowed.delete %}
+                                <a href="{{path( bind_path~'_delete',{'id':object.id})}}" class="{{class_btn}}" title="Remover Lan&ccedil;amento"aria-label="Left Align">
+                                    <span class="{{class_btn_delete}}" aria-hidden="true"></span>
+                                </a>
+                            {% endif %}
+                        {% endblock %}
                         
                         
 
@@ -123,8 +125,9 @@
             {% endfor %}
         </tbody>
     </table>
-    {% block footer %}{% endblock %}
-    {{ pagination|raw}}
-
+    {% block endtable %}{% endblock %}
+    {% block pagination %}
+            {{ pagination|raw}}
+    {% endblock %}
 
 {% endblock %}

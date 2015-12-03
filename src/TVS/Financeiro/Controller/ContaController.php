@@ -19,17 +19,31 @@ class ContaController extends AbstractController {
         $this->field_search = "descricao";
         $this->fields_table = [
             'DESCRI&Ccedil;&Atilde;O',
-            'SALDO'
+            'SALDO',
         ];
         $this->object_key_table = [
             ['descricao'],
-            ['money','saldo']
+            ['money','saldo'],
         ];
         $this->is_owner = true;
     }
 
     public function connect_extra() {
-        
+        $app = $this->app;
+        $this->controller->get('/display/view', function () use ($app) {
+            $this->fields_table = [
+            'CONTAS',
+            'SALDO',
+        ];
+            $this->view_list = 'financeiro/conta/list.html.twig';
+            $result = $app[$this->service]->infoAdditional($this->checkOwner());
+            return $app['twig']->render($this->view_list, [
+                        $this->param_view => $result,
+                        'titulo' => $this->titulo,
+                        'fields_table' => $this->fields_table,
+                        'totais' => $app['LancamentoService']->infoAdditional($this->checkOwner())
+            ]);
+        })->bind($this->bind . '_view_listar');
     }
 
 }

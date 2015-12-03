@@ -45,24 +45,28 @@
                 </div>
             </nav>
 
-        {% endblock %}                   
+        {% endblock %} 
+        {% block containner %}
         <div class="container" >
             <div class="{{class_panel}}">
                 <div class="panel-heading">
                     <h3 class="panel-title">
                     {% block tituloPainel %}{% endblock %}
-                </h3>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    {% block superior %}{% endblock %}
+                    <br><br>
+                    {% block conteudo %}{% endblock %}
+                </div>
             </div>
-            <div class="panel-body">
-            {% block superior %}{% endblock %}
-            <br><br>
-        {% block conteudo %}{% endblock %}
-    </div>
-</div>
-</div>
+        </div>
+        {% endblock %} 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+{% block footer %}
 <div class="panel-footer" style="position: fixed; bottom: 0;width: 100%;text-align: center;z-index: 1030;">Copyright (c) 2013 - {{ "now"|date("Y") }} Infosay. Todos os direitos reservados.</div>
+{% endblock %}
 </body>
 </html>
 

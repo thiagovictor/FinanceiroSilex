@@ -20,4 +20,16 @@ class ContaService extends AbstractService {
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
         return $data;
     }
+    
+    public function infoAdditional($user) {
+        $repo = $this->em->getRepository($this->entity);
+        $temp = $repo->infoAdditional($user);
+        $info = [];
+        foreach ($temp as $conta) {
+            $conta['saldo'] = $conta['saldoinicial']+$conta['saldo'];
+            unset($conta['saldoinicial']);
+            $info[] = $conta;
+        }
+        return $info;
+    }
 }

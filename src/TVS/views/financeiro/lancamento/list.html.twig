@@ -11,6 +11,18 @@
             <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
         </ul>
     </div>
+
+
+    <a href="/conta/display/view"  class="btn btn-sm btn-default" data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
+    
+
+    <div id="information" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block button_arquivos %}
@@ -41,9 +53,6 @@
         </a>                               
     {%endif%}   
 {% endblock %}
-{% block footer %}
-    <a href="#">Despesas <span class="badge">R$ {{ additional['despesa'] | number_format }}</span></a>
-    <a href="#">Receitas <span class="badge">R$ {{ additional['receita'] | number_format }}</span></a>
-{% endblock %}
+
 
 
