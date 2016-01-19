@@ -121,9 +121,13 @@ class LancamentoRepository extends EntityRepository{
         return ($valor)? $valor : '0';
     }
     public function infoAdditional($user = false) {
+        
+        $date = explode("-",$this->getSession()->get('baseDate'));
+        $base_date = "{$date[1]}/{$date[0]}";
         return [
                     'despesa' => $this->despesas($user),
-                    'receita' => $this->receitas($user)
+                    'receita' => $this->receitas($user),
+                    'mesreferencia'=>$base_date,
                 ];
     }
 //    public function lancamentosGeralMes() {

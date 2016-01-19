@@ -1,20 +1,45 @@
 {% extends  "login/default/default_list.html.twig" %}
 {% block button_new %}
-    <div class="btn-group">
-        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="{{class_btn_new}}" aria-hidden="true"></span> Novo <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="{{path( bind_path~'_new_options',{'options':'normal'})}}">Normal</a></li>
-            <li><a href="{{path('recorrente_new')}}">Recorrente</a></li>
-            <li><a href="{{path( bind_path~'_new_options',{'options':'parcelada'})}}">Parcelada</a></li>
-            <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
-        </ul>
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <!--<span class="{{class_btn_new}}" aria-hidden="true"></span> --> A&ccedil;&otilde;es <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{{path( bind_path~'_new_options',{'options':'normal'})}}">Lan&ccedil;amento padr&atilde;o</a></li>
+                    <li><a href="{{path('recorrente_new')}}">Lan&ccedil;amento recorrente</a></li>
+                    <li><a href="{{path( bind_path~'_new_options',{'options':'parcelada'})}}">Lan&ccedil;amento Parcelado</a></li>
+                    <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
+                    <li><a href="/conta/display/view"  data-toggle="modal" data-target="#information">Informa&ccedil;&otilde;es das contas</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class='input-group date' id='MesDeReferencia'>
+                <form  action="{{path('mes')}}" method="POST" name="mes" >
+                    <input type="text" value="{{ additional['mesreferencia']}}" class="form-control" name="mesreferencia" onblur="document.mes.submit();" >	
+                </form> 
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar">
+                    </span>
+                </span>
+            </div>
+        </div>
     </div>
 
+    <!-- <a href="/conta/display/view"  class="btn btn-sm btn-default" data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>  -->
+    <script type="text/javascript">
+        $(function () {
+            $('#MesDeReferencia').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY',
+                locale: 'pt-br'
+            });
+        });
+    </script>
 
-    <a href="/conta/display/view"  class="btn btn-sm btn-default" data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
-    
 
     <div id="information" class="modal fade" role="dialog">
         <div class="modal-dialog" role="document">
@@ -30,7 +55,7 @@
         <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
             <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
         </a> 
-                                          
+
     {%endif%}
     {%if attribute(object, 'arquivoBoleto') is not empty %}
         <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" title="Visualizar Boleto" class="{{class_btn}}" aria-label="Left Align">
