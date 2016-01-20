@@ -64,9 +64,8 @@ class LancamentoService extends AbstractService {
         
         if(isset($data["cartao"])){
             $data['cartao'] = $this->em->getReference('TVS\Financeiro\Entity\Cartao', $data["cartao"]);
-            //var_dump($data['cartao']);
         }
-        //exit();
+        
         if (isset($data['favorecido'])) {
             $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);
         }

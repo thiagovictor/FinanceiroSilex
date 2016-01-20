@@ -41,6 +41,9 @@ class RecorrenteService extends AbstractService {
                 $data["valor"] = "-" . $data["valor"];
             }
         }
+        if(isset($data["cartao"])){
+            $data['cartao'] = $this->em->getReference('TVS\Financeiro\Entity\Cartao', $data["cartao"]);
+        }
         $data['conta'] = $this->em->getReference('TVS\Financeiro\Entity\Conta', $data["conta"]);
         if (isset($data['favorecido'])) {
             $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);

@@ -14,8 +14,8 @@ class LancamentoController extends AbstractController {
         $this->form = 'LancamentoForm';
         $this->bind = 'lancamento';
         $this->param_view = 'result';
-        $this->view_new = 'login/default/default_new.twig';
-        $this->view_edit = 'login/default/default_edit.twig';
+        $this->view_new = 'financeiro/lancamento/lancamento_new.html.twig';
+        $this->view_edit = 'financeiro/lancamento/lancamento_edit.html.twig';
         $this->view_list = 'financeiro/lancamento/list.html.twig';
         $this->titulo = "Lancamentos";
         $this->field_search = "descricao";

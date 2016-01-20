@@ -1,0 +1,51 @@
+{% extends  "login/default/default_edit.twig" %}
+{% block customform %}
+    <div class="form-group">
+        {{ form_label(form.vencimento) }}
+        <div class="col-lg-4">
+            <div class='input-group date' id='data'>
+                {{ form_widget(form.vencimento) }}
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar">
+                    </span>
+                </span>
+            </div>
+            {{ form_errors(form.vencimento) }}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#data').datetimepicker({
+                //viewMode: 'years',
+                format: 'DD/MM/YYYY',
+                locale: 'pt-br'
+            });
+        });
+    </script>
+    {% if form.competencia is defined %}
+        <div class="form-group">
+            {{ form_label(form.competencia) }}
+            <div class="col-lg-2">
+                <div class='input-group date' id='MesDeReferencia'>
+                    {{ form_widget(form.competencia) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
+                    </span>
+                </div>
+                {{ form_errors(form.competencia) }}
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $(function () {
+                $('#MesDeReferencia').datetimepicker({
+                    viewMode: 'years',
+                    format: 'MM/YYYY',
+                    locale: 'pt-br'
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock%}

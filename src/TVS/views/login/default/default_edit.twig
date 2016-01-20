@@ -12,6 +12,7 @@
     {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
     {#{ form(form) }#}
     {{ form_start(form) }}
+    {% block customform %}{% endblock%}
     {{ form_errors(form) }}
     {{ form_widget(form) }}
     <div class="form-group">

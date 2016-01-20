@@ -12,8 +12,8 @@ class RecorrenteController extends AbstractController {
         $this->form = 'RecorrenteForm';
         $this->bind = 'recorrente';
         $this->param_view = 'result';
-        $this->view_new = 'login/default/default_new.twig';
-        $this->view_edit = 'login/default/default_edit.twig';
+        $this->view_new = 'financeiro/lancamento/lancamento_new.html.twig';
+        $this->view_edit = 'financeiro/lancamento/lancamento_edit.html.twig';
         $this->view_list = 'login/default/default_list.html.twig';
         $this->titulo = "Lan&ccedil;amentos recorrentes";
         $this->field_search = "descricao";
