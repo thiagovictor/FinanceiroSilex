@@ -115,8 +115,9 @@ class LancamentoService extends AbstractService {
         for ($i = 2; $i <= $parcelas; $i++) {
             $parcelamento = " [{$i}/{$parcelas}]";
             $array["descricao"] = $descricao . "{$parcelamento}";
-            $array["vencimento"] = (new \DateTime($array["vencimento"]->format("Y-m-d")))->add(new \DateInterval("P1M"));
-            $array["competencia"] = (new \DateTime($array["vencimento"]->format("Y-m-d")))->add(new \DateInterval("P1M"));
+            $VencimentoCorrente = $array["vencimento"]->format("Y-m-d");
+            $array["vencimento"] = (new \DateTime($VencimentoCorrente))->add(new \DateInterval("P1M"));
+            $array["competencia"] = (new \DateTime($VencimentoCorrente))->add(new \DateInterval("P1M"));
             $registro = $this->hidrate(new Lancamento(), $array);
             if ($registro) {
                 $this->em->persist($registro);

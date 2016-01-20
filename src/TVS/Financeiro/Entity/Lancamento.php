@@ -355,6 +355,7 @@ class Lancamento {
     }
 
     public function setCompetencia(\DateTime $competencia) {
+        $competencia->setDate($competencia->format("Y"), $competencia->format("m"), "01");
         $this->competencia = $competencia;
         return $this;
     }
