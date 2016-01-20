@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use TVS\Base\Validator\Constraint\InvalidDia;
 
 
 class CartaoType extends AbstractType 
@@ -17,7 +18,7 @@ class CartaoType extends AbstractType
                             'label' => 'Descri&ccedil;&atilde;o',
                                 )
                         )->add('vencimento', "text", array(
-                            'constraints' => array(new NotBlank(), new Length(array('min'=>2,'max' => 2))),
+                            'constraints' => array(new NotBlank(), new InvalidDia(), new Length(array('min'=>2,'max' => 2))),
                             'label' => 'Dia de vencimento',
                                 )
                         );
