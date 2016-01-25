@@ -15,6 +15,33 @@ class LancamentoService extends AbstractService {
         $this->entity = "TVS\Financeiro\Entity\Lancamento";
     }
 
+    public function insertRecorrentes($array) {
+        $controle = false;
+        foreach ($array as $object) {
+            $data = $object->toArray();
+            $data['idrecorrente'] = $data["id"];
+            $data['status'] = 0;
+            unset($data['id']);
+            $data['vencimento'] = (new \DateTime($this->app['session']->get('baseDate')."-{$object->getVencimento()->format('d')}"))->format("d/m/Y");
+            $registro = $this->hidrate(new Lancamento(), $this->ajustaData($data));
+            if ($registro) {
+                $controle = true;
+                $this->em->persist($registro);
+            }
+        }
+        if ($controle) {
+            $this->em->flush();
+        }
+    }
+
+    public function findPagination($firstResult, $maxResults, $user) {
+        $repoRecorrente = $this->em->getRepository("TVS\Financeiro\Entity\Recorrente");
+        $this->insertRecorrentes($repoRecorrente->findActives($user));
+
+        $repo = $this->em->getRepository($this->entity);
+        return $repo->findPagination($firstResult, $maxResults, $user);
+    }
+
     public function ajustarMes($date) {
         if ($date instanceof \DateTime) {
             return $date->format("Y-m") . "-01";
@@ -35,7 +62,7 @@ class LancamentoService extends AbstractService {
         $user = $this->app['session']->get('user');
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
         $data['status'] = (isset($data['status'])) ? $data['status'] : false;
-        if(isset($data["option"])){
+        if (isset($data["option"])) {
             if ($data["option"] == 'transferencia') {
                 $data["status"] = true;
                 $data["transf"] = time();
@@ -61,11 +88,11 @@ class LancamentoService extends AbstractService {
         if (isset($data["conta2"])) {
             $data['conta2'] = $this->em->getReference('TVS\Financeiro\Entity\Conta', $data["conta2"]);
         }
-        
-        if(isset($data["cartao"])){
+
+        if (isset($data["cartao"])) {
             $data['cartao'] = $this->em->getReference('TVS\Financeiro\Entity\Cartao', $data["cartao"]);
         }
-        
+
         if (isset($data['favorecido'])) {
             $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);
         }
@@ -88,7 +115,7 @@ class LancamentoService extends AbstractService {
         }
         unset($data['arquivoComprovante']);
         unset($data['arquivoBoleto']);
-        
+
         if (isset($data["conta2"])) {
             $data2 = $data;
             $data2["conta"] = $data2["conta2"];
@@ -177,7 +204,7 @@ class LancamentoService extends AbstractService {
         }
         return false;
     }
-    
+
     public function infoAdditional($user) {
         $repo = $this->em->getRepository($this->entity);
         return $repo->infoAdditional($user);
