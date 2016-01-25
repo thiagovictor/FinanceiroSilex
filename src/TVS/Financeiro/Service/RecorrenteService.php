@@ -44,6 +44,9 @@ class RecorrenteService extends AbstractService {
         if(isset($data["cartao"])){
             $data['cartao'] = $this->em->getReference('TVS\Financeiro\Entity\Cartao', $data["cartao"]);
         }
+         if(isset($data["periodo"])){
+            $data['periodo'] = $this->em->getReference('TVS\Financeiro\Entity\Periodo', $data["periodo"]);
+        }
         $data['conta'] = $this->em->getReference('TVS\Financeiro\Entity\Conta', $data["conta"]);
         if (isset($data['favorecido'])) {
             $data['favorecido'] = $this->em->getReference('TVS\Financeiro\Entity\Favorecido', $data["favorecido"]);

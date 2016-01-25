@@ -15,6 +15,7 @@ class RecorrenteType extends AbstractType {
     protected $favorecido;
     protected $conta;
     protected $cartao;
+    protected $periodo;
     private $app;
 
     public function __construct(Application $app) {
@@ -26,9 +27,15 @@ class RecorrenteType extends AbstractType {
         $this->favorecido = $this->app['FavorecidoService']->fatchPairs();
         $this->conta = $this->app['ContaService']->fatchPairs();
         $this->cartao = $this->app['CartaoService']->fatchPairs();
+        $this->periodo = $this->app['PeriodoService']->fatchPairs();
 
         return $builder->add('option', 'hidden', array(
                     'data' => 'recorrente',
+                        )
+                )->add('periodo', 'choice', array(
+                    'choices' => $this->periodo,
+                    'required' => true,
+                    'label' => 'Intervalo de recorr&ecirc;ncia'
                         )
                 )->add('valor', "money", array(
                     'currency' => 'BRL',
@@ -42,7 +49,7 @@ class RecorrenteType extends AbstractType {
                         )
                 )->add('vencimento', "text", array(
                     'constraints' => array(new NotBlank(),new InvalidDate()),
-                    'label' => 'Data de in&iacute;cio',
+                    'label' => '1&ordm; vencimento',
                         )
                 )->add('tipo', 'choice', array(
                     'choices' => array('DESPESA' => 'DESPESA', 'RECEITA' => 'RECEITA'),

@@ -4,7 +4,6 @@ namespace TVS\Financeiro\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
  * Periodo
  * @ORM\Entity
@@ -29,6 +28,13 @@ class Periodo {
      */
     private $descricao;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="incremento", type="integer", nullable=true)
+     */
+    private $incremento;
+
     public function getId() {
         return $this->id;
     }
@@ -46,11 +52,22 @@ class Periodo {
         $this->descricao = $descricao;
         return $this;
     }
-    
+
+    function getIncremento() {
+        return $this->incremento;
+    }
+
+    function setIncremento($incremento) {
+        $this->incremento = $incremento;
+        return $this;
+    }
+
     public function toArray() {
         return [
-            'id'=>  $this->getId(),
-            'descricao'=> $this->getDescricao()
+            'id' => $this->getId(),
+            'descricao' => $this->getDescricao(),
+            'incremento' => $this->getIncremento()
         ];
     }
+
 }

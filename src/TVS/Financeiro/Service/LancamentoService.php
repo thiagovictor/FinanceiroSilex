@@ -22,6 +22,13 @@ class LancamentoService extends AbstractService {
             $data['idrecorrente'] = $data["id"];
             $data['status'] = 0;
             unset($data['id']);
+            if($data['periodo'] != 1){
+                $periodo = $this->em->getReference('TVS\Financeiro\Entity\Periodo', $data['periodo']);
+                if(!$this->verificaIntervaloRecorrencia($object->getVencimento()->format('Y-m-d'),$periodo->getIncremento())){
+                    continue;
+                }
+            }
+            unset($data["periodo"]);
             $data['vencimento'] = (new \DateTime($this->app['session']->get('baseDate')."-{$object->getVencimento()->format('d')}"))->format("d/m/Y");
             $registro = $this->hidrate(new Lancamento(), $this->ajustaData($data));
             if ($registro) {
@@ -32,6 +39,21 @@ class LancamentoService extends AbstractService {
         if ($controle) {
             $this->em->flush();
         }
+    }
+    
+    public function verificaIntervaloRecorrencia($vencimentoInicial, $incremento) {
+        $base = new \DateTime($this->app['session']->get('baseDate')."-01");
+        $inicio = new \DateTime($vencimentoInicial);
+        $intervalo = new \DateInterval("P{$incremento}M");
+        while($base >= $inicio){
+            $inicio->add($intervalo);
+            //echo "{$inicio->format('m/Y')} == {$base->format('m/Y')}<br>";
+            if($inicio->format('m/Y') == $base->format('m/Y')){
+                return true;
+            }
+        }
+        return false;
+        
     }
 
     public function findPagination($firstResult, $maxResults, $user) {
