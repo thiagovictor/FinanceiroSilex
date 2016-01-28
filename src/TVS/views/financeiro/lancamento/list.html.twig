@@ -54,6 +54,9 @@
     {%if attribute(object, 'idrecorrente') is not empty %}
             <img title="Registro recorrente" src="/img/recorrente.jpg" width="21" height="21" >
     {%endif%}
+    {%if attribute(object, 'idrecorrente') is not empty %}
+            <span title="Registro em Cart&atilde;o de cr&eacute;dito." class="glyphicon glyphicon-credit-card btn-sm" aria-hidden="true"></span>
+    {%endif%}
     {%if attribute(object, 'transf') is not empty %}
         <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
             <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
