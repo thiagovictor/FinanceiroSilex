@@ -118,6 +118,31 @@ class LancamentoController extends AbstractController {
                         'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
             ]);
         })->bind('mes');
+        
+        $this->controller->get('/display/fatura/{id}', function ($id) use ($app) {
+            $fields_table = [
+             'DESCRI&Ccedil;&Atilde;O',
+            'VALOR',
+            'C.CUSTO',
+            'CONTA',
+            'FAV./PAG.'
+            
+        ];
+        $object_key_table = [
+            ['descricao'],
+            ['money','valor'],
+            ['centrocusto','descricao'],
+            ['conta','descricao'],
+            ['favorecido','descricao'],
+            
+        ];
+            $result = $app[$this->service]->findBy(['user' => $this->checkOwner(),'cartao' => $id]);
+            return $app['twig']->render('financeiro/cartao/fatura.html.twig', [
+                        $this->param_view => $result,
+                        'fields_table' => $fields_table,
+                'object_key_table' => $object_key_table,
+            ]);
+        })->bind($this->bind . '_credito_fatura');
     }
 
 }

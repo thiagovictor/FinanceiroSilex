@@ -1,0 +1,84 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Lan&ccedil;amentos do cart&atilde;o
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover" >
+            <thead>
+                <tr>
+                    {% for field in fields_table %}
+                        <th>{{ field }}</th>
+                        {% endfor %}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in result %}
+                    <tr>
+                        {% for array in object_key_table %}
+                            {% set flag = false %}
+                            {% set attr = '' %}
+                            {% set bool = false %}
+                            {% set money = false %}
+                            {% set datetime = false %}
+                            {% for properties in array %}
+                                {% if flag %}
+                                    {% set attr = attribute(attr, properties) %}
+                                {% else %}
+                                    {%if loop.first %}
+                                        {%if properties == 'bool'%}
+                                            {% set bool = true %}
+                                        {%else%}
+                                            {%if properties == 'money'%}
+                                                {% set money = true %}
+                                            {%else%}
+                                                {%if properties == 'datetime'%}
+                                                    {% set datetime = true %}
+                                                {%else%}
+                                                    {% set attr = attribute(object, properties) %}
+                                                    {%if attr is not null %}
+                                                        {% set flag = true %}
+                                                    {%endif%}
+                                                {%endif%}
+                                            {%endif%}
+                                        {%endif%}
+                                    {%else%}
+                                        {%if bool %}
+                                            {%if attribute(object, properties) == 1 %}
+                                                {% set attr = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' %}
+                                            {%endif%} 
+                                        {%endif%}
+                                        {%if money %}
+                                            {% set attr = 'R$ '~attribute(object, properties)| number_format %}
+                                        {%endif%}
+                                        {%if datetime %}
+                                            {% set attr =  attribute(object, properties) is empty ? "" : attribute(object, properties) | date("d/m/Y") %}
+                                        {%endif%}
+                                    {%endif%}
+
+
+                                {% endif %}
+                            {% endfor %}
+                            <td><font color="#6F7E8C">{{ attr }}</font></td> 
+                        {% endfor %}
+                        <td align='right'>
+
+                        </td>
+                    </tr>   
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

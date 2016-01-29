@@ -14,7 +14,7 @@ class CartaoController extends AbstractController {
         $this->param_view = 'result';
         $this->view_new = 'login/default/default_new.twig';
         $this->view_edit = 'login/default/default_edit.twig';
-        $this->view_list = 'login/default/default_list.html.twig';
+        $this->view_list = 'financeiro/cartao/list.html.twig';
         $this->titulo = "Cart&otilde;es";
         $this->field_search = "descricao";
         $this->fields_table = [

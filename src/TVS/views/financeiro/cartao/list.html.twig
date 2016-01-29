@@ -1,0 +1,20 @@
+{% extends  "login/default/default_list.html.twig" %}
+
+{% block button_new %}
+    <a type="button" href="{{path(bind_path~'_new')}}" class="{{class_btn}}" role="button">
+        <span class="{{class_btn_new}}" aria-hidden="true"></span> Novo
+    </a>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block button_arquivos %}
+    <a href="{{path("lancamento_credito_fatura",{"id":object.id})}}" data-toggle="modal" data-target=".bs-example-modal-lg" title="Visualizar fatura do cartão" class="{{class_btn}}" aria-label="Left Align">
+        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+    </a>                               
+{% endblock %}
