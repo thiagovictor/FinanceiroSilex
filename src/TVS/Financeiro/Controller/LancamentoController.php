@@ -27,17 +27,15 @@ class LancamentoController extends AbstractController {
             'C.CUSTO',
             'CONTA',
             'FAV./PAG.'
-            
         ];
         $this->object_key_table = [
-            ['datetime','vencimento'],
-            ['datetime','pagamento'],
+            ['datetime', 'vencimento'],
+            ['datetime', 'pagamento'],
             ['descricao'],
-            ['money','valor'],
-            ['centrocusto','descricao'],
-            ['conta','descricao'],
-            ['favorecido','descricao'],
-            
+            ['money', 'valor'],
+            ['centrocusto', 'descricao'],
+            ['conta', 'descricao'],
+            ['favorecido', 'descricao'],
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',
@@ -52,44 +50,44 @@ class LancamentoController extends AbstractController {
         $this->controller->get('/display/getBoleto/{id}', function ($id) use ($app) {
             $user = $app['session']->get('user');
             $lancamento = $app['LancamentoService']->find($id, $user);
-            if(!$lancamento){
+            if (!$lancamento) {
                 return false;
             }
-            $boleto  = $lancamento->getArquivoBoleto();
-            if(!$boleto){
+            $boleto = $lancamento->getArquivoBoleto();
+            if (!$boleto) {
                 return false;
             }
             return new Response(
-                    (new RepositoryFile("../data".$boleto))->getArquivo(), 200, array(
-                        'Content-Type' => 'application/pdf',
-                        'Content-Disposition' => 'filename="boleto.pdf"'
+                    (new RepositoryFile("../data" . $boleto))->getArquivo(), 200, array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'filename="boleto.pdf"'
                     )
-            );   
+            );
         })->bind('getBoleto');
-        
+
         $this->controller->get('/display/getComprovante/{id}', function ($id) use ($app) {
             $user = $app['session']->get('user');
             $lancamento = $app['LancamentoService']->find($id, $user);
-            if(!$lancamento){
+            if (!$lancamento) {
                 return false;
             }
-            $comprovante  = $lancamento->getArquivoComprovante();
-            if(!$comprovante){
+            $comprovante = $lancamento->getArquivoComprovante();
+            if (!$comprovante) {
                 return false;
             }
             return new Response(
-                    (new RepositoryFile("../data".$comprovante))->getArquivo(), 200, array(
-                        'Content-Type' => 'application/pdf',
-                        'Content-Disposition' => 'filename="comprovante.pdf"'
+                    (new RepositoryFile("../data" . $comprovante))->getArquivo(), 200, array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'filename="comprovante.pdf"'
                     )
-            );   
+            );
         })->bind('getComprovante');
-        
+
         $this->controller->get('/edit/status/{id}', function ($id) use ($app) {
             $user = $app['session']->get('user');
             $serviceManager = $app['LancamentoService'];
             $lancamento = $serviceManager->find($id, $user);
-            if(!$lancamento){
+            if (!$lancamento) {
                 return false;
             }
             $lancamento->setPagamento(new \DateTime("now"));
@@ -97,12 +95,12 @@ class LancamentoController extends AbstractController {
             $serviceManager->update($lancamento->toArray(), $this->checkOwner());
             return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
         })->bind('editStatus');
-        
+
         $this->controller->post('/edit/mes', function () use ($app) {
-            if($app['request']->get('mesreferencia') != ""){
+            if ($app['request']->get('mesreferencia') != "") {
                 $dateMes = explode("/", $app['request']->get('mesreferencia'));
                 $mes = "{$dateMes[1]}-{$dateMes[0]}";
-                $app['session']->set('baseDate',$mes);
+                $app['session']->set('baseDate', $mes);
             }
             $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina, $this->checkOwner());
             return $app['twig']->render($this->view_list, [
@@ -118,29 +116,29 @@ class LancamentoController extends AbstractController {
                         'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
             ]);
         })->bind('mes');
-        
+
         $this->controller->get('/display/fatura/{id}', function ($id) use ($app) {
             $fields_table = [
-             'DESCRI&Ccedil;&Atilde;O',
-            'VALOR',
-            'C.CUSTO',
-            'CONTA',
-            'FAV./PAG.'
-            
-        ];
-        $object_key_table = [
-            ['descricao'],
-            ['money','valor'],
-            ['centrocusto','descricao'],
-            ['conta','descricao'],
-            ['favorecido','descricao'],
-            
-        ];
-            $result = $app[$this->service]->findBy(['user' => $this->checkOwner(),'cartao' => $id]);
+                'DESCRI&Ccedil;&Atilde;O',
+                'VALOR',
+                'C.CUSTO',
+                'CONTA',
+                'FAV./PAG.'
+            ];
+            $object_key_table = [
+                ['descricao'],
+                ['money', 'valor'],
+                ['centrocusto', 'descricao'],
+                ['conta', 'descricao'],
+                ['favorecido', 'descricao'],
+            ];
+            $base_date = new \DateTime((new \Symfony\Component\HttpFoundation\Session\Session())->get('baseDate') . "-01");
+
+            $result = $app[$this->service]->findBy(['user' => $this->checkOwner(), 'cartao' => $id, 'competencia' => $base_date]);
             return $app['twig']->render('financeiro/cartao/fatura.html.twig', [
                         $this->param_view => $result,
                         'fields_table' => $fields_table,
-                'object_key_table' => $object_key_table,
+                        'object_key_table' => $object_key_table,
             ]);
         })->bind($this->bind . '_credito_fatura');
     }

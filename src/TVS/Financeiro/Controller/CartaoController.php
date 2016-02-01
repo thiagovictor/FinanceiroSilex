@@ -19,11 +19,15 @@ class CartaoController extends AbstractController {
         $this->field_search = "descricao";
         $this->fields_table = [
             'DESCRI&Ccedil;&Atilde;O',
-            'VENCIMENTO'
+            'VENCIMENTO',
+            'COMPET&Ecirc;NCIA',
+            'TOTAL DA FATURA',
         ];
         $this->object_key_table = [
             ['descricao'],
-            ['vencimento']
+            ['vencimento'],
+            ['competencia'],
+            ['money','total'],
         ];
         $this->is_owner = true;
     }
