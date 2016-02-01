@@ -147,4 +147,16 @@ class LancamentoRepository extends EntityRepository{
 //        //\Zend\Debug\Debug::dump($container->user->getId());
 //        return $query->getResult();
 //    }
+    
+    public function pagamentoFatura($id_cartao, $user) {
+        $base_date = (new Session())->get('baseDate');
+        $competencia = new \DateTime($base_date."-01");
+        $pagamento = new \DateTime("now");
+        $query = $this->_em->createQuery(
+                "update TVS\Financeiro\Entity\lancamento as l set l.status = 1, l.pagamento = '{$pagamento->format("Y-m-d")}'
+                where l.user = {$user->getId()} and l.cartao = {$id_cartao} and l.competencia = '{$competencia->format("Y-m-d")}' and l.status = 0" );
+        $result = $query->getResult();
+
+        return $result;
+    }
 }

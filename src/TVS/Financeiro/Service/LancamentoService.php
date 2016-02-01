@@ -231,5 +231,16 @@ class LancamentoService extends AbstractService {
         $repo = $this->em->getRepository($this->entity);
         return $repo->infoAdditional($user);
     }
+    
+    public function pagamentoFatura($id_cartao, $user){
+            if($user){
+                 $repo = $this->em->getRepository($this->entity);
+                 $qtd_registros_atualizados = $repo->pagamentoFatura($id_cartao, $user);
+                 $this->setMessage("Registros de Cart&atilde;o de cr&eacute;dito atualizados : {$qtd_registros_atualizados}");
+                 return true;
+            }
+        $this->setMessage("Pedido com falha!");
+        return false;
+    }
 
 }

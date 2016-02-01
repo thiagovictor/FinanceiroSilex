@@ -95,6 +95,29 @@ class LancamentoController extends AbstractController {
             $serviceManager->update($lancamento->toArray(), $this->checkOwner());
             return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
         })->bind('editStatus');
+        
+        $this->controller->get('/edit/status/cartao/{id}', function ($id) use ($app) {
+            $user = $app['session']->get('user');
+            $serviceManager = $app['LancamentoService'];
+            $serviceManager->pagamentoFatura($id,$user);
+
+            $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina, $this->checkOwner());
+            return $app['twig']->render($this->view_list, [
+                        $this->param_view => $result,
+                        'isAllowed' => $app[$this->service]->isAllowed(true),
+                        'bind_path' => $this->bind,
+                        'path_table_aditional' => $this->path_table_aditional,
+                        'fields_table' => $this->fields_table,
+                        'object_key_table' => $this->object_key_table,
+                        'page_atual' => 1,
+                        "Message" => $serviceManager->getMessage(),
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
+                        'titulo' => $this->titulo,
+                        'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
+            ]);
+            
+            
+        })->bind('editStatusCartao');
 
         $this->controller->post('/edit/mes', function () use ($app) {
             if ($app['request']->get('mesreferencia') != "") {

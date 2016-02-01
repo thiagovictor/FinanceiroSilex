@@ -36,23 +36,22 @@ class CartaoRepository extends EntityRepository {
         $query = $this->_em->createQuery(
                 "select c.id, c.descricao,c.vencimento,'{$format->format("m/Y")}' as competencia, (select sum(l.valor) from TVS\Financeiro\Entity\Lancamento as l where l.user = {$user->getId()} and l.cartao = c.id and l.competencia = '{$base_date}-01' ) as total  from TVS\Financeiro\Entity\Cartao as c
                 where c.user = {$user->getId()}");
-        $result = $query->getResult();
-        //print($query->getSQL());
-        //exit();
-        return $result;
-        
-        
-        
-        
-//        $query = parent::createQueryBuilder('c');
-//        if ($user) {
-//            $query->where("c.user = :user")
-//                    ->setParameter('user', $user);
-//        }
-//        return $query->setFirstResult($firstResult)
-//                        ->setMaxResults($maxResults)
-//                        ->getQuery()
-//                        ->getResult();
+        return $query->setFirstResult($firstResult)
+                        ->setMaxResults($maxResults)
+                        //->getQuery()
+                        ->getResult();
+    }
+    
+    public function findSearch($firstResult, $maxResults, $search, $field, $user = false) {
+        $base_date = (new Session())->get('baseDate');
+        $format = new \DateTime($base_date."-01");
+        $query = $this->_em->createQuery(
+                "select c.id, c.descricao,c.vencimento,'{$format->format("m/Y")}' as competencia, (select sum(l.valor) from TVS\Financeiro\Entity\Lancamento as l where l.user = {$user->getId()} and l.cartao = c.id and l.competencia = '{$base_date}-01' ) as total  from TVS\Financeiro\Entity\Cartao as c
+                where c.user = {$user->getId()} and c.{$field} like '%{$search}%' ");
+        return $query->setFirstResult($firstResult)
+                        ->setMaxResults($maxResults)
+                        //->getQuery()
+                        ->getResult();
     }
 
 }

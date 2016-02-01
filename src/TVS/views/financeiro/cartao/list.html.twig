@@ -14,7 +14,10 @@
 {% endblock %}
 
 {% block button_arquivos %}
-    <a href="{{path("lancamento_credito_fatura",{"id":object.id})}}" data-toggle="modal" data-target=".bs-example-modal-lg" title="Visualizar fatura do cartão" class="{{class_btn}}" aria-label="Left Align">
+    <a href="{{path("editStatusCartao",{"id":object.id})}}" class="{{class_btn}}" title="Pagar Fatura" aria-label="Left Align">
+        <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+    </a>
+    <a href="{{path("lancamento_credito_fatura",{"id":object.id})}}" data-toggle="modal" data-target=".bs-example-modal-lg" title="Visualizar fatura do cart&atilde;o" class="{{class_btn}}" aria-label="Left Align">
         <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
     </a>                               
 {% endblock %}
