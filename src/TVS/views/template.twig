@@ -30,7 +30,9 @@
         <link href="/css/bootstrap-datetimepicker.css" rel="stylesheet">
         <script src="/js/moment-with-locales.js"></script>
         <script src="/js/bootstrap-datetimepicker.js"></script>
+
     </head>
+
 
     <body role="document" style="background-color: #eee">
         {% block menu %}
@@ -52,25 +54,33 @@
 
         {% endblock %} 
         {% block containner %}
-        <div class="container" >
-            <div class="{{class_panel}}">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                    {% block tituloPainel %}{% endblock %}
+            <div class="container" >
+                <div class="{{class_panel}}">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                        {% block tituloPainel %}{% endblock %}
                     </h3>
                 </div>
                 <div class="panel-body">
-                    {% block superior %}{% endblock %}
-                    <br><br>
-                    {% block conteudo %}{% endblock %}
-                </div>
-            </div>
+                {% block superior %}{% endblock %}
+                <br><br>
+            {% block conteudo %}{% endblock %}
         </div>
-        {% endblock %} 
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+    </div>
+</div>
+{% endblock %} 
+
+
 <script src="/js/bootstrap.min.js"></script>
+<script>
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(".modal-content").empty(); //Apaga o conteudo da div antes de tentar carregar
+        $(this).removeData('bs.modal');
+    });
+</script>
+
 {% block footer %}
-<div class="panel-footer" style="position: fixed; bottom: 0;width: 100%;text-align: center;z-index: 1030;">Copyright (c) 2013 - {{ "now"|date("Y") }} Infosay. Todos os direitos reservados.</div>
+    <div class="panel-footer" style="position: fixed; bottom: 0;width: 100%;text-align: center;z-index: 1030;">Copyright (c) 2013 - {{ "now"|date("Y") }} Infosay. Todos os direitos reservados.</div>
 {% endblock %}
 </body>
 </html>
