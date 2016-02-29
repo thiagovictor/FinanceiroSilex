@@ -12,7 +12,7 @@
     <table width="100%">
         <thead>
             <tr>
-                <th width="70%">
+                <th width="10%">
                     {% if isAllowed.new %}
                         {% block button_new %}
                             <a type="button" href="{{path(bind_path~'_new')}}" class="{{class_btn}}" role="button">
@@ -21,6 +21,7 @@
                         {% endblock %}
                     {% endif %}
                 </th>
+                <th width="50%">{% block referencia %}{% endblock %}</th>
                 <th align="left">
         <form action="{{path(bind_path~'_search')}}" method="POST">
             <div class="input-group">
@@ -99,7 +100,7 @@
 
                             {% endif %}
                         {% endfor %}
-                        <td>{{ attr }}</td> 
+                        <td style="font-size: 12px">{{ attr }}</td> 
                     {% endfor %}
                     <td align='right'>
                         {% block button_arquivos %}

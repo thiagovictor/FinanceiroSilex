@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LancamentoController extends AbstractController {
 
     public function __construct() {
-        $this->registros_por_pagina = 5;
+        $this->registros_por_pagina = 6;
         $this->service = 'LancamentoService';
         $this->form = 'LancamentoForm';
         $this->bind = 'lancamento';
@@ -20,13 +20,13 @@ class LancamentoController extends AbstractController {
         $this->titulo = "Lancamentos";
         $this->field_search = "descricao";
         $this->fields_table = [
-            'VENCIMENTO',
-            'PAGAMENTO',
+            'VENC.',
+            'PAG.',
             'DESCRI&Ccedil;&Atilde;O',
             'VALOR',
             'C.CUSTO',
             'CONTA',
-            'FAV./PAG.'
+            //'FAV./PAG.'
         ];
         $this->object_key_table = [
             ['datetime', 'vencimento'],
@@ -35,7 +35,7 @@ class LancamentoController extends AbstractController {
             ['money', 'valor'],
             ['centrocusto', 'descricao'],
             ['conta', 'descricao'],
-            ['favorecido', 'descricao'],
+            //['favorecido', 'descricao'],
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',

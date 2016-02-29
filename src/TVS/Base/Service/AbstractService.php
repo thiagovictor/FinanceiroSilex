@@ -35,9 +35,9 @@ abstract class AbstractService {
         }
         return $this->object;
     }
-    
+
     protected function hidrate($object, array $data = array()) {
-        if(!is_object($object)){
+        if (!is_object($object)) {
             return false;
         }
         foreach ($data as $metodo => $valor) {
@@ -79,7 +79,7 @@ abstract class AbstractService {
     }
 
     public function checkOwner($user) {
-        if(!$this->object){
+        if (!$this->object) {
             return false;
         }
         if ($user) {
@@ -92,7 +92,7 @@ abstract class AbstractService {
 
     public function delete($id, $user) {
         $repo = $this->em->getRepository($this->entity);
-        if (!$repo->find($id)){
+        if (!$repo->find($id)) {
             return false;
         }
         $this->object = $this->em->getReference($this->entity, $id);
@@ -183,7 +183,7 @@ abstract class AbstractService {
         return $repo->getRows($user);
     }
 
-    public function find($id, $user=false) {
+    public function find($id, $user = false) {
         $repo = $this->em->getRepository($this->entity);
         $this->object = $repo->find($id);
         if (!$this->checkOwner($user)) {
@@ -330,21 +330,59 @@ abstract class AbstractService {
         $return = '<div align="center" >
                 <nav>
                     <ul class="pagination">';
+//########################################################################################################################
+//PRIMEIRA PAGINA
+        if ($numero_paginas > 0) {
+            $return .= '<li ';
+            if ($page_atual == 1) {
+                $return .= 'class="disabled"';
+            }
+            $return .= " ><a href='/{$route["controller"]}/{$rota}/1{$busca}'>Primeira</a></li>";
+        }
+//########################################################################################################################
         for ($i = 1; $i <= $numero_paginas; $i++) {
+            //ANTERIOR 
             if ($i == 1) {
                 $return .= '<li class="prev ' . $disabled_prev . '"><a ' . $link_prev . '>Anterior</a></li>';
             }
-            if ($numero_paginas > 0) {
-                $return .= '<li ';
-                if ($page_atual == $i) {
-                    $return .= 'class="active"';
-                }
-                $return .= "><a href='/{$route["controller"]}/{$rota}/{$i}{$busca}'>{$i}</a></li>";
-            }
+//########################################################################################################################
+//PAGINAÇÃO NUMERADA MIOLO ALTERNATIVA 1
+//            if ($i == $page_atual - 1 or $i == $page_atual - 2) {
+//                $return .= "<li ><a href='/{$route["controller"]}/{$rota}/{$i}{$busca}'>{$i}</a></li>";
+//            }
+//
+//            if ($page_atual == $i) {
+//                $return .= "<li class='active'><a href='/{$route["controller"]}/{$rota}/{$i}{$busca}'>{$i}</a></li>";
+//            }
+//            
+//            if ($i == $page_atual + 1 or $i == $page_atual + 2) {
+//                $return .= "<li ><a href='/{$route["controller"]}/{$rota}/{$i}{$busca}'>{$i}</a></li>";
+//            }
+//PAGINAÇÃO NUMERADA MIOLO ALTERNATIVA 2
+//           if ($numero_paginas > 0) {
+//                $return .= '<li ';
+//                if ($page_atual == $i) {
+//                    $return .= 'class="active"';
+//                }
+//                $return .= "><a href='/{$route["controller"]}/{$rota}/{$i}{$busca}'>{$i}</a></li>";
+//            }
+            
+//########################################################################################################################
             if ($i + 1 > $numero_paginas) {
+                //PROXIMA
                 $return .= '<li class="next ' . $disabled_next . '"><a ' . $link_next . '>Pr&oacute;ximo</a></li>';
             }
         }
+//########################################################################################################################
+//ULTIMA PAGINA
+        if ($numero_paginas > 0) {
+            $return .= '<li ';
+            if ($page_atual == $numero_paginas) {
+                $return .= 'class="disabled"';
+            }
+            $return .= " ><a href='/{$route["controller"]}/{$rota}/{$numero_paginas}{$busca}'>&Uacute;ltima</a></li>";
+        }
+//########################################################################################################################
         $return .= '</ul>
                 </nav>
 
@@ -352,8 +390,9 @@ abstract class AbstractService {
 
         return $return;
     }
-    
+
     public function infoAdditional($user) {
         return [];
     }
+
 }

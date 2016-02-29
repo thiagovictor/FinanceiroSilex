@@ -206,7 +206,7 @@ class LancamentoService extends AbstractService {
             }
         }
         if ('' != $files['tmp_name']['arquivoComprovante']) {
-            $comprovantePath = "/profile/{$username}/docs/comprovante" . time() . "." . substr($files['name']['arquivoComprovante'], -3);
+            $comprovantePath = "/profile/{$username}/docs/comprovante_" . time() . "." . substr($files['name']['arquivoComprovante'], -3);
             if (move_uploaded_file($files["tmp_name"]["arquivoComprovante"], $completePath . $comprovantePath)) {
                 $data["comprovante"] = $comprovantePath;
             }

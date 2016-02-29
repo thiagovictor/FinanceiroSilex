@@ -16,17 +16,7 @@
             </div>
         </div>
 
-        <div class="col-lg-3">
-            <div class='input-group date' id='MesDeReferencia'>
-                <form  action="{{path('mes')}}" method="POST" name="mes" >
-                    <input type="text" value="{{ additional['mesreferencia']}}" class="form-control" name="mesreferencia" onblur="document.mes.submit();" >	
-                </form> 
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar">
-                    </span>
-                </span>
-            </div>
-        </div>
+
     </div>
 
     <!-- <a href="/conta/display/view"  class="btn btn-sm btn-default" data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>  -->
@@ -49,13 +39,26 @@
     </div>
 
 {% endblock %}
+{% block referencia %}
+    <div class="col-sm-4">
+        <div class='input-group date' id='MesDeReferencia'>
+            <form  action="{{path('mes')}}" method="POST" name="mes" >
+                <input type="text" value="{{ additional['mesreferencia']}}" class="form-control " name="mesreferencia" onblur="document.mes.submit();" >	
+            </form> 
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar">
+                </span>
+            </span>
+        </div>
+    </div>
+{% endblock %}
 
 {% block button_arquivos %}
     {%if attribute(object, 'idrecorrente') is not empty %}
-            <img title="Registro recorrente" src="/img/recorrente.jpg" width="21" height="21" >
+        <img title="Registro recorrente" src="/img/recorrente.jpg" width="21" height="21" >
     {%endif%}
     {%if attribute(object, 'cartao') is not empty %}
-            <span title="Registro em Cart&atilde;o de cr&eacute;dito." class="glyphicon glyphicon-credit-card btn-sm" aria-hidden="true"></span>
+        <span title="Registro em Cart&atilde;o de cr&eacute;dito." class="glyphicon glyphicon-credit-card btn-sm" aria-hidden="true"></span>
     {%endif%}
     {%if attribute(object, 'transf') is not empty %}
         <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
