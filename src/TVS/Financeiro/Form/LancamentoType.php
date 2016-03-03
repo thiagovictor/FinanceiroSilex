@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use TVS\Base\Validator\Constraint\InvalidDate;
 use TVS\Base\Validator\Constraint\InvalidCompetencia;
+use TVS\Base\Validator\Constraint\InvalidDateWithEmpty;
 use TVS\Application;
 
 class LancamentoType extends AbstractType {
@@ -47,7 +48,12 @@ class LancamentoType extends AbstractType {
                         )
                 )->add('vencimento', "text", array(
                     'constraints' => array(new NotBlank(),new InvalidDate()),
-                    'label' => 'Vencimento',
+                    'label' => 'Data Vencimento',
+                        )
+                )->add('pagamento', "text", array(
+                    'required' => false,
+                    'constraints' => array(new InvalidDateWithEmpty()),
+                    'label' => 'Data Pagamento',
                         )
                 )->add('tipo', 'choice', array(
                     'choices' => array('DESPESA' => 'DESPESA', 'RECEITA' => 'RECEITA'),

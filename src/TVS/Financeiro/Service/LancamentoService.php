@@ -22,14 +22,14 @@ class LancamentoService extends AbstractService {
             $data['idrecorrente'] = $data["id"];
             $data['status'] = 0;
             unset($data['id']);
-            if($data['periodo'] != 1){
+            if ($data['periodo'] != 1) {
                 $periodo = $this->em->getReference('TVS\Financeiro\Entity\Periodo', $data['periodo']);
-                if(!$this->verificaIntervaloRecorrencia($object->getVencimento()->format('Y-m-d'),$periodo->getIncremento())){
+                if (!$this->verificaIntervaloRecorrencia($object->getVencimento()->format('Y-m-d'), $periodo->getIncremento())) {
                     continue;
                 }
             }
             unset($data["periodo"]);
-            $data['vencimento'] = (new \DateTime($this->app['session']->get('baseDate')."-{$object->getVencimento()->format('d')}"))->format("d/m/Y");
+            $data['vencimento'] = (new \DateTime($this->app['session']->get('baseDate') . "-{$object->getVencimento()->format('d')}"))->format("d/m/Y");
             $registro = $this->hidrate(new Lancamento(), $this->ajustaData($data));
             if ($registro) {
                 $controle = true;
@@ -40,20 +40,19 @@ class LancamentoService extends AbstractService {
             $this->em->flush();
         }
     }
-    
+
     public function verificaIntervaloRecorrencia($vencimentoInicial, $incremento) {
-        $base = new \DateTime($this->app['session']->get('baseDate')."-01");
+        $base = new \DateTime($this->app['session']->get('baseDate') . "-01");
         $inicio = new \DateTime($vencimentoInicial);
         $intervalo = new \DateInterval("P{$incremento}M");
-        while($base >= $inicio){
+        while ($base >= $inicio) {
             $inicio->add($intervalo);
             //echo "{$inicio->format('m/Y')} == {$base->format('m/Y')}<br>";
-            if($inicio->format('m/Y') == $base->format('m/Y')){
+            if ($inicio->format('m/Y') == $base->format('m/Y')) {
                 return true;
             }
         }
         return false;
-        
     }
 
     public function findPagination($firstResult, $maxResults, $user) {
@@ -90,14 +89,17 @@ class LancamentoService extends AbstractService {
                 $data["transf"] = time();
             }
         }
-        if (isset($data["pagamento"])) {
-            $data["pagamento"] = new \DateTime($this->ajustarDate($data["pagamento"]));
-        }
-        if ($data['status']) {
-            $data['pagamento'] = new \DateTime("now");
-        } else {
+
+        if (!$data['status']) {
             $data['pagamento'] = null;
+        } else {
+            if (isset($data["pagamento"])) {
+                $data['pagamento'] = new \DateTime($this->ajustarDate($data["pagamento"]));
+            } else {
+                $data['pagamento'] = new \DateTime("now");
+            }
         }
+
         $data["competencia"] = (isset($data['competencia'])) ? new \DateTime($this->ajustarMes($data["competencia"])) : new \DateTime($this->ajustarDate($data["vencimento"], true));
         $data["vencimento"] = new \DateTime($this->ajustarDate($data["vencimento"]));
 
@@ -231,14 +233,14 @@ class LancamentoService extends AbstractService {
         $repo = $this->em->getRepository($this->entity);
         return $repo->infoAdditional($user);
     }
-    
-    public function pagamentoFatura($id_cartao, $user){
-            if($user){
-                 $repo = $this->em->getRepository($this->entity);
-                 $qtd_registros_atualizados = $repo->pagamentoFatura($id_cartao, $user);
-                 $this->setMessage("Registros de Cart&atilde;o de cr&eacute;dito atualizados : {$qtd_registros_atualizados}");
-                 return true;
-            }
+
+    public function pagamentoFatura($id_cartao, $user) {
+        if ($user) {
+            $repo = $this->em->getRepository($this->entity);
+            $qtd_registros_atualizados = $repo->pagamentoFatura($id_cartao, $user);
+            $this->setMessage("Registros de Cart&atilde;o de cr&eacute;dito atualizados : {$qtd_registros_atualizados}");
+            return true;
+        }
         $this->setMessage("Pedido com falha!");
         return false;
     }
