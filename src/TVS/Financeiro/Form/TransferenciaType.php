@@ -38,12 +38,12 @@ class TransferenciaType extends AbstractType {
                     'constraints' => array(new NotBlank(),new InvalidDate()),
                     'label' => 'Data',
                         )
-                )->add('conta', 'choice', array(
+                )->add('conta2', 'choice', array(
                     'choices' => $this->conta,
                     'required' => true,
                     'label' => 'Debitar'
                         )
-                )->add('conta2', 'choice', array(
+                )->add('conta', 'choice', array(
                     'choices' => $this->conta,
                     'required' => true,
                     'label' => 'Creditar'

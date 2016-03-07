@@ -13,19 +13,21 @@
             {{ form_errors(form.vencimento) }}
         </div>
     </div>
-    <div class="form-group">
-        {{ form_label(form.pagamento) }}
-        <div class="col-lg-4">
-            <div class='input-group date' id='pagamento'>
-                {{ form_widget(form.pagamento) }}
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar">
+    {% if form.pagamento is defined %}
+        <div class="form-group">
+            {{ form_label(form.pagamento) }}
+            <div class="col-lg-4">
+                <div class='input-group date' id='pagamento'>
+                    {{ form_widget(form.pagamento) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
                     </span>
-                </span>
+                </div>
+                {{ form_errors(form.pagamento) }}
             </div>
-            {{ form_errors(form.pagamento) }}
         </div>
-    </div>
+    {% endif %}
     {% if form.competencia is defined %}
         <div class="form-group">
             {{ form_label(form.competencia) }}
@@ -40,8 +42,8 @@
                 {{ form_errors(form.competencia) }}
             </div>
         </div>
-
-        <script type="text/javascript">
+    {% endif %}
+    <script type="text/javascript">
             $(function () {
                 $('#MesDeReferencia').datetimepicker({
                     viewMode: 'years',
@@ -60,5 +62,4 @@
                 });
             });
         </script>
-    {% endif %}
 {% endblock%}
