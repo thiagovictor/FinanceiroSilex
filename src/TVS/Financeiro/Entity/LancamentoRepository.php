@@ -159,4 +159,15 @@ class LancamentoRepository extends EntityRepository{
 
         return $result;
     }
+    
+    public function relatorioCustom($param) {
+        //var_dump($param);
+        //exit();
+        $query = $this->createQueryBuilder('l')
+                    ->where($param['query'])
+                    ->setParameters($param['param'] );
+        return $query->getQuery()
+                        ->getResult();
+        
+    }
 }

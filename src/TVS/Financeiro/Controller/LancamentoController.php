@@ -15,6 +15,7 @@ class LancamentoController extends AbstractController {
         $this->bind = 'lancamento';
         $this->param_view = 'result';
         $this->view_new = 'financeiro/lancamento/lancamento_new.html.twig';
+        $this->view_custom = 'financeiro/lancamento/lancamento_search_custom.html.twig';
         $this->view_edit = 'financeiro/lancamento/lancamento_edit.html.twig';
         $this->view_list = 'financeiro/lancamento/list.html.twig';
         $this->titulo = "Lancamentos";
@@ -164,6 +165,36 @@ class LancamentoController extends AbstractController {
                         'object_key_table' => $object_key_table,
             ]);
         })->bind($this->bind . '_credito_fatura');
+        
+        $this->controller->match('/display/consultas/personalizado', function () use ($app) {
+            $form = $app['CustomRelatorioForm'];
+            $form->handleRequest($app['request']);
+            $serviceManager = $app[$this->service];
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $result = $serviceManager->relatorioCustom($data);
+                return $app['twig']->render('financeiro/lancamento/custom_list.html.twig', [
+                            'isAllowed' => $app[$this->service]->isAllowed(true),
+                        'bind_path' => $this->bind,        
+                        $this->param_view => $result,
+                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
+                        'fields_table' => $this->fields_table,
+                        'object_key_table' => $this->object_key_table,
+                        'path_table_aditional' => $this->path_table_aditional,
+                        'pagination' => '',
+                            "Message" => $serviceManager->getMessage(),
+                            'titulo' => $this->titulo,
+                            "form" => $form->createView(),
+                            "route" => $serviceManager->mountArrayRoute()
+                ]);
+            }
+            return $app['twig']->render($this->view_custom, [
+                        "Message" => array(),
+                        "form" => $form->createView(),
+                        'titulo' => $this->titulo,
+                        "route" => $serviceManager->mountArrayRoute()
+            ]);
+        })->bind('personalizado_listar');
     }
 
 }

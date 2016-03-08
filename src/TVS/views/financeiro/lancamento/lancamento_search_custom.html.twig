@@ -1,0 +1,131 @@
+{% extends  "login/default/default_new.twig" %}
+{% block customform %}
+    {% if form.vencInicio is defined %}
+        <div class="form-group">
+            {{ form_label(form.vencInicio) }}
+            <div class="col-lg-4">
+                <div class='input-group date' id='vencInicio'>
+                    {{ form_widget(form.vencInicio) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
+                    </span>
+                </div>
+                {{ form_errors(form.vencInicio) }}
+            </div>
+            {% if form.vencFim is defined %}
+                {{ form_label(form.vencFim) }}
+                <div class="col-lg-4">
+                    <div class='input-group date' id='vencFim'>
+                        {{ form_widget(form.vencFim) }}
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar">
+                            </span>
+                        </span>
+                    </div>
+                    {{ form_errors(form.vencFim) }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+    {% if form.pagInicio is defined %}
+        <div class="form-group">
+            {{ form_label(form.pagInicio) }}
+            <div class="col-lg-4">
+                <div class='input-group date' id='pagInicio'>
+                    {{ form_widget(form.pagInicio) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
+                    </span>
+                </div>
+                {{ form_errors(form.pagInicio) }}
+            </div>
+            {% if form.pagFim is defined %}
+                {{ form_label(form.pagFim) }}
+                <div class="col-lg-4">
+                    <div class='input-group date' id='pagFim'>
+                        {{ form_widget(form.pagFim) }}
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar">
+                            </span>
+                        </span>
+                    </div>
+                    {{ form_errors(form.pagFim) }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if form.compInicio is defined %}
+        <div class="form-group">
+            {{ form_label(form.compInicio) }}
+            <div class="col-lg-2">
+                <div class='input-group date' id='compInicio'>
+                    {{ form_widget(form.compInicio) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
+                    </span>
+                </div>
+                {{ form_errors(form.compInicio) }}
+            </div>
+            {% if form.compFim is defined %}
+                {{ form_label(form.compFim) }}
+                <div class="col-lg-2">
+                    <div class='input-group date' id='compFim'>
+                        {{ form_widget(form.compFim) }}
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar">
+                            </span>
+                        </span>
+                    </div>
+                    {{ form_errors(form.compFim) }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <script type="text/javascript">
+        $(function () {
+            $('#compInicio').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY',
+                locale: 'pt-br'
+            });
+            $('#compFim').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY',
+                locale: 'pt-br'
+            });
+            $('#vencInicio').datetimepicker({
+                //viewMode: 'years',
+                format: 'DD/MM/YYYY',
+                locale: 'pt-br'
+            });
+            $('#vencFim').datetimepicker({
+                //viewMode: 'years',
+                format: 'DD/MM/YYYY',
+                locale: 'pt-br'
+            });
+            $('#pagInicio').datetimepicker({
+                //viewMode: 'years',
+                format: 'DD/MM/YYYY',
+                locale: 'pt-br'
+            });
+            $('#pagFim').datetimepicker({
+                //viewMode: 'years',
+                format: 'DD/MM/YYYY',
+                locale: 'pt-br'
+            });
+        });
+    </script>
+{% endblock%}
+    {% block button %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="{{class_btn_form_submit}}">Buscar</button>
+            <a type="button" href="/{{ route.controller }}" class="{{class_btn_form_return}}" role="button">Voltar</a>
+        </div>
+    </div>
+    {% endblock %}

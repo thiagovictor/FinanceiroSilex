@@ -1,0 +1,41 @@
+{% extends  "login/default/default_list.html.twig" %}
+{% block superior %}
+    <a type="button" href="javascript:window.history.go(-1)" class="{{class_btn_form_return}}" role="button">Voltar</a>
+{% endblock %}
+
+{% block button_arquivos %}
+    {%if attribute(object, 'idrecorrente') is not empty %}
+        <img title="Registro recorrente" src="/img/recorrente.jpg" width="21" height="21" >
+    {%endif%}
+    {%if attribute(object, 'cartao') is not empty %}
+        <span title="Registro em Cart&atilde;o de cr&eacute;dito." class="glyphicon glyphicon-credit-card btn-sm" aria-hidden="true"></span>
+    {%endif%}
+    {%if attribute(object, 'transf') is not empty %}
+        <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
+            <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+        </a> 
+    {%endif%}
+    {%if attribute(object, 'arquivoBoleto') is not empty %}
+        <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" title="Visualizar Boleto" class="{{class_btn}}" aria-label="Left Align">
+            <span class="{{class_boleto}}" aria-hidden="true"></span>
+        </a>                               
+    {%endif%}
+    {%if attribute(object, 'arquivoComprovante') is not empty %}
+        <a href="{{path("getComprovante",{"id":object.id})}}" target="_blank" title="Visualizar Comprovante"class="{{class_btn}}" aria-label="Left Align">
+            <span class="{{class_comprovante}}" aria-hidden="true"></span>
+        </a>                               
+    {%endif%} 
+    {%if not attribute(object, 'status')%}
+        {% set title = 'Pagar Agora' %}
+        {%if attribute(object, 'valor') > 0 %}
+            {% set title = 'Receber Agora' %}               
+        {%endif%} 
+        <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
+            <!-- <img src="/img/glyphicons-money.png" width="13" height="9" > !-->
+            <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+        </a>                               
+    {%endif%}   
+{% endblock %}
+
+
+

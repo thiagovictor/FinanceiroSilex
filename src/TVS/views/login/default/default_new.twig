@@ -16,11 +16,13 @@
     {% block customform %}{% endblock%}
     {{ form_errors(form) }}
     {{ form_widget(form) }}
+    {% block button %}
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="{{class_btn_form_submit}}">Salvar</button>
             <a type="button" href="/{{ route.controller }}" class="{{class_btn_form_return}}" role="button">Voltar</a>
         </div>
     </div>
+    {% endblock %}
     {{ form_end(form) }}
 {% endblock %}
