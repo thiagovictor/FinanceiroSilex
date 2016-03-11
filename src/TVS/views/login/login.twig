@@ -20,7 +20,7 @@
             {% endif%}
             <div class="col-md-4"></div>
             <form class="form-signin col-md-4 text-center" method="POST" action="{{ path('user_autenticar') }}" >
-                <h2 class="form-signin-heading">Acesso restrito</h2>
+                <h2 class="form-signin-heading"><img src="/img/banner.png" width="345" heigth="56"></h2>
                 <label for="user" class="sr-only">Usu&aacute;rio</label>
                 <input type="text" name="user" id="user" value="{% if user is defined %}{{user}}{% endif%}" class="form-control" placeholder="Usu&aacute;rio" {% if user is not defined %}required autofocus{% endif%} >
                 <label for="password" class="sr-only">Senha</label>
