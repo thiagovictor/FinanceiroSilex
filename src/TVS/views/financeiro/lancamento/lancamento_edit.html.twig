@@ -1,31 +1,35 @@
 {% extends  "login/default/default_edit.twig" %}
 {% block customform %}
-    <div class="form-group">
-        {{ form_label(form.vencimento) }}
-        <div class="col-lg-4">
-            <div class='input-group date' id='vencimento'>
-                {{ form_widget(form.vencimento) }}
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar">
+    {% if form.vencimento is defined %}
+        <div class="form-group">
+            {{ form_label(form.vencimento) }}
+            <div class="col-lg-4">
+                <div class='input-group date' id='vencimento'>
+                    {{ form_widget(form.vencimento) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
                     </span>
-                </span>
+                </div>
+                {{ form_errors(form.vencimento) }}
             </div>
-            {{ form_errors(form.vencimento) }}
         </div>
-    </div>
-    <div class="form-group">
-        {{ form_label(form.pagamento) }}
-        <div class="col-lg-4">
-            <div class='input-group date' id='pagamento'>
-                {{ form_widget(form.pagamento) }}
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar">
+    {% endif %}
+    {% if form.pagamento is defined %}
+        <div class="form-group">
+            {{ form_label(form.pagamento) }}
+            <div class="col-lg-4">
+                <div class='input-group date' id='pagamento'>
+                    {{ form_widget(form.pagamento) }}
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                        </span>
                     </span>
-                </span>
+                </div>
+                {{ form_errors(form.pagamento) }}
             </div>
-            {{ form_errors(form.pagamento) }}
         </div>
-    </div>
+    {% endif %}
     {% if form.competencia is defined %}
         <div class="form-group">
             {{ form_label(form.competencia) }}
@@ -49,9 +53,9 @@
                     locale: 'pt-br'
                 });
                 $('#vencimento').datetimepicker({
-                //viewMode: 'years',
-                format: 'DD/MM/YYYY',
-                locale: 'pt-br'
+                    //viewMode: 'years',
+                    format: 'DD/MM/YYYY',
+                    locale: 'pt-br'
                 });
                 $('#pagamento').datetimepicker({
                     //viewMode: 'years',
