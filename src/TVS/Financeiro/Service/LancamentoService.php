@@ -74,7 +74,7 @@ class LancamentoService extends AbstractService {
     public function ajustarDate($date, $remove = false) {
         $s = explode('/', $date);
         if ($remove) {
-            if(sizeof($s) == 2){
+            if (sizeof($s) == 2) {
                 return $s[1] . "-" . $s[0] . "-01";
             }
             return $s[2] . "-" . $s[1] . "-01";
@@ -154,89 +154,91 @@ class LancamentoService extends AbstractService {
 
         return $data;
     }
+
     public function relatorioCustom($data) {
         $user = $this->app['session']->get('user');
         $data['user'] = $user->getId();
-        if (!isset($data["vencInicio"]) or !isset($data["vencFim"]) ) {
+        if (!isset($data["vencInicio"]) or ! isset($data["vencFim"])) {
             unset($data['vencInicio']);
             unset($data['vencFim']);
         }
-        if (!isset($data["pagInicio"]) or !isset($data["pagFim"]) ) {
+        if (!isset($data["pagInicio"]) or ! isset($data["pagFim"])) {
             unset($data['pagInicio']);
             unset($data['pagFim']);
         }
-        if (!isset($data["compInicio"]) or !isset($data["compFim"]) ) {
+        if (!isset($data["compInicio"]) or ! isset($data["compFim"])) {
             unset($data['compInicio']);
             unset($data['compFim']);
         }
         foreach ($data as $key => $value) {
-            if($value == null){
+            if ($value == null) {
                 unset($data[$key]);
                 continue;
             }
-            if(array_search($key, ['vencInicio','vencFim','pagInicio','pagFim'])!== FALSE){
+            if (array_search($key, ['vencInicio', 'vencFim', 'pagInicio', 'pagFim']) !== FALSE) {
                 $data[$key] = $this->ajustarDate($value);
                 continue;
             }
-            if(array_search($key, ['compInicio','compFim'])!== FALSE){
-                $data[$key] = $this->ajustarDate($value,true);
+            if (array_search($key, ['compInicio', 'compFim']) !== FALSE) {
+                $data[$key] = $this->ajustarDate($value, true);
                 continue;
             }
         }
-        
+
         if (isset($data["centrocusto"])) {
             $result = explode('_', $data['centrocusto']);
             if (isset($result[1])) {
-                if($result[1]!= ''){
+                if ($result[1] != '') {
                     $data['categoria'] = (int) $result[1];
                 }
             }
-            $data['centrocusto'] = (int)$result[0];
+            $data['centrocusto'] = (int) $result[0];
         }
         $param = $this->geraQueryCuston($data);
         $repo = $this->em->getRepository($this->entity);
-        return $repo->relatorioCustom($param); 
+        return $repo->relatorioCustom($param);
     }
+
     public function geraQueryCuston($data) {
         $bodyQuery = '';
         $parametros = [];
         foreach ($data as $key => $value) {
-            if($key == 'vencInicio'){
+            if ($key == 'vencInicio') {
                 $bodyQuery .= " l.vencimento >=  :vencInicio and ";
-            $parametros['vencInicio'] = $value; 
+                $parametros['vencInicio'] = $value;
                 continue;
             }
-            if($key == 'vencFim'){
+            if ($key == 'vencFim') {
                 $bodyQuery .= " l.vencimento <= :vencFim and ";
                 $parametros['vencFim'] = $value;
                 continue;
             }
-            if($key == 'pagInicio'){
+            if ($key == 'pagInicio') {
                 $bodyQuery .= " l.pagamento >= :pagInicio and ";
                 $parametros['pagInicio'] = $value;
                 continue;
             }
-            if($key == 'pagFim'){
+            if ($key == 'pagFim') {
                 $bodyQuery .= " l.pagamento <= :pagFim and ";
                 $parametros['pagFim'] = $value;
                 continue;
             }
-            if($key == 'compInicio'){
+            if ($key == 'compInicio') {
                 $bodyQuery .= " l.competencia >= :compInicio and ";
                 $parametros['compInicio'] = $value;
                 continue;
             }
-            if($key == 'compFim'){
+            if ($key == 'compFim') {
                 $bodyQuery .= " l.competencia <= :compFim and ";
                 $parametros['compFim'] = $value;
                 continue;
             }
-            if($key == 'tipo'){
-                if(!isset($data['valor'])){
-                    if($value == 'DESPESA'){
-                       $bodyQuery .= " l.valor <= :valor and ";
-                       $parametros['valor'] = $value;
-                       continue;
+            if ($key == 'tipo') {
+                if (!isset($data['valor'])) {
+                    if ($value == 'DESPESA') {
+                        $bodyQuery .= " l.valor <= :valor and ";
+                        $parametros['valor'] = $value;
+                        continue;
                     }
                     $bodyQuery .= " l.valor >= :valor and ";
                     $parametros['valor'] = $value;
@@ -244,22 +246,22 @@ class LancamentoService extends AbstractService {
                 }
                 continue;
             }
-            if($key == 'descricao'){
+            if ($key == 'descricao') {
                 $bodyQuery .= " l.{$key} like :descricao and ";
                 $parametros['descricao'] = "%{$value}%";
                 continue;
             }
-            if($key == 'documento'){
+            if ($key == 'documento') {
                 $bodyQuery .= " l.{$key} like :documento and ";
                 $parametros['documento'] = "%{$value}%";
                 continue;
             }
             $bodyQuery .= " l.{$key} = :{$key} and ";
             $parametros[$key] = $value;
-            
         }
-        return(['query' => substr($bodyQuery, 0, -4), 'param'=>$parametros]);
+        return(['query' => substr($bodyQuery, 0, -4), 'param' => $parametros]);
     }
+
     public function createTransf(array $array) {
         $registro = $this->hidrate(new Lancamento(), $array);
         if ($registro) {
@@ -288,6 +290,11 @@ class LancamentoService extends AbstractService {
         }
         $this->em->flush();
         $this->setMessage("Parcelamento gerado para demais meses!");
+    }
+
+    public function historicoSaldos($user) {
+        $repo = $this->em->getRepository($this->entity);
+        return $repo->historicoSaldos($user);
     }
 
     public static function checkDir($username) {

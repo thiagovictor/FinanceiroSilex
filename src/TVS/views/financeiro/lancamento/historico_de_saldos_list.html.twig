@@ -1,0 +1,58 @@
+{% extends "template.twig" %}
+{% block tituloPainel %}{{ titulo | raw }}{% endblock %}
+{% block superior %}
+    <a type="button" href="javascript:window.history.go(-1)" class="{{class_btn_form_return}}" role="button">Voltar</a>
+{% endblock %}
+
+{% set saldoinicial  = 0 %}
+{% for conta in saldoInicialContas %}
+    {% set saldoinicial = saldoinicial + attribute(conta, 'saldo')%}
+{% endfor %}
+
+{% block conteudo %}
+    <script type="text/javascript">
+        $(document).ready(function() 
+            { 
+                $("#historico").tablesorter(); 
+            } 
+        ); 
+    </script>
+    <table id="historico" class="{{class_table}} tablesorter">
+        <thead>
+            <tr>
+                <th>COMPETENCIA</th>
+                <th>DESPESA</th>
+                <th>RECEITA</th>
+                <th>ACUMULADO</th>
+                <th>MARGEM</th>
+                <th>SALDO</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for object in result %}
+                {% set margem = 0 %}
+                {% set acumulado = attribute(object, 'receita')+attribute(object, 'despesa') %}
+                {%if attribute(object, 'receita') is not null %}
+                    {% set margem = acumulado / attribute(object, 'receita') %}
+                    {% set margem = margem * 100 %}
+                {% endif %}
+                {% set saldoinicial = saldoinicial + acumulado %}
+                <tr >
+                    <td style="font-size: 12px">{{ attribute(object, 'competencia') | date("d/m/Y") }}</td> 
+                    <td style="font-size: 12px">{{ 'R$ '~attribute(object, 'despesa')| number_format }}</td> 
+                    <td style="font-size: 12px">{{ 'R$ '~attribute(object, 'receita')| number_format }}</td>
+                    <td > <span class="label label-{% if acumulado > 0%}success{% else %}danger{%endif%}">{{ 'R$ '~acumulado | number_format }}</span></td>
+                    <td > <span class="label label-{% if margem > 0%}success{% else %}danger{%endif%}">{{ margem | number_format }}%</span></td>
+                    <td > <span class="label label-{% if saldoinicial > 0%}success{% else %}danger{%endif%}">{{'R$ '~saldoinicial | number_format}}</span></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+
+
+

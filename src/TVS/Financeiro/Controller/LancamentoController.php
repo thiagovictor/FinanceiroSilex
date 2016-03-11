@@ -195,6 +195,16 @@ class LancamentoController extends AbstractController {
                         "route" => $serviceManager->mountArrayRoute()
             ]);
         })->bind('personalizado_listar');
+        
+        $this->controller->get('/display/consultas/historicodesaldos', function () use ($app) {
+            $result = $app[$this->service]->historicoSaldos($this->checkOwner());
+            $saldoInicialContas = $app['ContaService']->findBy(['user'=>$this->checkOwner()]);
+            return $app['twig']->render('financeiro/lancamento/historico_de_saldos_list.html.twig', [
+                        $this->param_view => $result, 
+                        'saldoInicialContas' => $saldoInicialContas,
+                        'titulo' => 'Hist&oacute;rico de saldos',
+            ]);
+        })->bind('historicodesaldos_listar');
     }
 
 }
