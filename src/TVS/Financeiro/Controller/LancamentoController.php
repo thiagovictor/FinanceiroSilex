@@ -205,6 +205,23 @@ class LancamentoController extends AbstractController {
                         'titulo' => 'Hist&oacute;rico de saldos',
             ]);
         })->bind('historicodesaldos_listar');
+        
+        $this->controller->get('/display/consultas/graphccusto', function () use ($app) {  
+            $base_date = new \DateTime((new \Symfony\Component\HttpFoundation\Session\Session())->get('baseDate') . "-01");
+            $ccustodesc = $app['CentrocustoService']->findBy(['user'=>$this->checkOwner()]);
+            foreach ($ccustodesc as $value) {
+                $ccusto[] = $value->getDescricao(); 
+            }
+            for ($i=1; $i <= 3; $i++){
+                $result[$base_date->format('m/Y')] = json_encode($app[$this->service]->getDespesasCentroCusto($this->checkOwner(),$base_date->format('Y-m-d')));
+                $base_date->sub(new \DateInterval("P1M"));
+            }
+            
+            return $app['twig']->render('financeiro/lancamento/graphccusto_list.html.twig', [
+                        $this->param_view => $result, 
+                        'categorias' => json_encode($ccusto), 
+            ]);
+        })->bind('graphccusto_listar');
     }
 
 }

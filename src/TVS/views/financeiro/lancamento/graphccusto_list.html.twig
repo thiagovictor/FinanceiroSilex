@@ -1,0 +1,107 @@
+{% extends "template.twig" %}
+{% block tituloPainel %}Gr&aacute;ficos{% endblock %}
+{% block superior %}
+    <a type="button" href="javascript:window.history.go(-1)" class="{{class_btn_form_return}}" role="button">Voltar</a>
+{% endblock %}
+
+{% block style %}
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/css/theme.css" rel="stylesheet">
+    <script src="/js/ie-emulation-modes-warning.js"></script> <!-- ou pode-se usar assim ==> app.request.basepath!-->
+    <script src="/js/selectbox.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <link href="/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="/js/moment-with-locales.js"></script>
+    <script src="/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript">
+
+        (function ($) { // encapsulate jQuery
+        $(function () {
+        var chart;
+        $(document).ready(function () {
+        chart = new Highcharts.Chart({
+        chart: {
+        renderTo: 'container',
+                type: 'bar'
+        },
+                title: {
+                text: 'Comparativo de gastos mensais.'
+                },
+                subtitle: {
+                text: 'Centros de custo'
+                },
+                xAxis: {
+                categories:{{ categorias }},
+                        title: {
+                        text: null
+                        }
+                },
+                yAxis: {
+                min: 0,
+                        title: {
+                        text: 'Valor (R$)',
+                                align: 'high'
+                        },
+                        labels: {
+                        overflow: 'justify'
+                        }
+                },
+                tooltip: {
+                formatter: function () {
+                return '' +
+                        this.series.name + ': R$ ' + this.y;
+                }
+                },
+                plotOptions: {
+                bar: {
+                dataLabels: {
+                enabled: true
+                }
+                }
+                },
+                legend: {
+                layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: - 100,
+                        y: 100,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: '#FFFFFF',
+                        shadow: true
+                },
+                credits: {
+                enabled: false
+                },
+                series: [
+                        {% for mes, valores in result %}
+                            {
+                            name: '{{ mes }}',
+                                    data:{{ valores }}
+                            },
+                        {% endfor %}
+                    ]
+            });
+            });
+            });
+            })(jQuery);
+    </script>
+
+
+{% endblock %}
+
+
+{% block conteudo %}
+
+    <div style="margin: 0 1em">
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        <div id="container" style="min-width: 400px; height: 1024px; margin: 0 auto"></div>
+    </div>
+
+{% endblock %}
+
+
+
+

@@ -359,5 +359,16 @@ class LancamentoService extends AbstractService {
         $this->setMessage("Pedido com falha!");
         return false;
     }
-
+    
+    public function getDespesasCentroCusto($user,$base_date) {
+        $repCcusto = $this->em->getRepository("TVS\Financeiro\Entity\Centrocusto");
+        $repLancamento = $this->em->getRepository($this->entity);
+        
+        $ccustos = $repCcusto->findBy(['user'=>$user]);
+        $formatado = [];
+        foreach ($ccustos as $ccusto) {
+            $formatado[] = $repLancamento->despesasCusto($user,$base_date,$ccusto);
+        }
+        return $formatado;
+    }
 }

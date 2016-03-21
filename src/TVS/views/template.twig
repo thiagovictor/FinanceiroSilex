@@ -20,20 +20,21 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %} Financeiro Pessoal {% endblock %}</title>
-        <link href="/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
-        <link href="/css/theme.css" rel="stylesheet">
-        <script src="/js/ie-emulation-modes-warning.js"></script> <!-- ou pode-se usar assim ==> app.request.basepath!-->
-        <script src="/js/selectbox.js"></script>
-        <!--https://eonasdan.github.io/bootstrap-datetimepicker/-->
-        <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
-        <link href="/css/bootstrap-datetimepicker.css" rel="stylesheet">
-        <script src="/js/moment-with-locales.js"></script>
-        <script src="/js/bootstrap-datetimepicker.js"></script>
-        <!--Ordenação do historico de saldos-->
-        <link rel="stylesheet" href="/css/style.css">
-	<script src="/js/jquery.tablesorter.min.js"></script>
-
+        {% block style %}
+            <link href="/css/bootstrap.min.css" rel="stylesheet">
+            <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+            <link href="/css/theme.css" rel="stylesheet">
+            <script src="/js/ie-emulation-modes-warning.js"></script> <!-- ou pode-se usar assim ==> app.request.basepath!-->
+            <script src="/js/selectbox.js"></script>
+            <!--https://eonasdan.github.io/bootstrap-datetimepicker/-->
+            <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+            <link href="/css/bootstrap-datetimepicker.css" rel="stylesheet">
+            <script src="/js/moment-with-locales.js"></script>
+            <script src="/js/bootstrap-datetimepicker.js"></script>
+            <!--Ordenação do historico de saldos-->
+            <link rel="stylesheet" href="/css/style.css">
+            <script src="/js/jquery.tablesorter.min.js"></script>
+        {% endblock %}
     </head>
 
 

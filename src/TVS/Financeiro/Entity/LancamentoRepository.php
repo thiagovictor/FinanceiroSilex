@@ -124,6 +124,25 @@ class LancamentoRepository extends EntityRepository {
         return ($valor) ? $valor : '0';
     }
 
+    public function despesasCusto($user,$base_date,$ccusto = null) {
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor)');
+        if ($user) {
+            $query->where("c.competencia = :date_start and c.user = :user and c.valor < 0 and c.transf is null and c.centrocusto = :ccusto")
+                    ->setParameters(array(
+                        'ccusto'=> $ccusto,
+                        'date_start' => $base_date,
+                        'user' => $user
+            ));
+        }
+//        echo $query->getQuery()->getSQL();
+//        var_dump($ccusto,$base_date,$user);
+//        exit();
+        $valor = $query->getQuery()
+                ->getSingleScalarResult();
+        return ($valor) ? (float) $valor*-1 : 0;
+    }
+
     public function infoAdditional($user = false) {
 
         $date = explode("-", $this->getSession()->get('baseDate'));
