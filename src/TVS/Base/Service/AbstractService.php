@@ -106,7 +106,7 @@ abstract class AbstractService {
             $this->setMessage("Registro removido com sucesso!");
             return true;
         } catch (ForeignKeyConstraintViolationException $ex) {
-            $this->setMessage($ex->getMessage());
+            $this->setMessage("C&oacute;digo do erro: {$ex->getSQLState()}<br>O registro que deseja deletar est&aacute; associado a outro registro e n&atilde;o pode ser removido.Remova as associa&ccedil;&otilde;es primeiro.");
             return false;
         }
     }

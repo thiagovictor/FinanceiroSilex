@@ -27,7 +27,7 @@ class Favorecido
 
     /**
      * @ORM\ManyToOne(targetEntity="TVS\Login\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="RESTRICT")
      */
     private $user;
     
