@@ -1,4 +1,18 @@
 {% extends  "login/default/default_list.html.twig" %}
+{% block endfortable %}
+    <tr>
+        <td ></td>
+        <td ></td>
+        <td align="right" >Soma: </td>
+        <td >
+            {% if soma < 0 %}
+                <font color="red" >R$ {{ soma | number_format }}</font>
+            {% else %} 
+                <font color="green" >R$ {{ soma | number_format }}</font>
+            {% endif %}
+        </td>
+    </tr>
+{% endblock %}
 {% block superior %}
     <a type="button" href="javascript:window.history.go(-1)" class="{{class_btn_form_return}}" role="button">Voltar</a>
 {% endblock %}
