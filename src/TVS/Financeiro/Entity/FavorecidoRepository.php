@@ -11,7 +11,7 @@ class FavorecidoRepository extends EntityRepository{
 
     public function fatchPairs() {
         $user = (new Session())->get('user');
-        $favorecidos = $this->findBy(array('user'=>$user->getId()),array());
+        $favorecidos = $this->findBy(array('user'=>$user->getId()),array('descricao'=>'ASC'));
         $array = array();
         foreach ($favorecidos as $favorecido ){
             $array[$favorecido->getId()] = $favorecido->getDescricao();

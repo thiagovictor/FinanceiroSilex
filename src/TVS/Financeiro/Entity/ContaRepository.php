@@ -10,7 +10,7 @@ class ContaRepository extends EntityRepository{
     
     public function fatchPairs() {
         $user = (new Session())->get('user');
-        $contas = $this->findBy(array('user'=>$user->getId()),array());
+        $contas = $this->findBy(array('user'=>$user->getId()),array('descricao'=>'ASC'));
         $array = array();
         foreach ($contas as $conta ){
             $array[$conta->getId()] = $conta->getDescricao();

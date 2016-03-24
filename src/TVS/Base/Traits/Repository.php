@@ -8,7 +8,8 @@ trait Repository {
         $query = parent::createQueryBuilder('c');
         if ($user) {
             $query->where("c.user = :user")
-                    ->setParameter('user', $user);
+                    ->setParameter('user', $user)
+                    ->orderBy('c.descricao','ASC');
         }
         return $query->setFirstResult($firstResult)
                         ->setMaxResults($maxResults)
