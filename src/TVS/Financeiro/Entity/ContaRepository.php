@@ -10,7 +10,7 @@ class ContaRepository extends EntityRepository{
     
     public function fatchPairs() {
         $user = (new Session())->get('user');
-        $contas = $this->findBy(array('user'=>$user->getId()),array('descricao'=>'ASC'));
+        $contas = $this->findBy(array('user'=>$user->getId(),'ativo'=>true),array('descricao'=>'ASC'));
         $array = array();
         foreach ($contas as $conta ){
             $array[$conta->getId()] = $conta->getDescricao();
@@ -37,7 +37,7 @@ class ContaRepository extends EntityRepository{
         $query = $this->_em->createQuery(
             "select c.id, c.descricao, c.saldo as saldoinicial,(select sum(l.valor) from TVS\Financeiro\Entity\Lancamento as l where c.id = l.conta and l.status = 1 and l.user = {$user->getId()})as saldo
             FROM TVS\Financeiro\Entity\Conta as c
-            where c.user = {$user->getId()}");  
+            where c.ativo = true and c.user = {$user->getId()}");  
             
     $result = $query->getResult();
     //var_dump($result);

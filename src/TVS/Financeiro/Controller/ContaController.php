@@ -20,10 +20,12 @@ class ContaController extends AbstractController {
         $this->fields_table = [
             'DESCRI&Ccedil;&Atilde;O',
             'SALDO',
+            'ATIVA'
         ];
         $this->object_key_table = [
             ['descricao'],
             ['money','saldo'],
+            ['bool','ativo']
         ];
         $this->is_owner = true;
     }

@@ -10,7 +10,12 @@ use TVS\Financeiro\Service\LancamentoService;
  * Lancamento
  * @ORM\Entity(repositoryClass="TVS\Financeiro\Entity\LancamentoRepository")
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="lancamento")
+ * @ORM\Table(name="lancamento", indexes={
+ *      @ORM\Index(name="IDX_competencia", columns={"competencia"}),
+ *      @ORM\Index(name="IDX_valor", columns={"valor"}),
+ *      @ORM\Index(name="IDX_transf", columns={"transf"}),
+ *      @ORM\Index(name="IDX_status", columns={"status"}),
+ * })
  */
 class Lancamento {
 

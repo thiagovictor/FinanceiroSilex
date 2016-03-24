@@ -37,6 +37,13 @@ class Conta {
     private $saldo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="ativo", type="boolean", nullable=false)
+     */
+    protected $ativo;
+
+    /**
      * @ORM\ManyToOne(targetEntity="TVS\Login\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="RESTRICT")
      */
@@ -78,12 +85,22 @@ class Conta {
         return $this;
     }
 
+    function getAtivo() {
+        return $this->ativo;
+    }
+
+    function setAtivo($ativo) {
+        $this->ativo = $ativo;
+        return $this;
+    }
+
     public function toArray() {
         return [
             'id' => $this->getId(),
-            'descricao'=>  $this->getDescricao(),
-            'saldo'=>  $this->getSaldo(),
-            'user'=>  $this->getUser()->getId()
+            'descricao' => $this->getDescricao(),
+            'saldo' => $this->getSaldo(),
+            'ativo' => $this->getAtivo(),
+            'user' => $this->getUser()->getId()
         ];
     }
 
