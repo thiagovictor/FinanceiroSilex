@@ -189,7 +189,7 @@ class LancamentoRepository extends EntityRepository {
                 "select distinct l.competencia
                     ,(SELECT sum(d.valor) FROM TVS\Financeiro\Entity\lancamento as d where d.status = 1 and d.valor < 0 and d.transf is null and d.competencia = l.competencia and d.user = l.user) as despesa
                     ,(SELECT sum(r.valor) FROM TVS\Financeiro\Entity\lancamento as r where r.status = 1 and r.valor > 0 and r.transf is null and r.competencia = l.competencia and r.user = l.user) as receita
-                from TVS\Financeiro\Entity\lancamento as l where l.status = 1 and l.user = {$user->getId()} order by l.vencimento ASC");
+                from TVS\Financeiro\Entity\lancamento as l where l.status = 1 and l.user = {$user->getId()} order by l.competencia ASC");
         $result = $query->getResult();
         return $result;
     }
