@@ -55,12 +55,12 @@ class ParceladoType extends AbstractType {
                         )
                 )->add('centrocusto', 'choice', array(
                     'choices' => $this->centrocusto,
-                    'required' => true,
+                    'required' => false,
                     'label' => 'C.custo'
                         )
                 )->add('favorecido', 'choice', array(
                     'choices' => $this->favorecido,
-                    'required' => true,
+                    'required' => false,
                     'label' => 'Favorecido/Pagador'
                         )
                 )->add('conta', 'choice', array(
