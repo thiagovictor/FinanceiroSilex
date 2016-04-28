@@ -29,7 +29,7 @@ $driverChain = new DriverChain();
 $driverChain->addDriver($annotationDriver, 'TVS'); //Namespace Principal
 
 $config = new Configuration;
-$config->setProxyDir('/tmp');
+$config->setProxyDir('/data/tmp');
 $config->setProxyNamespace('Proxy');
 $config->setAutoGenerateProxyClasses(true); // this can be based on production config.
 // register metadata driver

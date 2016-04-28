@@ -201,7 +201,7 @@ abstract class AbstractService {
         return false;
     }
 
-    public function findBy(array $param) {
+    public function findBy(array $param , array $order = array()) {
         $repo = $this->em->getRepository($this->entity);
         $object = $repo->findBy($param);
         if ($object) {

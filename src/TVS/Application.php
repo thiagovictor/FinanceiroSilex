@@ -19,6 +19,7 @@ use TVS\Financeiro\Controller\LancamentoController;
 use TVS\Financeiro\Controller\RecorrenteController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
+use TVS\Api\Controller\ApiController;
 
 class Application extends ApplicationSilex {
 
@@ -42,6 +43,7 @@ class Application extends ApplicationSilex {
             ['name' => 'LancamentoService', 'service' => 'TVS\Financeiro\Service\LancamentoService', 'entity' => 'TVS\Financeiro\Entity\Lancamento'],
             ['name' => 'RecorrenteService', 'service' => 'TVS\Financeiro\Service\RecorrenteService', 'entity' => 'TVS\Financeiro\Entity\Recorrente'],
             ['name' => 'LDAP', 'service' => 'TVS\Base\Lib\ConnectionLDAP'],
+            ['name' => 'ApiService', 'service' => 'TVS\Api\Service\ApiService'],
         ];
 
         $forms = [
@@ -121,6 +123,7 @@ class Application extends ApplicationSilex {
         $app->mount("/conta", new ContaController());
         $app->mount("/lancamento", new LancamentoController());
         $app->mount("/recorrente", new RecorrenteController());
+        $app->mount("/api", new ApiController());
     }
 
     public function registerServices($options) {
