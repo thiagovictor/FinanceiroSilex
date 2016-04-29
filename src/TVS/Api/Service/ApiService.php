@@ -34,7 +34,7 @@ class ApiService {
         if (!$user) {
             return false;
         }
-        $tokenValid = $user->encryptedPassword($login . $ip . date('d/m/Y H'));
+        $tokenValid = $user->encryptedPassword($login . $ip . date('d/m/Y'));
         if ($token === $tokenValid) {
             return $user;
         }
@@ -66,16 +66,54 @@ class ApiService {
             'conta' => 'ContaService',
             'lancamento' => 'LancamentoService',
             'recorrente' => 'RecorrenteService'];
-        
-        return isset($services[$module])? $services[$module] : false;
+
+        return isset($services[$module]) ? $services[$module] : false;
     }
 
     public function ObjectsToArray($array) {
         $objects = [];
         foreach ($array as $value) {
-            $objects[] = $value->toArray(true);
+            $objects[] = $this->classToArray($value);
         }
         return $objects;
+    }
+
+    public function classToArray($class) {
+        if (!is_object($class)) {
+            return false;
+        }
+        $methods = $this->methodGet($class);
+        $classArray = [];
+        foreach ($methods as $key => $method) {
+            $value = $class->$method();
+            if ($value instanceof \DateTime) {
+                $value = $value->format('d/m/Y');
+                $classArray[strtolower(substr($method, 3, strlen($method)))] = $value;
+                continue;
+            }
+            if (is_object($value)) {
+                $value = $value->toArray();
+                $classArray[strtolower(substr($method, 3, strlen($method)))] = $value;
+                continue;
+            }
+            $classArray[strtolower(substr($method, 3, strlen($method)))] = $value;
+        }
+        return $classArray;
+    }
+
+    public function methodGet($class) {
+        $methods = get_class_methods($class);
+        foreach ($methods as $key => $method) {
+            if (substr($method, 0, 3) != 'get') {
+                unset($methods[$key]);
+                continue;
+            }
+            if ($method == 'getUser') {
+                unset($methods[$key]);
+                continue;
+            }
+        }
+        return $methods;
     }
 
 }
