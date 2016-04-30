@@ -77,6 +77,11 @@ class ApiService {
         }
         return $objects;
     }
+    public function ObjectOneToArray($object) {
+
+           return $this->classToArray($object);
+       
+    }
 
     public function classToArray($class) {
         if (!is_object($class)) {

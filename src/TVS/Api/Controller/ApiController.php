@@ -37,6 +37,24 @@ class ApiController implements ControllerProviderInterface {
             return $response;
             
         })->bind($this->module . '_api_listar')->value('non_require_authentication', true);
+        
+        $this->controller->get('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
+            $this->module = $module;
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $busca = ['user' => $user,
+                      'id' => $id];
+            $result =  $app['ApiService']->ObjectOneToArray($app[$app['ApiService']->getService($module)]->findOneBy($busca));
+            $response = new Response(json_encode($result));
+            $response->headers->set("Access-Control-Allow-Origin", "*");
+            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
+            $response->setStatusCode(200);
+            return $response;
+            
+        })->bind($this->module . '_api_get')->value('non_require_authentication', true);
 
         $this->controller->post('/autenticar', function () use ($app) {
             $user = $app['LoginService']->findByUsernameAndPassword($app['request']->get('login'), $app['request']->get('key'));
