@@ -7,10 +7,10 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiController implements ControllerProviderInterface {
+
     protected $controller;
     protected $app;
     protected $module;
-
 
     public function connect(Application $app) {
         $this->controller = $app['controllers_factory'];
@@ -28,16 +28,15 @@ class ApiController implements ControllerProviderInterface {
                 $busca['competencia'] = new \DateTime(date('Y-m') . '-01');
                 $order = ['pagamento' => 'ASC', 'vencimento' => 'ASC'];
             }
-            $result =  $app['ApiService']->ObjectsToArray($app[$app['ApiService']->getService($module)]->findBy($busca,$order));
+            $result = $app['ApiService']->ObjectsToArray($app[$app['ApiService']->getService($module)]->findBy($busca, $order));
             $response = new Response(json_encode($result));
             $response->headers->set("Access-Control-Allow-Origin", "*");
             $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
             $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
             $response->setStatusCode(200);
             return $response;
-            
         })->bind($this->module . '_api_listar')->value('non_require_authentication', true);
-        
+
         $this->controller->get('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
             $this->module = $module;
             $user = $app['ApiService']->isValidToken($login, $token);
@@ -45,15 +44,14 @@ class ApiController implements ControllerProviderInterface {
                 return new Response('User False');
             }
             $busca = ['user' => $user,
-                      'id' => $id];
-            $result =  $app['ApiService']->ObjectOneToArray($app[$app['ApiService']->getService($module)]->findOneBy($busca));
+                'id' => $id];
+            $result = $app['ApiService']->ObjectOneToArray($app[$app['ApiService']->getService($module)]->findOneBy($busca));
             $response = new Response(json_encode($result));
             $response->headers->set("Access-Control-Allow-Origin", "*");
             $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
             $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
             $response->setStatusCode(200);
             return $response;
-            
         })->bind($this->module . '_api_get')->value('non_require_authentication', true);
 
         $this->controller->post('/autenticar', function () use ($app) {
@@ -73,6 +71,38 @@ class ApiController implements ControllerProviderInterface {
             $response->setStatusCode(200);
             return $response;
         })->bind('login_api')->value('non_require_authentication', true);
+
+        $this->controller->get('/info/rest/conta/{login}/{token}', function ($login, $token) use ($app) {
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $app['session']->set('baseDate',date("Y-m"));
+            $result = $app['ContaService']->infoAdditional($user);
+
+            $response = new Response(json_encode($result));
+            $response->headers->set("Access-Control-Allow-Origin", "*");
+            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
+            $response->setStatusCode(200);
+            return $response;
+        })->bind('conta_saldos_api_get')->value('non_require_authentication', true);
+        
+        $this->controller->get('/totais/rest/conta/{login}/{token}', function ($login, $token) use ($app) {
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $app['session']->set('baseDate',date("Y-m"));
+            $result = $app['LancamentoService']->infoAdditional($user);
+
+            $response = new Response(json_encode([$result]));
+            $response->headers->set("Access-Control-Allow-Origin", "*");
+            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
+            $response->setStatusCode(200);
+            return $response;
+        })->bind('conta_totais_api_get')->value('non_require_authentication', true);
 
         return $this->controller;
     }
