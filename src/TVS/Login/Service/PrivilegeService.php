@@ -72,7 +72,7 @@ class PrivilegeService extends AbstractService {
         
         foreach ($privileges as $privilege) {
             if(array_search($privilege->getRoute()->getId(), $notRemove)=== false){
-                $this->delete($privilege->getId());
+                $this->delete($privilege->getId(),$user);
             }
         }
         $this->em->flush();
