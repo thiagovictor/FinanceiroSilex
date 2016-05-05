@@ -1,0 +1,42 @@
+{% extends "template.twig" %}
+{% block tituloPainel %}Listagem de documentos com anexo desconhecido{% endblock %}
+{% block superior %}
+    {% if Message is defined %}
+        {% for mens in Message %}
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <ul>{{ mens | raw }}</ul>
+            </div>
+        {% endfor%}
+    {% endif %}
+{% endblock %}
+
+{% block conteudo %}
+   
+        <table class="{{class_table}}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vencimento</th>
+                    <th>Pagamento</th>
+                    <th>Descri&ccedil;&atilde;o</th>
+                    <th>Anexo</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for anexo in anexos %}
+                    <tr>
+                      <td style="font-size: 12px">{{ anexo['id'] }}</td> 
+                      <td style="font-size: 12px">{{ anexo['vencimento'] }}</td> 
+                      <td style="font-size: 12px">{{ anexo['pagamento'] }}</td> 
+                      <td style="font-size: 12px">{{ anexo['descricao'] }}</td> 
+                      <td style="font-size: 12px">{{ anexo['arquivo'] }}</td> 
+                     
+                    </tr>
+                {% endfor%}
+
+            </tbody>
+        </table>
+
+{% endblock %}

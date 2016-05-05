@@ -27,7 +27,7 @@ class LancamentoController extends AbstractController {
             'VALOR',
             'C.CUSTO',
             'CONTA',
-            //'FAV./PAG.'
+                //'FAV./PAG.'
         ];
         $this->object_key_table = [
             ['datetime', 'vencimento'],
@@ -36,7 +36,7 @@ class LancamentoController extends AbstractController {
             ['money', 'valor'],
             ['centrocusto', 'descricao'],
             ['conta', 'descricao'],
-            //['favorecido', 'descricao'],
+                //['favorecido', 'descricao'],
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',
@@ -58,6 +58,9 @@ class LancamentoController extends AbstractController {
             if (!$boleto) {
                 return false;
             }
+            if (!file_exists("../data" . $boleto)) {
+                return new Response('Nenhum documento foi localizado!', '404');
+            }
             return new Response(
                     (new RepositoryFile("../data" . $boleto))->getArquivo(), 200, array(
                 'Content-Type' => 'application/pdf',
@@ -76,6 +79,9 @@ class LancamentoController extends AbstractController {
             if (!$comprovante) {
                 return false;
             }
+            if (!file_exists("../data" . $comprovante)) {
+                return new Response('Nenhum documento foi localizado!', '404');
+            }
             return new Response(
                     (new RepositoryFile("../data" . $comprovante))->getArquivo(), 200, array(
                 'Content-Type' => 'application/pdf',
@@ -83,6 +89,49 @@ class LancamentoController extends AbstractController {
                     )
             );
         })->bind('getComprovante');
+
+        $this->controller->get('/display/integridade/anexos', function () use ($app) {
+            $user = $app['session']->get('user');
+            $lancamentos = $app['LancamentoService']->findby(['user' => $user]);
+            $anexos = [];
+            foreach ($lancamentos as $lancamento) {
+                if (!empty($lancamento->getArquivoBoleto())) {
+                    $arquivo = $lancamento->getArquivoBoleto();
+                    if (!file_exists("../data" . $arquivo)) {
+                        $pagamento = '';
+                        if ($lancamento->getPagamento() instanceof \DateTime){
+                            $pagamento = $lancamento->getPagamento()->format('d/m/Y');
+                        }
+                        $anexos[] = [
+                            'id' => $lancamento->getId(),
+                            'vencimento' => $lancamento->getVencimento()->format('d/m/Y'),
+                            'pagamento' => $pagamento,
+                            'descricao' => $lancamento->getDescricao(),
+                            'arquivo' => "../data" . $arquivo
+                        ];
+                    }
+                }
+                if (!empty($lancamento->getArquivoComprovante())) {
+                    $arquivo = $lancamento->getArquivoComprovante();
+                    if (!file_exists("../data" . $arquivo)) {
+                       $pagamento = '';
+                        if ($lancamento->getPagamento() instanceof \DateTime){
+                            $pagamento = $lancamento->getPagamento()->format('d/m/Y');
+                        }
+                        $anexos[] = [
+                            'id' => $lancamento->getId(),
+                            'vencimento' => $lancamento->getVencimento()->format('d/m/Y'),
+                            'pagamento' => $pagamento,
+                            'descricao' => $lancamento->getDescricao(),
+                            'arquivo' => "  |  ../data" . $arquivo
+                        ];
+                    }
+                }
+            }
+            return $app['twig']->render('financeiro/lancamento/list_anexos_integridade.html.twig', [
+                        'anexos' => $anexos
+            ]);
+        })->bind('integridade_listar');
 
         $this->controller->get('/edit/status/{id}', function ($id) use ($app) {
             $user = $app['session']->get('user');
@@ -96,11 +145,11 @@ class LancamentoController extends AbstractController {
             $serviceManager->update($lancamento->toArray(), $this->checkOwner());
             return $app->redirect($app["url_generator"]->generate($this->bind . '_listar'));
         })->bind('editStatus');
-        
+
         $this->controller->get('/edit/status/cartao/{id}', function ($id) use ($app) {
             $user = $app['session']->get('user');
             $serviceManager = $app['LancamentoService'];
-            $serviceManager->pagamentoFatura($id,$user);
+            $serviceManager->pagamentoFatura($id, $user);
 
             $result = $app[$this->service]->findPagination(0, $this->registros_por_pagina, $this->checkOwner());
             return $app['twig']->render($this->view_list, [
@@ -116,8 +165,6 @@ class LancamentoController extends AbstractController {
                         'titulo' => $this->titulo,
                         'pagination' => $app[$this->service]->pagination(1, $this->registros_por_pagina, false, false, $this->checkOwner())
             ]);
-            
-            
         })->bind('editStatusCartao');
 
         $this->controller->post('/edit/mes', function () use ($app) {
@@ -165,7 +212,7 @@ class LancamentoController extends AbstractController {
                         'object_key_table' => $object_key_table,
             ]);
         })->bind($this->bind . '_credito_fatura');
-        
+
         $this->controller->match('/display/consultas/personalizado', function () use ($app) {
             $form = $app['CustomRelatorioForm'];
             $form->handleRequest($app['request']);
@@ -175,13 +222,13 @@ class LancamentoController extends AbstractController {
                 $result = $serviceManager->relatorioCustom($data);
                 return $app['twig']->render('financeiro/lancamento/custom_list.html.twig', [
                             'isAllowed' => $app[$this->service]->isAllowed(true),
-                        'bind_path' => $this->bind,        
-                        $this->param_view => $result,
-                        'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
-                        'fields_table' => $this->fields_table,
-                        'object_key_table' => $this->object_key_table,
-                        'path_table_aditional' => $this->path_table_aditional,
-                        'pagination' => '',
+                            'bind_path' => $this->bind,
+                            $this->param_view => $result,
+                            'additional' => $app[$this->service]->infoAdditional($this->checkOwner()),
+                            'fields_table' => $this->fields_table,
+                            'object_key_table' => $this->object_key_table,
+                            'path_table_aditional' => $this->path_table_aditional,
+                            'pagination' => '',
                             "Message" => $serviceManager->getMessage(),
                             'titulo' => $this->titulo,
                             "form" => $form->createView(),
@@ -195,31 +242,31 @@ class LancamentoController extends AbstractController {
                         "route" => $serviceManager->mountArrayRoute()
             ]);
         })->bind('personalizado_listar');
-        
+
         $this->controller->get('/display/consultas/historicodesaldos', function () use ($app) {
             $result = $app[$this->service]->historicoSaldos($this->checkOwner());
-            $saldoInicialContas = $app['ContaService']->findBy(['user'=>$this->checkOwner()]);
+            $saldoInicialContas = $app['ContaService']->findBy(['user' => $this->checkOwner()]);
             return $app['twig']->render('financeiro/lancamento/historico_de_saldos_list.html.twig', [
-                        $this->param_view => $result, 
+                        $this->param_view => $result,
                         'saldoInicialContas' => $saldoInicialContas,
                         'titulo' => 'Hist&oacute;rico de saldos',
             ]);
         })->bind('historicodesaldos_listar');
-        
-        $this->controller->get('/display/consultas/graphccusto', function () use ($app) {  
+
+        $this->controller->get('/display/consultas/graphccusto', function () use ($app) {
             $base_date = new \DateTime((new \Symfony\Component\HttpFoundation\Session\Session())->get('baseDate') . "-01");
-            $ccustodesc = $app['CentrocustoService']->findBy(['user'=>$this->checkOwner()]);
+            $ccustodesc = $app['CentrocustoService']->findBy(['user' => $this->checkOwner()]);
             foreach ($ccustodesc as $value) {
-                $ccusto[] = $value->getDescricao(); 
+                $ccusto[] = $value->getDescricao();
             }
-            for ($i=1; $i <= 3; $i++){
-                $result[$base_date->format('m/Y')] = json_encode($app[$this->service]->getDespesasCentroCusto($this->checkOwner(),$base_date->format('Y-m-d')));
+            for ($i = 1; $i <= 3; $i++) {
+                $result[$base_date->format('m/Y')] = json_encode($app[$this->service]->getDespesasCentroCusto($this->checkOwner(), $base_date->format('Y-m-d')));
                 $base_date->sub(new \DateInterval("P1M"));
             }
-            
+
             return $app['twig']->render('financeiro/lancamento/graphccusto_list.html.twig', [
-                        $this->param_view => $result, 
-                        'categorias' => json_encode($ccusto), 
+                        $this->param_view => $result,
+                        'categorias' => json_encode($ccusto),
             ]);
         })->bind('graphccusto_listar');
     }

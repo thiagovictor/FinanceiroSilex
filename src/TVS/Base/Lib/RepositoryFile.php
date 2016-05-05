@@ -50,13 +50,16 @@ class RepositoryFile {
     }
 
     public function getArquivo() {
+        if (!file_exists($this->full_file_name)) {
+            return false;
+        }
         //$this->setHeader();
         $handle = fopen($this->full_file_name, "rb");
         $conteudo = fread($handle, $this->size);
         fclose($handle);
         return $conteudo;
     }
-    
+
     public function getFilename() {
         return $this->filename;
     }
@@ -76,5 +79,5 @@ class RepositoryFile {
     public function getDownload() {
         return $this->download;
     }
-}
 
+}
