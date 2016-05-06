@@ -397,24 +397,9 @@ class Lancamento {
      * @ORM\preUpdate
      */
     public function uploadDocs() {
-//        $completePath = LancamentoService::checkDir($this->user->getUsername());
-//        $this->arquivoBoleto->move($completePath."/profile/{$this->user->getUsername()}/docs/", "boleto_" . time() . "." . $this->arquivoBoleto->getClientOriginalExtension());
-//        $this->arquivoComprovante->move($completePath."/profile/{$this->user->getUsername()}/docs/", "comprovante" . time() . "." . $this->arquivoComprovante->getClientOriginalExtension());
-//       var_dump($this->arquivoBoleto);
-////        var_dump($comprov_temp);
-//        exit();
-
         $boleto_temp = $this->arquivoBoleto;
         $comprov_temp = $this->arquivoComprovante;
-        $forms = ["LancamentoForm"];
-        $file = null;
-        foreach ($forms as $value) {
-            if (!isset($_FILES[$value])) {
-                continue;
-            }
-            $file = $_FILES[$value];
-        }
-
+        $file = $_FILES['LancamentoForm'];
         if (!$file) {
             return false;
         }
@@ -428,11 +413,10 @@ class Lancamento {
                 $this->arquivoComprovante = $result["comprovante"];
             }
 
-
-            if (!empty($boleto_temp)) {
+            if (!empty($boleto_temp) and isset($result["boleto"])) {
                 LancamentoService::removeDocs($boleto_temp);
             }
-            if (!empty($comprov_temp)) {
+            if (!empty($comprov_temp and isset($result["comprovante"]))) {
                 LancamentoService::removeDocs($comprov_temp);
             }
         }
@@ -456,8 +440,6 @@ class Lancamento {
             'id' => $this->getId(),
             'valor' => str_replace("-", "", $this->getValor()),
             'vencimento' => $this->getVencimento()->format('d/m/Y'),
-            //'arquivoBoleto' => new \Symfony\Component\HttpFoundation\File\File("../data".$this->getArquivoBoleto()),
-            //'arquivoComprovante' => new \Symfony\Component\HttpFoundation\File\File("../data".$this->getArquivoComprovante()),
             'competencia' => $this->getCompetencia()->format('m/Y'),
             'descricao' => $this->getDescricao(),
             'documento' => $this->getDocumento(),

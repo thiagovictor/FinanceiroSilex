@@ -337,8 +337,11 @@ class LancamentoService extends AbstractService {
     }
 
     publiC static function removeDocs($path) {
-        $completePath = __DIR__ . "/../../../../data";
-        if (unlink($completePath . $path)) {
+        $completePath = __DIR__ . "/../../../../data" . $path;
+        if(!file_exists($completePath)){
+            return false;
+        }
+        if (unlink($completePath)) {
             return true;
         }
         return false;
