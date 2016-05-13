@@ -73,6 +73,30 @@ class ApiController implements ControllerProviderInterface {
             return $response;
         })->bind($this->module . '_api_get')->value('non_require_authentication', true);
 
+        $this->controller->delete('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
+            $this->module = $module;
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $result = $app[$app['ApiService']->getService($module)]->delete($id, $user);
+            $response = new Response(json_encode("verdadeiro"));
+            $response->headers->set("Access-Control-Allow-Origin", "*");
+            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
+            $response->setStatusCode(200);
+            return $response;
+        })->bind($this->module . '_api_delete')->value('non_require_authentication', true);
+
+        $this->controller->options('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
+            $response = new Response(json_encode("true"));
+            $response->headers->set("Access-Control-Allow-Origin", "*");
+            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
+            $response->setStatusCode(200);
+            return $response;
+        })->bind($this->module . '_api_options')->value('non_require_authentication', true);
+
         $this->controller->post('/autenticar', function () use ($app) {
             $user = $app['LoginService']->findByUsernameAndPassword($app['request']->get('login'), $app['request']->get('key'));
             if ($user) {
