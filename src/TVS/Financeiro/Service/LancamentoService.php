@@ -85,10 +85,10 @@ class LancamentoService extends AbstractService {
     public function ajustaData(array $data = array()) {
         $user = $this->app['session']->get('user');
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
-        $data['status'] = (isset($data['status'])) ? $data['status'] : false;
+        $data['status'] = (isset($data['status'])) ? 1 : 0;
         if (isset($data["option"])) {
             if ($data["option"] == 'transferencia') {
-                $data["status"] = true;
+                $data["status"] = 1;
                 $data["transf"] = time();
             }
         }
