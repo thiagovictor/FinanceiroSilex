@@ -155,7 +155,6 @@ class ApiController implements ControllerProviderInterface {
             $app['session']->set('user', $user);
             $app['session']->set('baseDate', date("Y-m"));
             $attributes = [
-                'option',
                 'descricao',
                 'documento',
                 'tipo',
@@ -165,6 +164,14 @@ class ApiController implements ControllerProviderInterface {
                 'cartao',
                 'status'
             ];
+            if ($option == 'transferencia') {
+                $attributes[] = 'conta2';
+            }
+            if ($option == 'parcelado') {
+                $attributes[] = 'parcelas';
+                $option = 'normal';
+            }
+
             $lancamento = [];
             $fp = fopen("logsHoje.txt", "a+");
             //"Sat May 07 2016 00:00:00 GMT-0300 (BRT)"
@@ -177,6 +184,7 @@ class ApiController implements ControllerProviderInterface {
             $lancamento['competencia'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('competencia'))))->format("m/Y");
 
             $lancamento['valor'] = $this->moedaToDecimal($app['request']->get('valor'));
+            $lancamento['option'] = $option;
 
             fwrite($fp, 'Vencimento:' . $lancamento['vencimento'] . "\r\n");
             if ($app['request']->get('pagamento') !== 'null') {
