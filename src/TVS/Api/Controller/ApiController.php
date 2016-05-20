@@ -19,6 +19,26 @@ class ApiController implements ControllerProviderInterface {
         return $valor; //retorna o valor formatado para gravar no banco
     }
 
+    function ResponseApi($content) {
+        $response = new Response(json_encode($content));
+        $response->headers->set("Access-Control-Allow-Origin", "*");
+        $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+        $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
+        $response->setStatusCode(200);
+        return $response;
+    }
+    
+    public function logger() {
+        $attributes = ['option','vencimento','competencia','pagamento','valor', 'descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
+        $fp = fopen("logsHoje.txt", "a+");
+        foreach ($attributes as $value) {
+            if (isset($_POST[$value])) {
+                fwrite($fp, $value . ":  " . $_POST[$value] . "\r\n");
+            }
+        }
+        fclose($fp);
+    }
+
     public function connect(Application $app) {
         $this->controller = $app['controllers_factory'];
         $this->app = $app;
@@ -48,12 +68,7 @@ class ApiController implements ControllerProviderInterface {
                     ];
                 }
             }
-            $response = new Response(json_encode($result));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi($result);
         })->bind($this->module . '_api_listar')->value('non_require_authentication', true);
 
         $this->controller->get('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
@@ -65,12 +80,7 @@ class ApiController implements ControllerProviderInterface {
             $busca = ['user' => $user,
                 'id' => $id];
             $result = $app['ApiService']->ObjectOneToArray($app[$app['ApiService']->getService($module)]->findOneBy($busca));
-            $response = new Response(json_encode($result));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi($result);
         })->bind($this->module . '_api_get')->value('non_require_authentication', true);
 
         $this->controller->delete('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
@@ -80,39 +90,19 @@ class ApiController implements ControllerProviderInterface {
                 return new Response('User False');
             }
             $result = $app[$app['ApiService']->getService($module)]->delete($id, $user);
-            $response = new Response(json_encode("verdadeiro"));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi(json_encode($result));
         })->bind($this->module . '_api_delete')->value('non_require_authentication', true);
 
         $this->controller->options('/rest/{module}/{login}/{token}/{id}', function ($module, $login, $token, $id) use ($app) {
-            $response = new Response(json_encode("true"));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi("true");
         })->bind($this->module . '_api_options')->value('non_require_authentication', true);
 
         $this->controller->post('/autenticar', function () use ($app) {
             $user = $app['LoginService']->findByUsernameAndPassword($app['request']->get('login'), $app['request']->get('key'));
             if ($user) {
-                $response = new Response(json_encode(['token' => $app['ApiService']->getToken($app['request']->get('login'))]));
-                $response->headers->set("Access-Control-Allow-Origin", "*");
-                $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-                $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-                $response->setStatusCode(200);
-                return $response;
+                return $this->ResponseApi(['token' => $app['ApiService']->getToken($app['request']->get('login'))]);
             }
-            $response = new Response(json_encode('Acesso negado'));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi('Acesso negado');
         })->bind('login_api')->value('non_require_authentication', true);
 
         $this->controller->get('/info/rest/conta/{login}/{token}', function ($login, $token) use ($app) {
@@ -122,13 +112,7 @@ class ApiController implements ControllerProviderInterface {
             }
             $app['session']->set('baseDate', date("Y-m"));
             $result = $app['ContaService']->infoAdditional($user);
-
-            $response = new Response(json_encode($result));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi($result);
         })->bind('conta_saldos_api_get')->value('non_require_authentication', true);
 
         $this->controller->get('/totais/rest/conta/{login}/{token}', function ($login, $token) use ($app) {
@@ -138,13 +122,7 @@ class ApiController implements ControllerProviderInterface {
             }
             $app['session']->set('baseDate', date("Y-m"));
             $result = $app['LancamentoService']->infoAdditional($user);
-
-            $response = new Response(json_encode([$result]));
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi($result);
         })->bind('conta_totais_api_get')->value('non_require_authentication', true);
 
         $this->controller->post('/cadastro/lancamento/{option}/{login}/{token}', function ($option, $login, $token) use ($app) {
@@ -154,50 +132,25 @@ class ApiController implements ControllerProviderInterface {
             }
             $app['session']->set('user', $user);
             $app['session']->set('baseDate', date("Y-m"));
-            $attributes = [
-                'option',
-                'descricao',
-                'documento',
-                'tipo',
-                'centrocusto',
-                'favorecido',
-                'conta',
-                'cartao',
-                'status'
-            ];
+            $attributes = ['option','descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
             $lancamento = [];
-            $fp = fopen("logsHoje.txt", "a+");
-            //"Sat May 07 2016 00:00:00 GMT-0300 (BRT)"
-            // Sat May 07 2016 00:00:00 GMT-0300 (Hora oficial do Brasil)
-            // fwrite($fp, 'Vencimento:' . $app['request']->get('pagamento') . "\r\n");
             $lancamento['vencimento'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('vencimento'))))->format("d/m/Y");
+            $lancamento['competencia'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('competencia'))))->format("m/Y");
+            $lancamento['valor'] = $this->moedaToDecimal($app['request']->get('valor'));
             if ($app['request']->get('pagamento') !== 'null') {
                 $lancamento['pagamento'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('pagamento'))))->format("d/m/Y");
             }
-            $lancamento['competencia'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('competencia'))))->format("m/Y");
-
-            $lancamento['valor'] = $this->moedaToDecimal($app['request']->get('valor'));
-
-            fwrite($fp, 'Vencimento:' . $lancamento['vencimento'] . "\r\n");
-            if ($app['request']->get('pagamento') !== 'null') {
-                fwrite($fp, 'Pagamento:' . $lancamento['pagamento'] . "\r\n");
-            }
-            fwrite($fp, 'Competencia:' . $lancamento['competencia'] . "\r\n");
-
             foreach ($attributes as $value) {
                 if ($app['request']->get($value)) {
                     $lancamento[$value] = $app['request']->get($value);
-                    fwrite($fp, $value . ':' . $app['request']->get($value) . "\r\n");
                 }
             }
-            fclose($fp);
+            if(!isset($lancamento['status'])){
+                $lancamento['status'] = false;
+            }
+            $this->logger();
             $app['LancamentoService']->insert($lancamento);
-            $response = new Response("teste");
-            $response->headers->set("Access-Control-Allow-Origin", "*");
-            $response->headers->set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            $response->headers->set("Access-Control-Allow-Headers", "Content-Type");
-            $response->setStatusCode(200);
-            return $response;
+            return $this->ResponseApi("true");
         })->bind('cadastro_lancamento')->value('non_require_authentication', true);
 
         return $this->controller;
