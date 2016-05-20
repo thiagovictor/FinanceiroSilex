@@ -132,8 +132,16 @@ class ApiController implements ControllerProviderInterface {
             }
             $app['session']->set('user', $user);
             $app['session']->set('baseDate', date("Y-m"));
-            $attributes = ['option','descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
+            $attributes = ['descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
+            if ($option == 'transferencia') {
+                $attributes[] = 'conta2';
+            }
+            if ($option == 'parcelado') {
+                $attributes[] = 'parcelas';
+                $option = 'normal';
+            }
             $lancamento = [];
+            $lancamento['option'] = $option;
             $lancamento['vencimento'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('vencimento'))))->format("d/m/Y");
             $lancamento['competencia'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('competencia'))))->format("m/Y");
             $lancamento['valor'] = $this->moedaToDecimal($app['request']->get('valor'));
