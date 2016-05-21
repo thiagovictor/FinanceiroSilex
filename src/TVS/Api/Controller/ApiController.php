@@ -29,17 +29,13 @@ class ApiController implements ControllerProviderInterface {
     }
     
     public function logger($lancamento) {
-        $attributes = ['option','vencimento','competencia','pagamento','valor', 'descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
+        $attributes = ['option','id','vencimento','competencia','pagamento','valor', 'descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
         $fp = fopen("logsAPI.txt", "a+");
-        foreach ($attributes as $value) {
-            if (isset($_POST[$value])) {
-                fwrite($fp, $value . "(SESSION):  " . $_POST[$value] . "\r\n");
-            }
+        foreach ($_POST as $key => $value) {
+            fwrite($fp, $key . "(SESSION):  " . $_POST[$key] . "\r\n");
         }
-        foreach ($attributes as $value) {
-            if (isset($lancamento[$value])) {
-                fwrite($fp, $value . "(LOCAL):  " . $lancamento[$value] . "\r\n");
-            }
+        foreach ($lancamento as $key => $value) {
+            fwrite($fp, $key . "(LOCAL):  " . $lancamento[$key] . "\r\n");
         }
         fwrite($fp, "#############################################################\r\n");
         fclose($fp);
@@ -166,7 +162,50 @@ class ApiController implements ControllerProviderInterface {
             $app['LancamentoService']->insert($lancamento);
             return $this->ResponseApi("true");
         })->bind('cadastro_lancamento')->value('non_require_authentication', true);
-
+        
+        $this->controller->options('/cadastro/lancamento/{option}/{login}/{token}', function ($option, $login, $token) use ($app) {
+            return $this->ResponseApi("true");
+        })->bind('cadastro_lancamento_options')->value('non_require_authentication', true);
+        
+        $this->controller->put('/cadastro/lancamento/{option}/{login}/{token}', function ($option, $login, $token) use ($app) {
+            
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $app['session']->set('user', $user);
+            $app['session']->set('baseDate', date("Y-m"));
+            $attributes = ['id','descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
+            
+            $lancamento = [];
+            $lancamento['option'] = $option;
+            $lancamento['vencimento'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('vencimento'))))->format("d/m/Y");
+            $lancamento['competencia'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('competencia'))))->format("m/Y");
+            $lancamento['valor'] = $this->moedaToDecimal($app['request']->get('valor'));
+            if ($app['request']->get('pagamento') !== 'null') {
+                $lancamento['pagamento'] = (new \DateTime(str_replace("(Hora oficial do Brasil)", "(BRT)", $app['request']->get('pagamento'))))->format("d/m/Y");
+            }
+            foreach ($attributes as $value) {
+                if ($app['request']->get($value) == 'null') {
+                    $lancamento[$value] = NULL;
+                    continue;
+                }
+                if ($app['request']->get($value) == 'false') {
+                    $lancamento[$value] = false;
+                    continue;
+                }
+                if ($app['request']->get($value)) {
+                    $lancamento[$value] = $app['request']->get($value);
+                }
+            }
+            if(!isset($lancamento['status'])){
+                $lancamento['status'] = false;
+            }
+            $this->logger($lancamento);
+            $app['LancamentoService']->update($lancamento,$user);
+            return $this->ResponseApi("true");
+            
+        })->bind('cadastro_lancamento_update')->value('non_require_authentication', true);
         return $this->controller;
     }
 

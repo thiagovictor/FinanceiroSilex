@@ -399,6 +399,9 @@ class Lancamento {
     public function uploadDocs() {
         $boleto_temp = $this->arquivoBoleto;
         $comprov_temp = $this->arquivoComprovante;
+        if(!isset($_FILES['LancamentoForm'])){
+            return false;
+        }
         $file = $_FILES['LancamentoForm'];
         if (!$file) {
             return false;
