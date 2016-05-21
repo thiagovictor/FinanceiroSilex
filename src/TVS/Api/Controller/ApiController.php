@@ -28,14 +28,20 @@ class ApiController implements ControllerProviderInterface {
         return $response;
     }
     
-    public function logger() {
+    public function logger($lancamento) {
         $attributes = ['option','vencimento','competencia','pagamento','valor', 'descricao','documento','tipo','centrocusto','favorecido','conta','cartao','status'];
-        $fp = fopen("logsHoje.txt", "a+");
+        $fp = fopen("logsAPI.txt", "a+");
         foreach ($attributes as $value) {
             if (isset($_POST[$value])) {
-                fwrite($fp, $value . ":  " . $_POST[$value] . "\r\n");
+                fwrite($fp, $value . "(SESSION):  " . $_POST[$value] . "\r\n");
             }
         }
+        foreach ($attributes as $value) {
+            if (isset($lancamento[$value])) {
+                fwrite($fp, $value . "(LOCAL):  " . $lancamento[$value] . "\r\n");
+            }
+        }
+        fwrite($fp, "#############################################################\r\n");
         fclose($fp);
     }
 
@@ -122,7 +128,7 @@ class ApiController implements ControllerProviderInterface {
             }
             $app['session']->set('baseDate', date("Y-m"));
             $result = $app['LancamentoService']->infoAdditional($user);
-            return $this->ResponseApi($result);
+            return $this->ResponseApi([$result]);
         })->bind('conta_totais_api_get')->value('non_require_authentication', true);
 
         $this->controller->post('/cadastro/lancamento/{option}/{login}/{token}', function ($option, $login, $token) use ($app) {
@@ -156,7 +162,7 @@ class ApiController implements ControllerProviderInterface {
             if(!isset($lancamento['status'])){
                 $lancamento['status'] = false;
             }
-            $this->logger();
+            $this->logger($lancamento);
             $app['LancamentoService']->insert($lancamento);
             return $this->ResponseApi("true");
         })->bind('cadastro_lancamento')->value('non_require_authentication', true);

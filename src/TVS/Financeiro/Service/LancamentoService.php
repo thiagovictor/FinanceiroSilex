@@ -85,14 +85,16 @@ class LancamentoService extends AbstractService {
     public function ajustaData(array $data = array()) {
         $user = $this->app['session']->get('user');
         $data['user'] = $this->em->getReference('TVS\Login\Entity\User', $user->getId());
-        
-        if(!isset($data['status'])){
-           $data['status'] = false; 
+
+        if (!isset($data['status'])) {
+            $data['status'] = 0;
         }
-       
+
+        $data['status'] = ($data['status']) ? 1 : 0;
+
         if (isset($data["option"])) {
             if ($data["option"] == 'transferencia') {
-                $data["status"] = true;
+                $data["status"] = 1;
                 $data["transf"] = time();
             }
         }
@@ -155,7 +157,7 @@ class LancamentoService extends AbstractService {
             unset($data['conta2']);
             $this->createTransf($data2);
         }
-
+        
         return $data;
     }
 
@@ -342,7 +344,7 @@ class LancamentoService extends AbstractService {
 
     publiC static function removeDocs($path) {
         $completePath = __DIR__ . "/../../../../data" . $path;
-        if(!file_exists($completePath)){
+        if (!file_exists($completePath)) {
             return false;
         }
         if (unlink($completePath)) {
@@ -366,16 +368,17 @@ class LancamentoService extends AbstractService {
         $this->setMessage("Pedido com falha!");
         return false;
     }
-    
-    public function getDespesasCentroCusto($user,$base_date) {
+
+    public function getDespesasCentroCusto($user, $base_date) {
         $repCcusto = $this->em->getRepository("TVS\Financeiro\Entity\Centrocusto");
         $repLancamento = $this->em->getRepository($this->entity);
-        
-        $ccustos = $repCcusto->findBy(['user'=>$user]);
+
+        $ccustos = $repCcusto->findBy(['user' => $user]);
         $formatado = [];
         foreach ($ccustos as $ccusto) {
-            $formatado[] = $repLancamento->despesasCusto($user,$base_date,$ccusto);
+            $formatado[] = $repLancamento->despesasCusto($user, $base_date, $ccusto);
         }
         return $formatado;
     }
+
 }
