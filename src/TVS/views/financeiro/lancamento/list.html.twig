@@ -1,92 +1,238 @@
-{% extends  "login/default/default_list.html.twig" %}
-{% block button_new %}
-    <div class="row">
-        <div class="col-lg-2">
-            <div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <!--<span class="{{class_btn_new}}" aria-hidden="true"></span> --> A&ccedil;&otilde;es <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{{path( bind_path~'_new_options',{'options':'normal'})}}">Lan&ccedil;amento padr&atilde;o</a></li>
-                    <li><a href="{{path('recorrente_new')}}">Lan&ccedil;amento recorrente</a></li>
-                    <li><a href="{{path( bind_path~'_new_options',{'options':'parcelada'})}}">Lan&ccedil;amento Parcelado</a></li>
-                    <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
-                    <li><a href="{{path('personalizado_listar')}}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>Busca Avan&ccedil;ada</a></li>
-                    <li><a href="/conta/display/view"  data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>Informa&ccedil;&otilde;es das contas</a></li>
-                </ul>
+{% extends "template.twig" %}
+{% block tituloPainel %}{{ titulo | raw }}{% endblock %}
+{% block superior %}
+    {% if Message is defined %}
+        {% for mens in Message %}
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <ul>{{ mens | raw }}</ul>
             </div>
-        </div>
+        {% endfor%}
+    {% endif %}
+    <table width="100%">
+        <thead>
+            <tr>
+                <th width="10%">
+                    {% if isAllowed.new %}
+                        {% block button_new %}
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <!--<span class="{{class_btn_new}}" aria-hidden="true"></span> --> A&ccedil;&otilde;es <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="{{path( bind_path~'_new_options',{'options':'normal'})}}">Lan&ccedil;amento padr&atilde;o</a></li>
+                                            <li><a href="{{path('recorrente_new')}}">Lan&ccedil;amento recorrente</a></li>
+                                            <li><a href="{{path( bind_path~'_new_options',{'options':'parcelada'})}}">Lan&ccedil;amento Parcelado</a></li>
+                                            <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
+                                            <li><a href="{{path('personalizado_listar')}}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>Busca Avan&ccedil;ada</a></li>
+                                            <li><a href="/conta/display/view"  data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>Informa&ccedil;&otilde;es das contas</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
 
 
-    </div>
+                            </div>
 
-    <!-- <a href="/conta/display/view"  class="btn btn-sm btn-default" data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>  -->
-    <script type="text/javascript">
-        $(function () {
-            $('#MesDeReferencia').datetimepicker({
-                viewMode: 'years',
-                format: 'MM/YYYY',
-                locale: 'pt-br'
-            });
-        });
-    </script>
+                            <!-- <a href="/conta/display/view"  class="btn btn-sm btn-default" data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>  -->
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#MesDeReferencia').datetimepicker({
+                                        viewMode: 'years',
+                                        format: 'MM/YYYY',
+                                        locale: 'pt-br'
+                                    });
+                                });
+                            </script>
 
 
-    <div id="information" class="modal fade" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div>
+                            <div id="information" class="modal fade" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>
 
-{% endblock %}
-{% block referencia %}
-    <div class="col-sm-4">
-        <div class='input-group date' id='MesDeReferencia'>
-            <form  action="{{path('mes')}}" method="POST" name="mes" >
-                <input type="text" value="{{ additional['mesreferencia']}}" class="form-control " name="mesreferencia" onblur="document.mes.submit();" >	
-            </form> 
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-calendar">
+                        {% endblock %}
+                    {% endif %}
+    </th>
+    <th width="50%">
+    {% block referencia %}
+        <div class="col-sm-4">
+            <div class='input-group date' id='MesDeReferencia'>
+                <form  action="{{path('mes')}}" method="POST" name="mes" >
+                    <input type="text" value="{{ additional['mesreferencia']}}" class="form-control " name="mesreferencia" onblur="document.mes.submit();" >	
+                </form> 
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar">
+                    </span>
                 </span>
+            </div>
+        </div>
+    {% endblock %}</th>
+    <th align="left">
+    <form action="{{path(bind_path~'_search')}}" method="POST">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Procurar por...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit"><span class="{{ class_btn_search }}" aria-hidden="true"></span></button>
             </span>
         </div>
-    </div>
+    </form>
+</th>
+</tr>
+</thead>
+</table>
+
 {% endblock %}
 
-{% block button_arquivos %}
-    {%if attribute(object, 'idrecorrente') is not empty %}
-        <img title="Registro recorrente" src="/img/recorrente.jpg" width="21" height="21" >
-    {%endif%}
-    {%if attribute(object, 'cartao') is not empty %}
-        <span title="Registro em Cart&atilde;o de cr&eacute;dito." class="glyphicon glyphicon-credit-card btn-sm" aria-hidden="true"></span>
-    {%endif%}
-    {%if attribute(object, 'transf') is not empty %}
-        <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
-            <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
-        </a> 
-    {%endif%}
-    {%if attribute(object, 'arquivoBoleto') is not empty %}
-        <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" title="Visualizar Boleto" class="{{class_btn}}" aria-label="Left Align">
-            <span class="{{class_boleto}}" aria-hidden="true"></span>
-        </a>                               
-    {%endif%}
-    {%if attribute(object, 'arquivoComprovante') is not empty %}
-        <a href="{{path("getComprovante",{"id":object.id})}}" target="_blank" title="Visualizar Comprovante"class="{{class_btn}}" aria-label="Left Align">
-            <span class="{{class_comprovante}}" aria-hidden="true"></span>
-        </a>                               
-    {%endif%} 
-    {%if not attribute(object, 'status')%}
-        {% set title = 'Pagar Agora' %}
-        {%if attribute(object, 'valor') > 0 %}
-            {% set title = 'Receber Agora' %}               
-        {%endif%} 
-        <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
-            <!-- <img src="/img/glyphicons-money.png" width="13" height="9" > !-->
-            <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
-        </a>                               
-    {%endif%}   
+{% block conteudo %}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <table class="{{class_table}}">
+        <thead>
+            <tr>
+                {% for field in fields_table %}
+                    <th>{{ field }}</th>
+                    {% endfor %}
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set soma = 0 %}
+            {% for object in result %}
+                <tr>
+                    {% for array in object_key_table %}
+                        {% set flag = false %}
+                        {% set attr = '' %}
+                        {% set bool = false %}
+                        {% set money = false %}
+                        {% set datetime = false %}
+                        {% for properties in array %}
+                            {% if flag %}
+                                {% set attr = attribute(attr, properties)  %}
+                                {% if attr | length > 20 %} 
+                                    {% set attr = attr | slice(0, 20)~'<a data-toggle="tooltip" title="'~attr~'">(...)</a>' %}
+                                {% endif %}
+                            {% else %}
+                                {%if loop.first %}
+                                    {%if properties == 'bool'%}
+                                        {% set bool = true %}
+                                    {%else%}
+                                        {%if properties == 'money'%}
+                                            {% set money = true %}
+                                        {%else%}
+                                            {%if properties == 'datetime'%}
+                                                {% set datetime = true %}
+                                            {%else%}
+                                                {% set attr = attribute(object, properties) %}
+                                                {% if attr | length > 20 %} 
+                                                    {% set attr = attr | slice(0, 20)~'<a data-toggle="tooltip" title="'~attribute(object, properties)~'">(...)</a>' %}
+                                                {% endif %}
+                                                {%if attr is not null %}
+                                                    {% set flag = true %}
+                                                {%endif%}
+                                            {%endif%}
+                                        {%endif%}
+                                    {%endif%}
+                                {%else%}
+                                    {%if bool %}
+                                        {%if attribute(object, properties) == 1 %}
+                                            {% set attr = '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' %}
+                                        {%endif%} 
+                                    {%endif%}
+                                    {%if money %}
+                                        {% set attr = 'R$ '~attribute(object, properties)| number_format %}
+                                        {% set soma = soma + attribute(object, properties) %}
+                                        {% if attribute(object, properties) < 0 %}
+                                            {% set attr = '<font color="red" >'~attr~'</font>' %}
+                                        {% else %} 
+                                            {% set attr = '<font color="green" >'~attr~'</font>' %}
+                                        {% endif %}
+                                    {%endif%}
+                                    {%if datetime %}
+                                        {%if properties == 'pagamento' %}
+                                            {%if attribute(object, 'status')%}
+                                                {% set attr =  '<span class="glyphicon glyphicon-ok" aria-hidden="true" data-toggle="tooltip" title="'~attribute(object, properties)| date("d/m/Y")~'"></span>' %}
+                                            {%else%}
+                                                {% set attr =  '' %}
+                                            {%endif%}   
+                                        {%else%}
+                                            {% set attr =  attribute(object, properties) is empty ? "" : attribute(object, properties) | date("d/m/Y") %}
+                                        {%endif%}
+                                    {%endif%}
+                                {%endif%}
+                            {% endif %}
+                        {% endfor %}
+                        <td style="font-size: 12px">{{ attr }} </td> 
+                    {% endfor %}
+                    <td align='right'>
+                        {% block button_arquivos %}
+                            {%if attribute(object, 'idrecorrente') is not empty %}
+                                <img title="Registro recorrente" src="/img/recorrente.jpg" width="21" height="21" >
+                            {%endif%}
+                            {%if attribute(object, 'cartao') is not empty %}
+                                <span  class="glyphicon glyphicon-credit-card btn-sm" aria-hidden="true" data-toggle="tooltip" title="{{ attribute(attribute(object, 'cartao'),'descricao') }}"></span>
+                            {%endif%}
+                            {%if attribute(object, 'transf') is not empty %}
+                                <a href="#" title="S&iacute;mbolo de transfer&ecirc;ia entre contas" class="{{class_btn}} disabled" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+                                </a> 
+                            {%endif%}
+                            {%if attribute(object, 'arquivoBoleto') is not empty %}
+                                <a href="{{path("getBoleto",{"id":object.id})}}" target="_blank" title="Visualizar Boleto" class="{{class_btn}}" aria-label="Left Align">
+                                    <span class="{{class_boleto}}" aria-hidden="true"></span>
+                                </a>                               
+                            {%endif%}
+                            {%if attribute(object, 'arquivoComprovante') is not empty %}
+                                <a href="{{path("getComprovante",{"id":object.id})}}" target="_blank" title="Visualizar Comprovante"class="{{class_btn}}" aria-label="Left Align">
+                                    <span class="{{class_comprovante}}" aria-hidden="true"></span>
+                                </a>                               
+                            {%endif%} 
+                            {%if not attribute(object, 'status')%}
+                                {% set title = 'Pagar Agora' %}
+                                {%if attribute(object, 'valor') > 0 %}
+                                    {% set title = 'Receber Agora' %}               
+                                {%endif%} 
+                                <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
+                                    <!-- <img src="/img/glyphicons-money.png" width="13" height="9" > !-->
+                                    <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                                </a>                               
+                            {%endif%}   
+                        {% endblock %}
+                        {% block button_default %}
+                            {% for key, class in path_table_aditional %}
+                                <a href="{{path(key,{'id':object.id})}}" class="{{class_btn}}" aria-label="Left Align">
+                                    <span class="{{ class }}" aria-hidden="true"></span>
+                                </a>
+                            {% endfor %}
+                            {% if isAllowed.edit %}
+                                <a href="{{path( bind_path~'_edit',{'id':object.id})}}" class="{{class_btn}}" title="Editar Lan&ccedil;amento" aria-label="Left Align">
+                                    <span class="{{class_btn_edit}}" aria-hidden="true"></span>
+                                </a>
+                            {% endif %}
+                            {% if isAllowed.delete %}
+                                <a href="{{path( bind_path~'_delete',{'id':object.id})}}" class="{{class_btn}}" title="Remover Lan&ccedil;amento"aria-label="Left Align">
+                                    <span class="{{class_btn_delete}}" aria-hidden="true"></span>
+                                </a>
+                            {% endif %}
+                        {% endblock %}
+
+
+
+                    </td>
+                </tr>
+            {% endfor %}
+            {% block endfortable %} {% endblock %}
+        </tbody>
+    </table>
+{% block endtable %}{% endblock %}
+{% block pagination %}
+    {{ pagination|raw}}
 {% endblock %}
 
-
-
+{% endblock %}

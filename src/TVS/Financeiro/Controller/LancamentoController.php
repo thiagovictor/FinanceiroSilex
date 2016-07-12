@@ -21,22 +21,22 @@ class LancamentoController extends AbstractController {
         $this->titulo = "Lancamentos";
         $this->field_search = "descricao";
         $this->fields_table = [
-            'VENC.',
             'PAG.',
+            'VENC.',
             'DESCRI&Ccedil;&Atilde;O',
             'VALOR',
             'C.CUSTO',
             'CONTA',
-                //'FAV./PAG.'
+            'FAV./PAG.'
         ];
         $this->object_key_table = [
-            ['datetime', 'vencimento'],
             ['datetime', 'pagamento'],
+            ['datetime', 'vencimento'],
             ['descricao'],
             ['money', 'valor'],
             ['centrocusto', 'descricao'],
             ['conta', 'descricao'],
-                //['favorecido', 'descricao'],
+            ['favorecido', 'descricao'],
         ];
         $this->multiple_forms = [
             'normal' => 'LancamentoForm',
