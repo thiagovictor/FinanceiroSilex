@@ -158,6 +158,7 @@ class LancamentoRepository extends EntityRepository {
                         'user' => $user
             ));
         }
+        $query->groupBy('c.centrocusto');
         $valor = $query->getQuery()
                 ->getResult();
         return $valor;

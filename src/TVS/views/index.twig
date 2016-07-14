@@ -1,6 +1,27 @@
 {% extends "template.twig" %}
 {% block tituloPainel %}{{titulo}}{% endblock %}
-{% block superior %}{% endblock %}
+{% block superior %}
+    <script type="text/javascript">
+        $(function () {
+            $('#MesDeReferencia').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY',
+                locale: 'pt-br'
+            });
+        });
+    </script>
+
+    <div class="col-sm-4" style="margin-left: -7px;">
+        <div class='input-group date' id='MesDeReferencia'>
+            <form  action="{{path('inicio_listar')}}" method="POST" name="index" >
+                <input type="text" value="{{ totais['mesreferencia']}}" class="form-control " name="mesreferencia" onblur="document.index.submit();" >	
+            </form> 
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    </div><br>    
+{% endblock %}
 {% block style %}
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -14,36 +35,32 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script type="text/javascript">
-        google.charts.load('current', {'packages': ['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
+                                google.charts.load('current', {'packages': ['corechart']});
+                                google.charts.setOnLoadCallback(drawChart);
+                                function drawChart() {
 
-            var despesa = google.visualization.arrayToDataTable([
-                ['Categoria', 'R$'],
-                {% for object in totais['despesasbycusto'] %}
-                    ['{{ object['descricao'] }}', {{ object['total']*-1 }}],
-                {% endfor %}
-            ]);
-            
-            var receita = google.visualization.arrayToDataTable([
-                ['Categoria', 'R$'],
-                {% for object in totais['receitasbycusto'] %}
-                    ['{{ object['descricao'] }}', {{ object['total'] }}],
-                {% endfor %}
-            ]);
+                                    var despesa = google.visualization.arrayToDataTable([
+                                        ['Categoria', 'R$'],{% for object in totais['despesasbycusto'] %}
+                                        ['{{ object['descricao'] }}', {{ object['total']*-1 }}],{% endfor %}
+                                    ]);
 
-            var options = {
-                title: 'por categorias'
-            };
+                                    var receita = google.visualization.arrayToDataTable([
+                                        ['Categoria', 'R$'],{% for object in totais['receitasbycusto'] %}
+                                        ['{{ object['descricao'] }}', {{ object['total'] }}],{% endfor %}
+                                    ]);
 
-            var chartreceita = new google.visualization.PieChart(document.getElementById('piechartreceita'));
-            var chartdespesa = new google.visualization.PieChart(document.getElementById('piechartdespesa'));
+                                    var options = {
+                                        title: 'por categorias'
+                                    };
+
+                                    var chartreceita = new google.visualization.PieChart(document.getElementById('piechartreceita'));
+                                    var chartdespesa = new google.visualization.PieChart(document.getElementById('piechartdespesa'));
 
 
-            chartreceita.draw(receita, options);
-            chartdespesa.draw(despesa, options);
+                                    chartreceita.draw(receita, options);
+                                    chartdespesa.draw(despesa, options);
 
-        }
+                                }
     </script>
 
 
@@ -58,17 +75,17 @@
 
     <div style="width: 70%;position:relative;float: left;">
         <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
-            <h4><b><small>Contas a receber</small></b></h4>
+            <h4><b><small>Total de receitas</small></b></h4>
             <h3 class="text-success">R$ {{ totais['receita'] | number_format}}</h3>
             <div id="piechartreceita" style="position:relative;float: bottom"></div>
         </div>
         <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
-            <h4><b><small>Contas a pagar</small></b></h4>
+            <h4><b><small>Total de despesas</small></b></h4>
             <h3 class="text-danger" >R$ {{ totais['despesa'] | number_format}}</h3>
             <div id="piechartdespesa" style="position:relative;float: bottom"></div>
         </div>
         <div class="thumbnail" style="margin-left: 1%;width: 97%;position:relative;float: left;">
-            <h4><b><small>Saldo do M&eacute;s: {{totais['mesreferencia']}}</small></b></h4>
+            <h4><b><small>Saldo do M&eacute;s</small></b></h4>
             <h3 class="{% if (totais['receita']+totais['despesa']) > 0 %}text-success{% else %}text-danger{% endif %}" >R$ {{ (totais['receita']+totais['despesa']) | number_format}}</h3>
         </div>
     </div>

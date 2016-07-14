@@ -100,8 +100,12 @@ class Application extends ApplicationSilex {
                 })->bind('login')
                 ->value('non_require_authentication', true);
 
-        $app->get('/index', function () use ($app) {
-            
+        $app->match('/index', function () use ($app) {
+            if ($app['request']->get('mesreferencia') != "") {
+                $dateMes = explode("/", $app['request']->get('mesreferencia'));
+                $mes = "{$dateMes[1]}-{$dateMes[0]}";
+                $app['session']->set('baseDate', $mes);
+            }
             $view_list = 'index.twig';
             $result = $app['ContaService']->infoAdditional((new Session())->get('user'));
             return $app['twig']->render($view_list, [
@@ -109,12 +113,7 @@ class Application extends ApplicationSilex {
                         'titulo' => 'Informa&ccedil;&otilde;es gerais',
                         'totais' => $app['LancamentoService']->infoAdditional((new Session())->get('user'))
             ]);
-            
-            
-            
-            
-            //return $app['twig']->render('index.twig', []);
-        })->bind('inicio');
+        })->bind('inicio_listar');
 
         $app->get('/logout', function() use ($app) {
             $app['session']->clear();
