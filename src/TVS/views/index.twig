@@ -1,0 +1,100 @@
+{% extends "template.twig" %}
+{% block tituloPainel %}{{titulo}}{% endblock %}
+{% block superior %}{% endblock %}
+{% block style %}
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/css/theme.css" rel="stylesheet">
+    <script src="/js/ie-emulation-modes-warning.js"></script> <!-- ou pode-se usar assim ==> app.request.basepath!-->
+    <script src="/js/selectbox.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <link href="/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="/js/moment-with-locales.js"></script>
+    <script src="/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+
+            var despesa = google.visualization.arrayToDataTable([
+                ['Categoria', 'R$'],
+                {% for object in totais['despesasbycusto'] %}
+                    ['{{ object['descricao'] }}', {{ object['total']*-1 }}],
+                {% endfor %}
+            ]);
+            
+            var receita = google.visualization.arrayToDataTable([
+                ['Categoria', 'R$'],
+                {% for object in totais['receitasbycusto'] %}
+                    ['{{ object['descricao'] }}', {{ object['total'] }}],
+                {% endfor %}
+            ]);
+
+            var options = {
+                title: 'por categorias'
+            };
+
+            var chartreceita = new google.visualization.PieChart(document.getElementById('piechartreceita'));
+            var chartdespesa = new google.visualization.PieChart(document.getElementById('piechartdespesa'));
+
+
+            chartreceita.draw(receita, options);
+            chartdespesa.draw(despesa, options);
+
+        }
+    </script>
+
+
+
+{% endblock %}
+
+
+{% block conteudo %}
+
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <div style="width: 70%;position:relative;float: left;">
+        <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
+            <h4><b><small>Contas a receber</small></b></h4>
+            <h3 class="text-success">R$ {{ totais['receita'] | number_format}}</h3>
+            <div id="piechartreceita" style="position:relative;float: bottom"></div>
+        </div>
+        <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
+            <h4><b><small>Contas a pagar</small></b></h4>
+            <h3 class="text-danger" >R$ {{ totais['despesa'] | number_format}}</h3>
+            <div id="piechartdespesa" style="position:relative;float: bottom"></div>
+        </div>
+        <div class="thumbnail" style="margin-left: 1%;width: 97%;position:relative;float: left;">
+            <h4><b><small>Saldo do M&eacute;s: {{totais['mesreferencia']}}</small></b></h4>
+            <h3 class="{% if (totais['receita']+totais['despesa']) > 0 %}text-success{% else %}text-danger{% endif %}" >R$ {{ (totais['receita']+totais['despesa']) | number_format}}</h3>
+        </div>
+    </div>
+    <div style="width: 30%;position:relative;float: left;">
+        <div  class="thumbnail" style="width: 100%;position:relative;float: left;">
+            <table class="table ">
+                <thead>
+                <th></th>
+                <th><h3><b><small>Saldos em conta</small></b></h3></th>
+                </thead>
+                <tbody>
+                    {% for object in result %}
+                        <tr>
+                            <td ><h4><img src="{{ object['logo'] }}"  class="img-circle"  width="35" height="35" ></h4></td>
+                            <td><h4>{{ object['descricao'] }}<br><small class="{% if object['saldo'] >= 0 %}text-success{% else %}text-danger{% endif %}">R$ {{ object['saldo'] | number_format }}</small></h4></td>     
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br><br>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+

@@ -20,6 +20,7 @@ use TVS\Financeiro\Controller\RecorrenteController;
 use TVS\Login\Controller\MenuController;
 use Symfony\Component\HttpFoundation\Request;
 use TVS\Api\Controller\ApiController;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class Application extends ApplicationSilex {
 
@@ -100,7 +101,19 @@ class Application extends ApplicationSilex {
                 ->value('non_require_authentication', true);
 
         $app->get('/index', function () use ($app) {
-            return $app['twig']->render('template.twig', []);
+            
+            $view_list = 'index.twig';
+            $result = $app['ContaService']->infoAdditional((new Session())->get('user'));
+            return $app['twig']->render($view_list, [
+                        'result' => $result,
+                        'titulo' => 'Informa&ccedil;&otilde;es gerais',
+                        'totais' => $app['LancamentoService']->infoAdditional((new Session())->get('user'))
+            ]);
+            
+            
+            
+            
+            //return $app['twig']->render('index.twig', []);
         })->bind('inicio');
 
         $app->get('/logout', function() use ($app) {

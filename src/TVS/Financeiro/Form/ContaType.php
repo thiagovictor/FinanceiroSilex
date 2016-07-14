@@ -14,6 +14,20 @@ class ContaType extends AbstractType {
                     'constraints' => array(new NotBlank(), new Length(array('max' => 100))),
                     'label' => 'Descri&ccedil;&atilde;o',
                         )
+                )->add('logo', "choice", array(
+                    'choices' => array(
+                        '/img/padrao.png' => 'Pad&atilde;o',
+                        '/img/alelo.png' => 'Alelo',
+                        '/img/caixa.png' => 'Caixa Econ&ocirc;mica',
+                        '/img/bradesco.jpg' => 'Bradesco' ,
+                        '/img/itau.jpg' => 'Ita&uacute;' ,
+                        '/img/santander.png' => 'Santander',
+                        '/img/bb.png' => 'Banco do Bransil' ,
+                        '/img/mercantil.jpg' => 'Mercantil',
+                        '/img/dinheiro.jpg' => 'Dinheiro',
+                    ),
+                    'label' => 'Logo',
+                        )
                 )->add('saldo', "money", array(
                     'currency' => 'BRL',
                     'grouping' => '1', //NAO SETAR TRUE CONFORME DOCUMENTAÇÃO SYMFONY

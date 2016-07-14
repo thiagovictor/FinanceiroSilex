@@ -35,7 +35,7 @@ class ContaRepository extends EntityRepository{
             RIGHT JOIN TVS\Financeiro\Entity\Lancamento l WITH l.conta = c.id 
             where c.user = {$user->getId()} and l.status = 1 group by c.descricao");*/
         $query = $this->_em->createQuery(
-            "select c.id, c.descricao, c.saldo as saldoinicial,(select sum(l.valor) from TVS\Financeiro\Entity\Lancamento as l where c.id = l.conta and l.status = 1 and l.user = {$user->getId()})as saldo
+            "select c.id, c.descricao, c.logo, c.saldo as saldoinicial,(select sum(l.valor) from TVS\Financeiro\Entity\Lancamento as l where c.id = l.conta and l.status = 1 and l.user = {$user->getId()})as saldo
             FROM TVS\Financeiro\Entity\Conta as c
             where c.ativo = true and c.user = {$user->getId()}");  
             

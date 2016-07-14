@@ -123,6 +123,45 @@ class LancamentoRepository extends EntityRepository {
                 ->getSingleScalarResult();
         return ($valor) ? $valor : '0';
     }
+    
+    public function despesasbycusto($user) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor) as total, cc.descricao');
+        $query->join('c.centrocusto', 'cc');
+        if ($user) {
+            $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null")
+                    ->setParameters(array(
+                        'date_start' => $base_date . "-01",
+                        'date_end' => $base_date . "-31",
+                        'user' => $user
+            ));
+        }
+        $query->groupBy('c.centrocusto');
+        $valor = $query->getQuery()
+                ->getResult();
+        return $valor;
+    }
+    
+    public function receitasbycusto($user) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor) as total, cc.descricao');
+        $query->join('c.centrocusto', 'cc');
+        if ($user) {
+            $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor > 0 and c.transf is null")
+                    ->setParameters(array(
+                        'date_start' => $base_date . "-01",
+                        'date_end' => $base_date . "-31",
+                        'user' => $user
+            ));
+        }
+        $valor = $query->getQuery()
+                ->getResult();
+        return $valor;
+    }
 
     public function despesasCusto($user,$base_date,$ccusto = null) {
         $query = $this->createQueryBuilder('c')
@@ -151,6 +190,8 @@ class LancamentoRepository extends EntityRepository {
             'despesa' => $this->despesas($user),
             'receita' => $this->receitas($user),
             'mesreferencia' => $base_date,
+            'despesasbycusto' => $this->despesasbycusto($user),
+            'receitasbycusto' => $this->receitasbycusto($user),
         ];
     }
 

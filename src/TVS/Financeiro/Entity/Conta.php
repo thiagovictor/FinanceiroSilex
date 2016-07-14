@@ -28,6 +28,12 @@ class Conta {
      * @ORM\Column(name="descricao", type="string", length=255, nullable=false)
      */
     private $descricao;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="logo", type="string", length=255, nullable=false)
+     */
+    private $logo;
 
     /**
      * @var string
@@ -93,11 +99,22 @@ class Conta {
         $this->ativo = $ativo;
         return $this;
     }
+    
+    function getLogo() {
+        return $this->logo;
+    }
 
+    function setLogo($logo) {
+        $this->logo = $logo;
+        return $this;
+    }
+
+    
     public function toArray() {
         return [
             'id' => $this->getId(),
             'descricao' => $this->getDescricao(),
+            'logo' => $this->getLogo(),
             'saldo' => $this->getSaldo(),
             'ativo' => $this->getAtivo(),
             'user' => $this->getUser()->getId()
