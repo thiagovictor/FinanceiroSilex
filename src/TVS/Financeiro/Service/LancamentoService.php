@@ -158,7 +158,6 @@ class LancamentoService extends AbstractService {
             unset($data['conta2']);
             $this->createTransf($data2);
         }
-        var_dump($data);exit();
         return $data;
     }
 
