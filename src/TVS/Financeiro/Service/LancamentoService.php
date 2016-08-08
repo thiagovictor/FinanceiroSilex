@@ -96,6 +96,7 @@ class LancamentoService extends AbstractService {
             if ($data["option"] == 'transferencia') {
                 $data["status"] = 1;
                 $data["transf"] = time();
+                $data["pagamento"] = $data["vencimento"];
             }
         }
 
@@ -157,7 +158,7 @@ class LancamentoService extends AbstractService {
             unset($data['conta2']);
             $this->createTransf($data2);
         }
-        
+        var_dump($data);exit();
         return $data;
     }
 
