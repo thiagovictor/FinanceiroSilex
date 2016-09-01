@@ -438,7 +438,11 @@ class Lancamento {
     }
 
     public function toArray() {
-
+        /*
+         *  REMOVIDO, POIS NA FUNÇÃO ajustaData() NÃO EXISTE TRATATIVA PARA O NUMERO DE PARCELAS,
+         *  ENTÃO QUANDO SE MUDA O STATUS DIRETAMENTE NO BOTÃO PAGAR AGORA, SÃO CRIADOS VARIOS REGISTROS BASEADOS NO NUMERO DE PARCELAS.
+         *  COMO ESTE CAMPO NÃO TEM SIDO USADO PARA OUTRAS FINALIDADES, O MESMO ESTÁ SENDO DESABILITADO NA FUNÇÃO TOARRAY()
+         */
         return [
             'id' => $this->getId(),
             'valor' => str_replace("-", "", $this->getValor()),
@@ -449,7 +453,7 @@ class Lancamento {
             'idparcela' => $this->getIdparcela(),
             'idrecorrente' => $this->getIdrecorrente(),
             'pagamento' => $this->returnValue($this->getPagamento()),
-            'parcelas' => $this->getParcelas(),
+            //'parcelas' => $this->getParcelas(), 
             'transf' => $this->getTransf(),
             'status' => $this->getStatus(),
             'tipo' => $this->getTipo(),
