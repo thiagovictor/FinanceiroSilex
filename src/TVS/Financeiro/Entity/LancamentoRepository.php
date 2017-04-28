@@ -203,7 +203,7 @@ class LancamentoRepository extends EntityRepository {
                             'categoria' => $categoria
                 ));
             }
-            $query->OrderBy('c.descricao');
+            $query->OrderBy('c.vencimento');
             $valor = $query->getQuery()
                     ->getResult();
             return $valor;
@@ -244,7 +244,7 @@ class LancamentoRepository extends EntityRepository {
                             'categoria' => $categoria
                 ));
             }
-            $query->OrderBy('c.descricao');
+            $query->OrderBy('c.vencimento');
             $valor = $query->getQuery()
                     ->getResult();
             return $valor;
