@@ -99,7 +99,7 @@ class LancamentoController extends AbstractController {
                     $arquivo = $lancamento->getArquivoBoleto();
                     if (!file_exists("../data" . $arquivo)) {
                         $pagamento = '';
-                        if ($lancamento->getPagamento() instanceof \DateTime){
+                        if ($lancamento->getPagamento() instanceof \DateTime) {
                             $pagamento = $lancamento->getPagamento()->format('d/m/Y');
                         }
                         $anexos[] = [
@@ -114,8 +114,8 @@ class LancamentoController extends AbstractController {
                 if (!empty($lancamento->getArquivoComprovante())) {
                     $arquivo = $lancamento->getArquivoComprovante();
                     if (!file_exists("../data" . $arquivo)) {
-                       $pagamento = '';
-                        if ($lancamento->getPagamento() instanceof \DateTime){
+                        $pagamento = '';
+                        if ($lancamento->getPagamento() instanceof \DateTime) {
                             $pagamento = $lancamento->getPagamento()->format('d/m/Y');
                         }
                         $anexos[] = [
@@ -252,6 +252,20 @@ class LancamentoController extends AbstractController {
                         'titulo' => 'Hist&oacute;rico de saldos',
             ]);
         })->bind('historicodesaldos_listar');
+        $this->controller->match('/display/consultas/detalhes/{tipo}', function ($tipo) use ($app) {
+            if ($app['request']->get('mesreferencia') != "") {
+                $dateMes = explode("/", $app['request']->get('mesreferencia'));
+                $mes = "{$dateMes[1]}-{$dateMes[0]}";
+                $app['session']->set('baseDate', $mes);
+            }
+            $result = $app['LancamentoService']->infoAdditional((new \Symfony\Component\HttpFoundation\Session\Session())->get('user'));
+            //var_dump($result);exit();
+            return $app['twig']->render('financeiro/lancamento/detalhes_gastos_modal.html.twig', [
+                        $this->param_view => $result,
+                        'tipo' => $tipo,
+                        'titulo' => 'Detalhamento de gastos',
+            ]);
+        })->bind('detalhes_listar');
 
         $this->controller->get('/display/consultas/graphccusto', function () use ($app) {
             $base_date = new \DateTime((new \Symfony\Component\HttpFoundation\Session\Session())->get('baseDate') . "-01");

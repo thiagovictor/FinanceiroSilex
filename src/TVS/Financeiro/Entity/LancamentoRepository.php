@@ -123,12 +123,12 @@ class LancamentoRepository extends EntityRepository {
                 ->getSingleScalarResult();
         return ($valor) ? $valor : '0';
     }
-    
+
     public function despesasbycusto($user) {
         $session = $this->getSession();
         $base_date = $session->get('baseDate');
         $query = $this->createQueryBuilder('c')
-                ->select('SUM(c.valor) as total, cc.descricao');
+                ->select('SUM(c.valor) as total, cc.descricao, cc.id');
         $query->join('c.centrocusto', 'cc');
         if ($user) {
             $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null")
@@ -138,17 +138,18 @@ class LancamentoRepository extends EntityRepository {
                         'user' => $user
             ));
         }
+        $query->OrderBy('cc.descricao');
         $query->groupBy('c.centrocusto');
         $valor = $query->getQuery()
                 ->getResult();
         return $valor;
     }
-    
+
     public function receitasbycusto($user) {
         $session = $this->getSession();
         $base_date = $session->get('baseDate');
         $query = $this->createQueryBuilder('c')
-                ->select('SUM(c.valor) as total, cc.descricao');
+                ->select('SUM(c.valor) as total, cc.descricao, cc.id');
         $query->join('c.centrocusto', 'cc');
         if ($user) {
             $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor > 0 and c.transf is null")
@@ -158,19 +159,131 @@ class LancamentoRepository extends EntityRepository {
                         'user' => $user
             ));
         }
+        $query->OrderBy('cc.descricao');
         $query->groupBy('c.centrocusto');
         $valor = $query->getQuery()
                 ->getResult();
         return $valor;
     }
 
-    public function despesasCusto($user,$base_date,$ccusto = null) {
+    
+    public function despesasgroupcusto($user,$ccusto) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                    ->select('SUM(c.valor) as total, cc.descricao, cc.id');
+            $query->join('c.categoria', 'cc');
+            if ($user) {
+                $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null and c.centrocusto = :ccusto")
+                        ->setParameters(array(
+                            'date_start' => $base_date . "-01",
+                            'date_end' => $base_date . "-31",
+                            'user' => $user,
+                            'ccusto' => $ccusto
+                ));
+            }
+            $query->OrderBy('cc.descricao');
+            $query->groupBy('c.categoria');
+            $valor = $query->getQuery()
+                    ->getResult();
+            return $valor;
+    }
+    
+    public function despesasgroupcategoria($user,$categoria) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                    ->select('c.descricao, c.vencimento, c.valor, c.id');
+            if ($user) {
+                $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null and c.categoria = :categoria")
+                        ->setParameters(array(
+                            'date_start' => $base_date . "-01",
+                            'date_end' => $base_date . "-31",
+                            'user' => $user,
+                            'categoria' => $categoria
+                ));
+            }
+            $query->OrderBy('c.descricao');
+            $valor = $query->getQuery()
+                    ->getResult();
+            return $valor;
+    }
+    public function receitasgroupcusto($user,$ccusto) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                    ->select('SUM(c.valor) as total, cc.descricao, cc.id');
+            $query->join('c.categoria', 'cc');
+            if ($user) {
+                $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor > 0 and c.transf is null and c.centrocusto = :ccusto")
+                        ->setParameters(array(
+                            'date_start' => $base_date . "-01",
+                            'date_end' => $base_date . "-31",
+                            'user' => $user,
+                            'ccusto' => $ccusto
+                ));
+            }
+            $query->OrderBy('cc.descricao');
+            $query->groupBy('c.categoria');
+            $valor = $query->getQuery()
+                    ->getResult();
+            return $valor;
+    }
+    
+    public function receitasgroupcategoria($user,$categoria) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                    ->select('c.descricao, c.vencimento, c.valor, c.id');
+            if ($user) {
+                $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor > 0 and c.transf is null and c.categoria = :categoria")
+                        ->setParameters(array(
+                            'date_start' => $base_date . "-01",
+                            'date_end' => $base_date . "-31",
+                            'user' => $user,
+                            'categoria' => $categoria
+                ));
+            }
+            $query->OrderBy('c.descricao');
+            $valor = $query->getQuery()
+                    ->getResult();
+            return $valor;
+    }
+    
+    public function treeofdespesas($user) {
+        
+        $ccustos = $this->despesasbycusto($user);
+        foreach ($ccustos as $key => $ccusto) {
+            $categorias = $this->despesasgroupcusto($user, $ccusto['id']);
+            foreach ($categorias as $key2 => $categoria) {
+                $lancamentos = $this->despesasgroupcategoria($user, $categoria['id']);
+                $categorias[$key2]['nodes'] = $lancamentos;
+            }
+            $ccustos[$key]['nodes'] = $categorias;
+        }
+        return $ccustos;
+    }
+    public function treeofreceitas($user) {
+        
+        $ccustos = $this->receitasbycusto($user);
+        foreach ($ccustos as $key => $ccusto) {
+            $categorias = $this->receitasgroupcusto($user, $ccusto['id']);
+            foreach ($categorias as $key2 => $categoria) {
+                $lancamentos = $this->receitasgroupcategoria($user, $categoria['id']);
+                $categorias[$key2]['nodes'] = $lancamentos;
+            }
+            $ccustos[$key]['nodes'] = $categorias;
+        }
+        return $ccustos;
+    }
+
+    public function despesasCusto($user, $base_date, $ccusto = null) {
         $query = $this->createQueryBuilder('c')
                 ->select('SUM(c.valor)');
         if ($user) {
             $query->where("c.competencia = :date_start and c.user = :user and c.valor < 0 and c.transf is null and c.centrocusto = :ccusto")
                     ->setParameters(array(
-                        'ccusto'=> $ccusto,
+                        'ccusto' => $ccusto,
                         'date_start' => $base_date,
                         'user' => $user
             ));
@@ -180,7 +293,7 @@ class LancamentoRepository extends EntityRepository {
 //        exit();
         $valor = $query->getQuery()
                 ->getSingleScalarResult();
-        return ($valor) ? (float) $valor*-1 : 0;
+        return ($valor) ? (float) $valor * -1 : 0;
     }
 
     public function infoAdditional($user = false) {
@@ -191,8 +304,8 @@ class LancamentoRepository extends EntityRepository {
             'despesa' => $this->despesas($user),
             'receita' => $this->receitas($user),
             'mesreferencia' => $base_date,
-            'despesasbycusto' => $this->despesasbycusto($user),
-            'receitasbycusto' => $this->receitasbycusto($user),
+            'despesasbycusto' => $this->treeofdespesas($user),
+            'receitasbycusto' => $this->treeofreceitas($user),
         ];
     }
 

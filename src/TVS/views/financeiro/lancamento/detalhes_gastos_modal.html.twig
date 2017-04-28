@@ -1,0 +1,276 @@
+<script type="text/javascript">
+    $(function () {
+
+        var despesas = [{% for object in result['despesasbycusto'] %}
+    {% if loop.first %}
+                        {
+                            text: '{{ object['descricao'] }}',
+                            tags: ['{{ object['total'] | number_format}}'],
+                            nodes: [{% for categoria in object['nodes'] %}
+        {% if loop.first %}
+                                        {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+            {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+            {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+            {%endif%}
+            {% endfor%}  
+                                                    ]
+                                                }
+                {%else%}
+                                        , {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                    {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                    {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                    {%endif%}
+                    {% endfor%}  
+                                                    ]
+                                                }
+                        {%endif%}
+                            {% endfor%}  
+                                    ]
+                                }
+
+                                {%else%}
+                        , {
+                            text: '{{ object['descricao'] }}',
+                            tags: ['{{ object['total'] | number_format}}'],
+                            nodes: [{% for categoria in object['nodes'] %}
+                                    {% if loop.first %}
+                                        {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                                        {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                        {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                        {%endif%}
+                                        {% endfor%}  
+                                                    ]
+                                                }
+                                            {%else%}
+                                        , {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                                                {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                {%endif%}
+                                                {% endfor%}  
+                                                    ]
+                                                }
+                                                    {%endif%}
+
+                                                        {% endfor%}  
+                                    ]
+                                }
+                                                            {%endif%}
+                                                                {% endfor %}
+                ];
+                var receitas = [{% for object in result['receitasbycusto'] %}
+                                                                    {% if loop.first %}
+                        {
+                            text: '{{ object['descricao'] }}',
+                            tags: ['{{ object['total'] | number_format}}'],
+                            nodes: [{% for categoria in object['nodes'] %}
+                                                                        {% if loop.first %}
+                                        {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                                                                            {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                            {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                            {%endif%}
+                                                                            {% endfor%}  
+                                                    ]
+                                                }
+                                                                                {%else%}
+                                        , {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                                                                                    {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                                    {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                                    {%endif%}
+                                                                                    {% endfor%}  
+                                                    ]
+                                                }
+                                                                                        {%endif%}
+                                                                                            {% endfor%}  
+                                    ]
+                                }
+
+                                                                                                {%else%}
+                        , {
+                            text: '{{ object['descricao'] }}',
+                            tags: ['{{ object['total'] | number_format}}'],
+                            nodes: [{% for categoria in object['nodes'] %}
+                                                                                                    {% if loop.first %}
+                                        {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                                                                                                        {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                                                        {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                                                        {%endif%}
+                                                                                                        {% endfor%}  
+                                                    ]
+                                                }
+                                                                                                            {%else%}
+                                        , {
+                                            text: '{{categoria['descricao']}}',
+                                            tags: ['{{categoria['total'] | number_format}}'],
+                                            nodes: [{% for lancamento in categoria['nodes'] %}
+                                                                                                                {% if loop.first %}
+                                                        {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                                                                {%else%}
+                                                        , {
+                                                            text: '{{lancamento['vencimento'] | date("d/m/Y")}} | {{lancamento['descricao']}}',
+                                                            tags: ['{{lancamento['valor'] | number_format}}'],
+                                                            icon: 'glyphicon glyphicon-file'
+                                                        }
+                                                                                                                {%endif%}
+                                                                                                                {% endfor%}  
+                                                    ]
+                                                }
+                                                                                                                    {%endif%}
+
+                                                                                                                        {% endfor%}  
+                                    ]
+                                }
+                                                                                                                            {%endif%}
+                                                                                                                                {% endfor %}
+                ];
+
+
+                $('#despesas').treeview({
+                    levels: 1,
+                    // colors
+                    color: '#C9302C', // '#000000',
+                    backColor: undefined, // '#FFFFFF',
+                    borderColor: undefined, // '#dddddd',
+                    onhoverColor: '#F5F5F5',
+                    selectedColor: '#FFFFFF',
+                    selectedBackColor: '#428bca',
+                    searchResultColor: '#D9534F',
+                    searchResultBackColor: '#6B5094', //'#FFFFFF',
+
+                    expandIcon: 'glyphicon glyphicon-chevron-right',
+                    collapseIcon: 'glyphicon glyphicon-chevron-down',
+                    showTags: true,
+                    enableLinks: false,
+                    data: despesas
+                });
+                $('#receitas').treeview({
+                    levels: 1,
+                    // colors
+                    color: '#4CAE4C', // '#000000',
+                    backColor: undefined, // '#FFFFFF',
+                    borderColor: undefined, // '#dddddd',
+                    onhoverColor: '#F5F5F5',
+                    selectedColor: '#FFFFFF',
+                    selectedBackColor: '#428bca',
+                    searchResultColor: '#D9534F',
+                    searchResultBackColor: '#6B5094', //'#FFFFFF',
+
+                    expandIcon: 'glyphicon glyphicon-chevron-right',
+                    collapseIcon: 'glyphicon glyphicon-chevron-down',
+                    showTags: true,
+                    enableLinks: false,
+                    data: receitas
+                });
+
+
+            });
+
+        </script>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><small>Detalhamento de {{tipo}}</small></h4>
+        </div>
+        
+        <div class="modal-body">
+            <div id="{{tipo}}" ></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+
+
+

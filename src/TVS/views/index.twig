@@ -35,32 +35,32 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
-                                function drawChart() {
+                    google.charts.load('current', {'packages': ['corechart']});
+                    google.charts.setOnLoadCallback(drawChart);
+                    function drawChart() {
 
-                                    var despesa = google.visualization.arrayToDataTable([
-                                        ['Categoria', 'R$'],{% for object in totais['despesasbycusto'] %}
-                                        ['{{ object['descricao'] }}', {{ object['total']*-1 }}],{% endfor %}
-                                    ]);
+                        var despesa = google.visualization.arrayToDataTable([
+                            ['Categoria', 'R$'],{% for object in totais['despesasbycusto'] %}
+                            ['{{ object['descricao'] }}', {{ object['total']*-1 }}],{% endfor %}
+                        ]);
 
-                                    var receita = google.visualization.arrayToDataTable([
-                                        ['Categoria', 'R$'],{% for object in totais['receitasbycusto'] %}
-                                        ['{{ object['descricao'] }}', {{ object['total'] }}],{% endfor %}
-                                    ]);
+                        var receita = google.visualization.arrayToDataTable([
+                            ['Categoria', 'R$'],{% for object in totais['receitasbycusto'] %}
+                            ['{{ object['descricao'] }}', {{ object['total'] }}],{% endfor %}
+                        ]);
 
-                                    var options = {
-                                        title: 'por categorias'
-                                    };
+                        var options = {
+                            title: 'por categorias'
+                        };
 
-                                    var chartreceita = new google.visualization.PieChart(document.getElementById('piechartreceita'));
-                                    var chartdespesa = new google.visualization.PieChart(document.getElementById('piechartdespesa'));
+                        var chartreceita = new google.visualization.PieChart(document.getElementById('piechartreceita'));
+                        var chartdespesa = new google.visualization.PieChart(document.getElementById('piechartdespesa'));
 
 
-                                    chartreceita.draw(receita, options);
-                                    chartdespesa.draw(despesa, options);
+                        chartreceita.draw(receita, options);
+                        chartdespesa.draw(despesa, options);
 
-                                }
+                    }
     </script>
 
 
@@ -72,17 +72,24 @@
 
     <script src="http://code.highcharts.com/highcharts.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
-
+    <div id="information" class="modal fade bs-example-modal-lg" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
     <div style="width: 70%;position:relative;float: left;">
         <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
             <h4><b><small>Total de receitas</small></b></h4>
-            <h3 class="text-success">R$ {{ totais['receita'] | number_format}}</h3>
+            <h3 class="text-success">R$ {{ totais['receita'] | number_format}} </h3>
             <div id="piechartreceita" style="position:relative;float: bottom"></div>
+            <h4><a href="{{path('detalhes_listar',{'tipo':'receitas'})}}" data-toggle="modal" data-target="#information"><small><span class="glyphicon glyphicon-list-alt"></span>    Detalhes</small></a></h4>
         </div>
         <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
             <h4><b><small>Total de despesas</small></b></h4>
             <h3 class="text-danger" >R$ {{ totais['despesa'] | number_format}}</h3>
             <div id="piechartdespesa" style="position:relative;float: bottom"></div>
+            <h4><a href="{{path('detalhes_listar',{'tipo':'despesas'})}}" data-toggle="modal" data-target="#information"><small><span class="glyphicon glyphicon-list-alt"></span>    Detalhes</small></a></h4>
         </div>
         <div class="thumbnail" style="margin-left: 1%;width: 97%;position:relative;float: left;">
             <h4><b><small>Saldo do M&eacute;s</small></b></h4>
