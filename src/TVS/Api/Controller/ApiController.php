@@ -163,9 +163,28 @@ class ApiController implements ControllerProviderInterface {
             return $this->ResponseApi("true");
         })->bind('cadastro_lancamento')->value('non_require_authentication', true);
         
+        $this->controller->post('/cadastro/favorecido/{login}/{token}', function ($login, $token) use ($app) {
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $app['session']->set('user', $user);
+            $app['session']->set('baseDate', date("Y-m"));
+
+            $favorecido['descricao'] = $app['request']->get('descricao');
+            
+            $this->logger($favorecido);
+            $app['FavorecidoService']->insert($favorecido);
+            return $this->ResponseApi("true");
+        })->bind('cadastro_favorecido')->value('non_require_authentication', true);
+        
         $this->controller->options('/cadastro/lancamento/{option}/{login}/{token}', function ($option, $login, $token) use ($app) {
             return $this->ResponseApi("true");
         })->bind('cadastro_lancamento_options')->value('non_require_authentication', true);
+        
+        $this->controller->options('/cadastro/favorecido/{login}/{token}', function ($login, $token) use ($app) {
+            return $this->ResponseApi("true");
+        })->bind('cadastro_favorecido_options')->value('non_require_authentication', true);
         
         $this->controller->put('/cadastro/lancamento/{option}/{login}/{token}', function ($option, $login, $token) use ($app) {
             
@@ -206,6 +225,24 @@ class ApiController implements ControllerProviderInterface {
             return $this->ResponseApi("true");
             
         })->bind('cadastro_lancamento_update')->value('non_require_authentication', true);
+        
+        $this->controller->put('/cadastro/favorecido/{login}/{token}', function ($login, $token) use ($app) {
+            
+            $user = $app['ApiService']->isValidToken($login, $token);
+            if ($user === false) {
+                return new Response('User False');
+            }
+            $app['session']->set('user', $user);
+            $app['session']->set('baseDate', date("Y-m"));
+                       
+            $favorecido['id'] = $app['request']->get('id');
+            $favorecido['descricao'] = $app['request']->get('descricao');
+            $this->logger($favorecido);
+            $app['FavorecidoService']->update($favorecido,$user);
+            return $this->ResponseApi("true");
+            
+        })->bind('cadastro_favorecido_update')->value('non_require_authentication', true);
+        
         return $this->controller;
     }
 
