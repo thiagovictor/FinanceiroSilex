@@ -74,6 +74,8 @@ class LancamentoType extends AbstractType {
                         )
                 )->add('conta', 'choice', array(
                     'choices' => $this->conta,
+                    'constraints' => array(new NotBlank()),
+                    'placeholder' => 'Selecione uma conta',
                     'required' => true,
                     'label' => 'Debitar/Creditar'
                         )
