@@ -13,7 +13,7 @@
         <thead>
             <tr>
                 <th width="10%">
-                    {% if isAllowed.new %}
+                    {% if isAllowed.display %}
                         {% block button_new %}
                             <div class="row">
                                 <div class="col-lg-2">
@@ -22,12 +22,16 @@
                                             <!--<span class="{{class_btn_new}}" aria-hidden="true"></span> --> A&ccedil;&otilde;es <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="{{path( bind_path~'_new_options',{'options':'normal'})}}">Lan&ccedil;amento padr&atilde;o</a></li>
-                                            <li><a href="{{path('recorrente_new')}}">Lan&ccedil;amento recorrente</a></li>
-                                            <li><a href="{{path( bind_path~'_new_options',{'options':'parcelada'})}}">Lan&ccedil;amento Parcelado</a></li>
-                                            <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
+                                            {% if isAllowed.new %}
+                                                <li><a href="{{path( bind_path~'_new_options',{'options':'normal'})}}">Lan&ccedil;amento padr&atilde;o</a></li>
+                                                <li><a href="{{path('recorrente_new')}}">Lan&ccedil;amento recorrente</a></li>
+                                                <li><a href="{{path( bind_path~'_new_options',{'options':'parcelada'})}}">Lan&ccedil;amento Parcelado</a></li>
+                                                <li><a href="{{path( bind_path~'_new_options',{'options':'transferencia'})}}">Transfer&ecirc;ncia entre contas</a></li>
+                                            {% endif %}
                                             <li><a href="{{path('personalizado_listar')}}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>Busca Avan&ccedil;ada</a></li>
-                                            <li><a href="/conta/display/view"  data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>Informa&ccedil;&otilde;es das contas</a></li>
+                                            {% if isAllowed.edit %}
+                                                <li><a href="/conta/display/view"  data-toggle="modal" data-target="#information"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>Informa&ccedil;&otilde;es das contas</a></li>
+                                            {% endif %}
                                         </ul>
                                     </div>
                                 </div>
@@ -194,14 +198,16 @@
                                 </a>                               
                             {%endif%} 
                             {%if not attribute(object, 'status')%}
-                                {% set title = 'Pagar Agora' %}
-                                {%if attribute(object, 'valor') > 0 %}
-                                    {% set title = 'Receber Agora' %}               
-                                {%endif%} 
-                                <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
-                                    <!-- <img src="/img/glyphicons-money.png" width="13" height="9" > !-->
-                                    <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
-                                </a>                               
+                                {% if isAllowed.edit %}
+                                    {% set title = 'Pagar Agora' %}
+                                    {%if attribute(object, 'valor') > 0 %}
+                                        {% set title = 'Receber Agora' %}               
+                                    {%endif%} 
+                                    <a href="{{path("editStatus",{"id":object.id})}}" class="{{class_btn}}" title="{{title}}" aria-label="Left Align">
+                                        <!-- <img src="/img/glyphicons-money.png" width="13" height="9" > !-->
+                                        <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                                    </a>  
+                                {% endif %}
                             {%endif%}   
                         {% endblock %}
                         {% block button_default %}

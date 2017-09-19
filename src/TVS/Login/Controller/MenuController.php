@@ -41,6 +41,7 @@ class MenuController extends AbstractController {
         $this->controller->get('/display/preferencemenu', function () use ($app) {
             return $app['twig']->render('login/menu/preference_menu.html.twig', [
                         'user' => $app['session']->get('user'),
+                        'isAllowed' => $app['LancamentoService']->isAllowed(true)
             ]);
         })->bind('PreferenceMenu');
     }
