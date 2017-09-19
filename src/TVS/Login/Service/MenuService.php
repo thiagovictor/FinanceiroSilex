@@ -21,10 +21,13 @@ class MenuService extends AbstractService {
 
     public function getMenu() {
         $user = $this->app['session']->get('user');
+        if ($this->app['session']->get('Puser')) {
+            $user = $this->app['session']->get('Puser');
+        }
         $PrivilegeRepositoty = $this->em->getRepository('TVS\Login\Entity\Privilege');
         $menuRepositoty = $this->em->getRepository('TVS\Login\Entity\Menu');
         $routeRepository = $this->em->getRepository('TVS\Login\Entity\Route');
-        $barramenu = array();
+        $barramenu = array();     
         $objectRouteGeneric = $routeRepository->findOneByRoute('*');
         $objectPrivilege = $PrivilegeRepositoty->findOneBy(array('user' => $user, 'route' => $objectRouteGeneric));
 
@@ -38,7 +41,7 @@ class MenuService extends AbstractService {
             }
             return $barramenu;
         }
-
+        
         $objectsMenu = $menuRepositoty->findBy([], ['label' => 'ASC']);
         if ($objectsMenu) {
             foreach ($objectsMenu as $menu) {

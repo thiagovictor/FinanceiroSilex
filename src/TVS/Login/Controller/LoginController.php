@@ -41,6 +41,29 @@ class LoginController extends AbstractController {
         $this->controller->post('/autenticar', function (Request $request) use ($app) {
             $user = $app[$this->service]->findByUsernameAndPassword($request->get('user'), $request->get('password'));
             if($user){
+                
+                
+                
+                
+                $serviceConfig = $this->app['ConfigService'];
+                $config = $serviceConfig->findConfig('GroupAuth-'.$user);
+                if ($config) {
+                    //var_dump($config->getParametro('ativo'));exit();
+                    if ($config->getParametro('ativo')) {
+                        $userAccount = $app[$this->service]->findByUsernameAndPassword($config->getParametro('PUser'), $config->getParametro('PWUser'));
+                        if(!$userAccount){
+                            return $app['twig']->render('login/login.twig', [$this->param_view  => "Err: 99999. Associa&ccedil;&atilde;o incorreta.", "user"=>$request->get('user')]); 
+                        }
+                        $app['session']->set('user',$userAccount);
+                        $app['session']->set('Puser',$user);
+                        $app['session']->set('baseDate',date("Y-m"));
+                        //var_dump($userAccount);exit();
+                        return $app->redirect('/index');
+                    }
+                }
+                
+                
+                
                 $app['session']->set('user',$user);
                 $app['session']->set('baseDate',date("Y-m"));
                 return $app->redirect('/index');

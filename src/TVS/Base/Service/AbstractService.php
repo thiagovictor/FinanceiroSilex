@@ -239,6 +239,12 @@ abstract class AbstractService {
 
     public function isAllowed($objectToArray = false) {
         $user = $this->app['session']->get('user');
+        
+        
+        if ($this->app['session']->get('Puser')) {
+            $user = $this->app['session']->get('Puser');
+        }
+        
         $route = $this->mountArrayRoute();
         $routeRepository = $this->em->getRepository('TVS\Login\Entity\Route');
         $objectRoute = $routeRepository->findOneByRoute($route['controller']);
@@ -280,10 +286,14 @@ abstract class AbstractService {
     }
 
     public function isAllowedRoute($route, $action = null) {
+        $user = $this->app['session']->get('user');
+        if ($this->app['session']->get('Puser')) {
+            $user = $this->app['session']->get('Puser');
+        }
         $routeRepository = $this->em->getRepository('TVS\Login\Entity\Route');
         $objectRoute = $routeRepository->findOneByRoute($route);
         $PrivilegeRepositoty = $this->em->getRepository('TVS\Login\Entity\Privilege');
-        $objectPrivilege = $PrivilegeRepositoty->findOneBy(array('user' => $this->app['session']->get('user'), 'route' => $objectRoute));
+        $objectPrivilege = $PrivilegeRepositoty->findOneBy(array('user' => $user, 'route' => $objectRoute));
         if ($objectPrivilege) {
             if (!$this->ObjectValidPrivilege($objectPrivilege)) {
                 return false;
