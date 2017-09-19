@@ -10,7 +10,11 @@
             });
         });
     </script>
-
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
     <div class="col-sm-4" style="margin-left: -7px;">
         <div class='input-group date' id='MesDeReferencia'>
             <form  action="{{path('inicio_listar')}}" method="POST" name="index" >
@@ -78,21 +82,29 @@
             </div>
         </div>
     </div>
+    
+    
     <div style="width: 70%;position:relative;float: left;">
         <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
-            <h4><b><small>Total de receitas</small></b></h4>
-            <h3 class="text-success">R$ {{ totais['receita'] | number_format}} </h3>
+{#            <h4><b><small><a data-toggle="tooltip" title="Receita realizada + prevista"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>Total de receitas</small></b></h4>#}
+            <h4><b><small>Contas a receber</small></b></h4>
+            <h2 class="text-success">R$ {{ totais['receita'] | number_format}} </h2>
+            <h5><b><small>Recebidas: R$ {{ totais['receita_realizada'] | number_format}}</small></b></h5>
+            <h5><b><small>A receber: R$ {{ totais['receita_pendente'] | number_format}}</small></b></h5>
             <div id="piechartreceita" style="position:relative;float: bottom"></div>
             <h4><a href="{{path('detalhes_listar',{'tipo':'receitas'})}}" data-toggle="modal" data-target="#information"><small><span class="glyphicon glyphicon-list-alt"></span>    Detalhes</small></a></h4>
         </div>
         <div class="thumbnail" style="margin-left: 1%;width: 48%;position:relative;float: left;">
-            <h4><b><small>Total de despesas</small></b></h4>
-            <h3 class="text-danger" >R$ {{ totais['despesa'] | number_format}}</h3>
+{#            <h4><b><small><a data-toggle="tooltip" title="Despesa realizada + prevista"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>Total de despesas</small></b></h4>#}
+            <h4><b><small>Contas a pagar</small></b></h4>
+            <h2 class="text-danger" >R$ {{ totais['despesa'] | number_format}}</h2>
+            <h5><b><small>Pagas: R$ {{ totais['despesa_realizada'] | number_format}}</small></b></h5>
+            <h5><b><small>A pagar: R$ {{ totais['despesa_pendente'] | number_format}}</small></b></h5>
             <div id="piechartdespesa" style="position:relative;float: bottom"></div>
             <h4><a href="{{path('detalhes_listar',{'tipo':'despesas'})}}" data-toggle="modal" data-target="#information"><small><span class="glyphicon glyphicon-list-alt"></span>    Detalhes</small></a></h4>
         </div>
         <div class="thumbnail" style="margin-left: 1%;width: 97%;position:relative;float: left;">
-            <h4><b><small>Saldo do M&eacute;s</small></b></h4>
+            <h4><b><small>Saldo previsto no M&eacute;s</small></b></h4>
             <h3 class="{% if (totais['receita']+totais['despesa']) > 0 %}text-success{% else %}text-danger{% endif %}" >R$ {{ (totais['receita']+totais['despesa']) | number_format}}</h3>
         </div>
     </div>

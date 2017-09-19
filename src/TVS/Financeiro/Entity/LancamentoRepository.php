@@ -105,6 +105,24 @@ class LancamentoRepository extends EntityRepository {
                 ->getSingleScalarResult();
         return ($valor) ? $valor : '0';
     }
+    
+    public function receitasRealizadas($user) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor)');
+        if ($user) {
+            $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor > 0 and c.transf is null and c.status = 1")
+                    ->setParameters(array(
+                        'date_start' => $base_date . "-01",
+                        'date_end' => $base_date . "-31",
+                        'user' => $user
+            ));
+        }
+        $valor = $query->getQuery()
+                ->getSingleScalarResult();
+        return ($valor) ? $valor : '0';
+    }
 
     public function despesas($user) {
         $session = $this->getSession();
@@ -113,6 +131,24 @@ class LancamentoRepository extends EntityRepository {
                 ->select('SUM(c.valor)');
         if ($user) {
             $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null")
+                    ->setParameters(array(
+                        'date_start' => $base_date . "-01",
+                        'date_end' => $base_date . "-31",
+                        'user' => $user
+            ));
+        }
+        $valor = $query->getQuery()
+                ->getSingleScalarResult();
+        return ($valor) ? $valor : '0';
+    }
+    
+    public function despesasRealizadas($user) {
+        $session = $this->getSession();
+        $base_date = $session->get('baseDate');
+        $query = $this->createQueryBuilder('c')
+                ->select('SUM(c.valor)');
+        if ($user) {
+            $query->where("(c.competencia >= :date_start and c.competencia <= :date_end) and c.user = :user and c.valor < 0 and c.transf is null and c.status = 1")
                     ->setParameters(array(
                         'date_start' => $base_date . "-01",
                         'date_end' => $base_date . "-31",
@@ -303,6 +339,10 @@ class LancamentoRepository extends EntityRepository {
         return [
             'despesa' => $this->despesas($user),
             'receita' => $this->receitas($user),
+            'receita_realizada' => $this->receitasRealizadas($user),
+            'despesa_realizada' => $this->despesasRealizadas($user),
+            'receita_pendente' => $this->receitas($user)-$this->receitasRealizadas($user),
+            'despesa_pendente' => $this->despesas($user)-$this->despesasRealizadas($user),
             'mesreferencia' => $base_date,
             'despesasbycusto' => $this->treeofdespesas($user),
             'receitasbycusto' => $this->treeofreceitas($user),
