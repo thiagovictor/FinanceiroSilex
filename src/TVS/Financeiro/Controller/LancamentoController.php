@@ -167,7 +167,7 @@ class LancamentoController extends AbstractController {
             ]);
         })->bind('editStatusCartao');
 
-        $this->controller->post('/edit/mes', function () use ($app) {
+        $this->controller->post('/display/mes', function () use ($app) {
             if ($app['request']->get('mesreferencia') != "") {
                 $dateMes = explode("/", $app['request']->get('mesreferencia'));
                 $mes = "{$dateMes[1]}-{$dateMes[0]}";
