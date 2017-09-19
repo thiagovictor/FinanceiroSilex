@@ -62,7 +62,7 @@ class ProfileController implements ControllerProviderInterface {
                 $data = $form->getData();
                 $data["id"] = $app['session']->get('user')->getId();
                 $serviceManager->update($data,$this->checkOwner());
-                return $app->redirect($app["url_generator"]->generate('inicio'));
+                return $app->redirect($app["url_generator"]->generate('inicio_listar'));
             }
             $result = $serviceManager->find($app['session']->get('user')->getId());
             $form->setData($result->toArray());
